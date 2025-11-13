@@ -11,6 +11,7 @@ import { StaticTable } from '../features/static-table';
 import { Subject } from '../features/subject';
 import { SubjectCategory } from '../features/subject-category';
 import { StrategicIndicator } from '../features/strategic-indicator';
+import { Variable } from '../features/variable';
 
 /**
  * Interface for view API operations
@@ -67,8 +68,12 @@ export interface StadataView {
    */
   strategicIndicator(params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>>;
 
+  /**
+   * Gets a variable by ID
+   */
+  variable(params: ViewParams): Promise<Result<Variable, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // variable(params: ViewParams): Promise<Result<Variable, ApiFailure>>;
   // verticalVariable(params: ViewParams): Promise<Result<VerticalVariable, ApiFailure>>;
   // unit(params: ViewParams): Promise<Result<Unit, ApiFailure>>;
   // period(params: ViewParams): Promise<Result<Period, ApiFailure>>;

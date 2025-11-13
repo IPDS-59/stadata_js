@@ -13,6 +13,7 @@ import { StaticTableInjector } from './features/static-table';
 import { SubjectInjector } from './features/subject';
 import { SubjectCategoryInjector } from './features/subject-category';
 import { StrategicIndicatorInjector } from './features/strategic-indicator';
+import { VariableInjector } from './features/variable';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -244,6 +245,9 @@ export class StadataJS {
 
     // Register strategic indicator feature
     StrategicIndicatorInjector.register(this.injector, this.networkClient);
+
+    // Register variable feature
+    VariableInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc

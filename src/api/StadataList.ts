@@ -12,8 +12,8 @@ import {
   SubjectListParams,
   SubjectCategoryListParams,
   StrategicIndicatorListParams,
+  VariableListParams,
   // TODO: Uncomment when implemented
-  // VariableListParams,
   // VerticalVariableListParams,
   // UnitListParams,
   // PeriodListParams,
@@ -35,6 +35,7 @@ import { StaticTable } from '../features/static-table';
 import { Subject } from '../features/subject';
 import { SubjectCategory } from '../features/subject-category';
 import { StrategicIndicator } from '../features/strategic-indicator';
+import { Variable } from '../features/variable';
 
 /**
  * Interface for list API operations
@@ -99,8 +100,12 @@ export interface StadataList {
     params?: StrategicIndicatorListParams
   ): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>>;
 
+  /**
+   * Gets all variables
+   */
+  variables(params?: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // variables(params?: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>>;
   // verticalVariables(params?: VerticalVariableListParams): Promise<Result<ListResult<VerticalVariable>, ApiFailure>>;
   // units(params?: UnitListParams): Promise<Result<ListResult<Unit>, ApiFailure>>;
   // periods(params?: PeriodListParams): Promise<Result<ListResult<Period>, ApiFailure>>;
