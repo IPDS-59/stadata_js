@@ -22,6 +22,7 @@ import {
   DerivedVariableListParams,
   StatisticClassificationListParams,
   CensusListParams,
+  DynamicTableParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -44,6 +45,7 @@ import {
   StatisticClassificationInjector,
 } from '../features/statistic-classification';
 import { Census, CensusInjector } from '../features/census';
+import { DynamicTable, DynamicTableInjector } from '../features/dynamic-table';
 
 /**
  * Implementation of StadataList interface
@@ -162,6 +164,13 @@ export class StadataListImpl implements StadataList {
 
   async censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>> {
     const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async dynamicTables(
+    params: DynamicTableParams
+  ): Promise<Result<ListResult<DynamicTable>, ApiFailure>> {
+    const useCase = DynamicTableInjector.getAllDynamicTablesUseCase(this.injector);
     return useCase.execute(params);
   }
 
