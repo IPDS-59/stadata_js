@@ -12,6 +12,7 @@ import { PressReleaseInjector } from './features/press-release';
 import { StaticTableInjector } from './features/static-table';
 import { SubjectInjector } from './features/subject';
 import { SubjectCategoryInjector } from './features/subject-category';
+import { StrategicIndicatorInjector } from './features/strategic-indicator';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -240,6 +241,9 @@ export class StadataJS {
 
     // Register subject category feature
     SubjectCategoryInjector.register(this.injector, this.networkClient);
+
+    // Register strategic indicator feature
+    StrategicIndicatorInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc
