@@ -17,8 +17,8 @@ import {
   UnitListParams,
   PeriodListParams,
   DerivedPeriodListParams,
+  DerivedVariableListParams,
   // TODO: Uncomment when implemented
-  // DerivedVariableListParams,
   // DynamicTableParams,
   // StatisticClassificationListParams,
   // CensusListParams,
@@ -40,6 +40,7 @@ import { VerticalVariable } from '../features/vertical-variable';
 import { Unit } from '../features/unit';
 import { Period } from '../features/period';
 import { DerivedPeriod } from '../features/derived-period';
+import { DerivedVariable } from '../features/derived-variable';
 
 /**
  * Interface for list API operations
@@ -133,8 +134,14 @@ export interface StadataList {
     params: DerivedPeriodListParams
   ): Promise<Result<ListResult<DerivedPeriod>, ApiFailure>>;
 
+  /**
+   * Gets all derived variables
+   */
+  derivedVariables(
+    params: DerivedVariableListParams
+  ): Promise<Result<ListResult<DerivedVariable>, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // derivedVariables(params?: DerivedVariableListParams): Promise<Result<ListResult<DerivedVariable>, ApiFailure>>;
   // dynamicTable(params: DynamicTableParams): Promise<Result<unknown, ApiFailure>>;
   // statisticClassifications(params?: StatisticClassificationListParams): Promise<Result<ListResult<StatisticClassification>, ApiFailure>>;
   // censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>>;

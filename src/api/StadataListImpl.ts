@@ -19,6 +19,7 @@ import {
   UnitListParams,
   PeriodListParams,
   DerivedPeriodListParams,
+  DerivedVariableListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -35,6 +36,7 @@ import { VerticalVariable, VerticalVariableInjector } from '../features/vertical
 import { Unit, UnitInjector } from '../features/unit';
 import { Period, PeriodInjector } from '../features/period';
 import { DerivedPeriod, DerivedPeriodInjector } from '../features/derived-period';
+import { DerivedVariable, DerivedVariableInjector } from '../features/derived-variable';
 
 /**
  * Implementation of StadataList interface
@@ -132,6 +134,13 @@ export class StadataListImpl implements StadataList {
     params: DerivedPeriodListParams
   ): Promise<Result<ListResult<DerivedPeriod>, ApiFailure>> {
     const useCase = DerivedPeriodInjector.getAllDerivedPeriodsUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async derivedVariables(
+    params: DerivedVariableListParams
+  ): Promise<Result<ListResult<DerivedVariable>, ApiFailure>> {
+    const useCase = DerivedVariableInjector.getAllDerivedVariablesUseCase(this.injector);
     return useCase.execute(params);
   }
 

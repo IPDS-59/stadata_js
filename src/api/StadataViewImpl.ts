@@ -18,6 +18,7 @@ import { VerticalVariable, VerticalVariableInjector } from '../features/vertical
 import { Unit, UnitInjector } from '../features/unit';
 import { Period, PeriodInjector } from '../features/period';
 import { DerivedPeriod, DerivedPeriodInjector } from '../features/derived-period';
+import { DerivedVariable, DerivedVariableInjector } from '../features/derived-variable';
 
 /**
  * Implementation of StadataView interface
@@ -97,6 +98,11 @@ export class StadataViewImpl implements StadataView {
 
   async derivedPeriod(params: ViewParams): Promise<Result<DerivedPeriod, ApiFailure>> {
     const useCase = DerivedPeriodInjector.getDerivedPeriodByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async derivedVariable(params: ViewParams): Promise<Result<DerivedVariable, ApiFailure>> {
+    const useCase = DerivedVariableInjector.getDerivedVariableByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
