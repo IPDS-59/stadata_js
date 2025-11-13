@@ -43,8 +43,11 @@ function getCommits() {
       .filter(Boolean);
 
     return commits.map((commit) => {
-      const [hash, subject, body] = commit.split('|');
-      return { hash, subject, body: body || '' };
+      const parts = commit.split('|');
+      const hash = parts[0] || '';
+      const subject = parts[1] || '';
+      const body = parts[2] || '';
+      return { hash, subject, body };
     });
   } catch (error) {
     console.error('Error fetching commits:', error.message);
