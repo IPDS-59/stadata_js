@@ -135,6 +135,12 @@ export {
   GetAllStrategicIndicators,
   GetStrategicIndicatorById,
 } from './features/strategic-indicator';
+export {
+  Variable,
+  VariableRepository,
+  GetAllVariables,
+  GetVariableById,
+} from './features/variable';
 
 // TODO: Export other features when implemented
 // ... etc

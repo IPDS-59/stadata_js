@@ -14,6 +14,7 @@ import {
   SubjectListParams,
   SubjectCategoryListParams,
   StrategicIndicatorListParams,
+  VariableListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -25,6 +26,7 @@ import { StaticTable, StaticTableInjector } from '../features/static-table';
 import { Subject, SubjectInjector } from '../features/subject';
 import { SubjectCategory, SubjectCategoryInjector } from '../features/subject-category';
 import { StrategicIndicator, StrategicIndicatorInjector } from '../features/strategic-indicator';
+import { Variable, VariableInjector } from '../features/variable';
 
 /**
  * Implementation of StadataList interface
@@ -93,6 +95,11 @@ export class StadataListImpl implements StadataList {
     params?: StrategicIndicatorListParams
   ): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>> {
     const useCase = StrategicIndicatorInjector.getAllStrategicIndicatorsUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async variables(params?: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>> {
+    const useCase = VariableInjector.getAllVariablesUseCase(this.injector);
     return useCase.execute(params);
   }
 
