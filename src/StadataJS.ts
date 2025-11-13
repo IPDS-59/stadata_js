@@ -19,6 +19,7 @@ import { UnitInjector } from './features/unit';
 import { PeriodInjector } from './features/period';
 import { DerivedPeriodInjector } from './features/derived-period';
 import { DerivedVariableInjector } from './features/derived-variable';
+import { StatisticClassificationInjector } from './features/statistic-classification';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -268,6 +269,9 @@ export class StadataJS {
 
     // Register derived variable feature
     DerivedVariableInjector.register(this.injector, this.networkClient);
+
+    // Register statistic classification feature
+    StatisticClassificationInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc

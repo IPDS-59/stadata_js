@@ -19,6 +19,10 @@ import { Unit, UnitInjector } from '../features/unit';
 import { Period, PeriodInjector } from '../features/period';
 import { DerivedPeriod, DerivedPeriodInjector } from '../features/derived-period';
 import { DerivedVariable, DerivedVariableInjector } from '../features/derived-variable';
+import {
+  StatisticClassification,
+  StatisticClassificationInjector,
+} from '../features/statistic-classification';
 
 /**
  * Implementation of StadataView interface
@@ -103,6 +107,15 @@ export class StadataViewImpl implements StadataView {
 
   async derivedVariable(params: ViewParams): Promise<Result<DerivedVariable, ApiFailure>> {
     const useCase = DerivedVariableInjector.getDerivedVariableByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async statisticClassification(
+    params: ViewParams
+  ): Promise<Result<StatisticClassification, ApiFailure>> {
+    const useCase = StatisticClassificationInjector.getStatisticClassificationByIdUseCase(
+      this.injector
+    );
     return useCase.execute(params);
   }
 

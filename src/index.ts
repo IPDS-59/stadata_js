@@ -161,6 +161,12 @@ export {
   GetAllDerivedVariables,
   GetDerivedVariableById,
 } from './features/derived-variable';
+export {
+  StatisticClassification,
+  StatisticClassificationRepository,
+  GetAllStatisticClassifications,
+  GetStatisticClassificationById,
+} from './features/statistic-classification';
 
 // TODO: Export other features when implemented
 // ... etc

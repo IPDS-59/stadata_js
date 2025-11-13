@@ -20,6 +20,7 @@ import {
   PeriodListParams,
   DerivedPeriodListParams,
   DerivedVariableListParams,
+  StatisticClassificationListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -37,6 +38,10 @@ import { Unit, UnitInjector } from '../features/unit';
 import { Period, PeriodInjector } from '../features/period';
 import { DerivedPeriod, DerivedPeriodInjector } from '../features/derived-period';
 import { DerivedVariable, DerivedVariableInjector } from '../features/derived-variable';
+import {
+  StatisticClassification,
+  StatisticClassificationInjector,
+} from '../features/statistic-classification';
 
 /**
  * Implementation of StadataList interface
@@ -141,6 +146,15 @@ export class StadataListImpl implements StadataList {
     params: DerivedVariableListParams
   ): Promise<Result<ListResult<DerivedVariable>, ApiFailure>> {
     const useCase = DerivedVariableInjector.getAllDerivedVariablesUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async statisticClassifications(
+    params?: StatisticClassificationListParams
+  ): Promise<Result<ListResult<StatisticClassification>, ApiFailure>> {
+    const useCase = StatisticClassificationInjector.getAllStatisticClassificationsUseCase(
+      this.injector
+    );
     return useCase.execute(params);
   }
 
