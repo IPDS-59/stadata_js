@@ -6,6 +6,10 @@
 
 const fs = require('fs');
 const path = require('path');
+const {
+  analyzeBundleByFeature,
+  generateMarkdownTable: generateFeatureTable,
+} = require('./analyze-bundle-by-feature');
 
 const prSizeFile = process.argv[2];
 const baseSizeFile = process.argv[3];
@@ -110,6 +114,17 @@ function compareSizes() {
     output += '- Great job! Bundle size decreased\n';
   } else {
     output += '- No change in bundle size\n';
+  }
+
+  // Add feature breakdown
+  try {
+    const featureData = analyzeBundleByFeature();
+    if (featureData && featureData.features && featureData.features.length > 0) {
+      output += generateFeatureTable(featureData);
+    }
+  } catch (error) {
+    // If feature analysis fails, just skip it
+    console.error('Warning: Could not generate feature breakdown:', error.message);
   }
 
   console.log(output);
