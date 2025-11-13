@@ -8,6 +8,7 @@ import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
 import { News, NewsInjector } from '../features/news';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
+import { StaticTable, StaticTableInjector } from '../features/static-table';
 
 /**
  * Implementation of StadataView interface
@@ -37,6 +38,11 @@ export class StadataViewImpl implements StadataView {
 
   async pressRelease(params: ViewParams): Promise<Result<PressRelease, ApiFailure>> {
     const useCase = PressReleaseInjector.getPressReleaseByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>> {
+    const useCase = StaticTableInjector.getStaticTableByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 

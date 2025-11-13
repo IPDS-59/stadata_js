@@ -1,0 +1,1 @@
+export { StaticTableInjector } from './StaticTableInjector';

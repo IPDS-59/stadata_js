@@ -9,12 +9,14 @@ import {
   InfographicListParams,
   NewsListParams,
   PressReleaseListParams,
+  StaticTableListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
 import { News, NewsInjector } from '../features/news';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
+import { StaticTable, StaticTableInjector } from '../features/static-table';
 
 /**
  * Implementation of StadataList interface
@@ -50,6 +52,13 @@ export class StadataListImpl implements StadataList {
     params: PressReleaseListParams
   ): Promise<Result<ListResult<PressRelease>, ApiFailure>> {
     const useCase = PressReleaseInjector.getAllPressReleasesUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async staticTables(
+    params: StaticTableListParams
+  ): Promise<Result<ListResult<StaticTable>, ApiFailure>> {
+    const useCase = StaticTableInjector.getAllStaticTablesUseCase(this.injector);
     return useCase.execute(params);
   }
 

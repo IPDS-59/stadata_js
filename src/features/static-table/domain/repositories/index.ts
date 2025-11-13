@@ -1,0 +1,1 @@
+export { StaticTableRepository } from './StaticTableRepository';
