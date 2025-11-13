@@ -21,6 +21,7 @@ import {
   DerivedPeriodListParams,
   DerivedVariableListParams,
   StatisticClassificationListParams,
+  CensusListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -42,6 +43,7 @@ import {
   StatisticClassification,
   StatisticClassificationInjector,
 } from '../features/statistic-classification';
+import { Census, CensusInjector } from '../features/census';
 
 /**
  * Implementation of StadataList interface
@@ -155,6 +157,11 @@ export class StadataListImpl implements StadataList {
     const useCase = StatisticClassificationInjector.getAllStatisticClassificationsUseCase(
       this.injector
     );
+    return useCase.execute(params);
+  }
+
+  async censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>> {
+    const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
     return useCase.execute(params);
   }
 

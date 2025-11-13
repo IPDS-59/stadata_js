@@ -167,6 +167,7 @@ export {
   GetAllStatisticClassifications,
   GetStatisticClassificationById,
 } from './features/statistic-classification';
+export { Census, CensusRepository, GetAllCensuses, GetCensusById } from './features/census';
 
 // TODO: Export other features when implemented
 // ... etc

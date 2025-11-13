@@ -23,6 +23,7 @@ import {
   StatisticClassification,
   StatisticClassificationInjector,
 } from '../features/statistic-classification';
+import { Census, CensusInjector } from '../features/census';
 
 /**
  * Implementation of StadataView interface
@@ -116,6 +117,11 @@ export class StadataViewImpl implements StadataView {
     const useCase = StatisticClassificationInjector.getStatisticClassificationByIdUseCase(
       this.injector
     );
+    return useCase.execute(params);
+  }
+
+  async census(params: ViewParams): Promise<Result<Census, ApiFailure>> {
+    const useCase = CensusInjector.getCensusByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
