@@ -6,6 +6,7 @@ import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
 import { PressRelease } from '../features/press-release';
+import { StaticTable } from '../features/static-table';
 
 /**
  * Interface for view API operations
@@ -37,8 +38,12 @@ export interface StadataView {
    */
   pressRelease(params: ViewParams): Promise<Result<PressRelease, ApiFailure>>;
 
+  /**
+   * Gets a static table by ID
+   */
+  staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
   // newsCategory(params: ViewParams): Promise<Result<NewsCategory, ApiFailure>>;
   // subject(params: ViewParams): Promise<Result<Subject, ApiFailure>>;
   // subjectCategory(params: ViewParams): Promise<Result<SubjectCategory, ApiFailure>>;

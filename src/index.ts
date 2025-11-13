@@ -110,6 +110,12 @@ export {
   GetAllPressReleases,
   GetPressReleaseById,
 } from './features/press-release';
+export {
+  StaticTable,
+  StaticTableRepository,
+  GetAllStaticTables,
+  GetStaticTableById,
+} from './features/static-table';
 
 // TODO: Export other features when implemented
 // ... etc
