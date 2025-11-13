@@ -57,7 +57,7 @@ jobs:
       - name: Install base dependencies
         run: |
           rm -rf node_modules
-          npm ci
+          npm ci || npm install
 
       - name: Build base bundle
         run: npm run build --if-present

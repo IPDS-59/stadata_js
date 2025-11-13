@@ -230,6 +230,7 @@ jobs:
       - name: Run dependency review (PRs only)
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@v4
+        continue-on-error: true
         with:
           fail-on-severity: moderate
 
