@@ -67,9 +67,7 @@ export interface StadataList {
   /**
    * Gets all static tables
    */
-  staticTables(
-    params: StaticTableListParams
-  ): Promise<Result<ListResult<StaticTable>, ApiFailure>>;
+  staticTables(params: StaticTableListParams): Promise<Result<ListResult<StaticTable>, ApiFailure>>;
 
   // TODO: Add methods for other features
   // newsCategories(params?: NewsCategoryListParams): Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
