@@ -14,6 +14,7 @@ import { StrategicIndicator } from '../features/strategic-indicator';
 import { Variable } from '../features/variable';
 import { VerticalVariable } from '../features/vertical-variable';
 import { Unit } from '../features/unit';
+import { Period } from '../features/period';
 
 /**
  * Interface for view API operations
@@ -85,8 +86,12 @@ export interface StadataView {
    */
   unit(params: ViewParams): Promise<Result<Unit, ApiFailure>>;
 
+  /**
+   * Gets a period by ID
+   */
+  period(params: ViewParams): Promise<Result<Period, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // period(params: ViewParams): Promise<Result<Period, ApiFailure>>;
   // derivedPeriod(params: ViewParams): Promise<Result<DerivedPeriod, ApiFailure>>;
   // derivedVariable(params: ViewParams): Promise<Result<DerivedVariable, ApiFailure>>;
   // statisticClassification(params: ViewParams): Promise<Result<StatisticClassification, ApiFailure>>;
