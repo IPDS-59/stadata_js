@@ -123,6 +123,12 @@ export {
   GetStaticTableById,
 } from './features/static-table';
 export { Subject, SubjectRepository, GetAllSubjects, GetSubjectById } from './features/subject';
+export {
+  SubjectCategory,
+  SubjectCategoryRepository,
+  GetAllSubjectCategories,
+  GetSubjectCategoryById,
+} from './features/subject-category';
 
 // TODO: Export other features when implemented
 // ... etc
