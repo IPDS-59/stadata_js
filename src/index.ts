@@ -148,6 +148,7 @@ export {
   GetVerticalVariableById,
 } from './features/vertical-variable';
 export { Unit, UnitRepository, GetAllUnits, GetUnitById } from './features/unit';
+export { Period, PeriodRepository, GetAllPeriods, GetPeriodById } from './features/period';
 
 // TODO: Export other features when implemented
 // ... etc

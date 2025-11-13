@@ -16,6 +16,7 @@ import { StrategicIndicator, StrategicIndicatorInjector } from '../features/stra
 import { Variable, VariableInjector } from '../features/variable';
 import { VerticalVariable, VerticalVariableInjector } from '../features/vertical-variable';
 import { Unit, UnitInjector } from '../features/unit';
+import { Period, PeriodInjector } from '../features/period';
 
 /**
  * Implementation of StadataView interface
@@ -85,6 +86,11 @@ export class StadataViewImpl implements StadataView {
 
   async unit(params: ViewParams): Promise<Result<Unit, ApiFailure>> {
     const useCase = UnitInjector.getUnitByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async period(params: ViewParams): Promise<Result<Period, ApiFailure>> {
+    const useCase = PeriodInjector.getPeriodByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
