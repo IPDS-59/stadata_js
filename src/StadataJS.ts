@@ -20,6 +20,7 @@ import { PeriodInjector } from './features/period';
 import { DerivedPeriodInjector } from './features/derived-period';
 import { DerivedVariableInjector } from './features/derived-variable';
 import { StatisticClassificationInjector } from './features/statistic-classification';
+import { CensusInjector } from './features/census';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -272,6 +273,9 @@ export class StadataJS {
 
     // Register statistic classification feature
     StatisticClassificationInjector.register(this.injector, this.networkClient);
+
+    // Register census feature
+    CensusInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc

@@ -18,6 +18,7 @@ import { Period } from '../features/period';
 import { DerivedPeriod } from '../features/derived-period';
 import { DerivedVariable } from '../features/derived-variable';
 import { StatisticClassification } from '../features/statistic-classification';
+import { Census } from '../features/census';
 
 /**
  * Interface for view API operations
@@ -109,6 +110,10 @@ export interface StadataView {
    */
   statisticClassification(params: ViewParams): Promise<Result<StatisticClassification, ApiFailure>>;
 
+  /**
+   * Gets a census by ID
+   */
+  census(params: ViewParams): Promise<Result<Census, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // census(params: ViewParams): Promise<Result<Census, ApiFailure>>;
 }
