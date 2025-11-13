@@ -122,6 +122,7 @@ export {
   GetAllStaticTables,
   GetStaticTableById,
 } from './features/static-table';
+export { Subject, SubjectRepository, GetAllSubjects, GetSubjectById } from './features/subject';
 
 // TODO: Export other features when implemented
 // ... etc
