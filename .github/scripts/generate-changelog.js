@@ -30,17 +30,38 @@ function getCommits() {
     let lastTag;
     try {
       lastTag = execSync('git describe --tags --abbrev=0', { encoding: 'utf-8' }).trim();
+      console.log(`Found last tag: ${lastTag}`);
     } catch {
-      // No tags exist, get all commits
+      // No tags exist, get all commits from initial commit
       lastTag = '';
+      console.log('No tags found, will use all commits');
     }
 
-    const range = lastTag ? `${lastTag}..HEAD` : 'HEAD';
+    let range;
+    if (lastTag) {
+      range = `${lastTag}..HEAD`;
+    } else {
+      // No tags, get all commits from beginning
+      try {
+        const initialCommit = execSync('git rev-list --max-parents=0 HEAD', {
+          encoding: 'utf-8',
+        }).trim();
+        range = `${initialCommit}..HEAD`;
+        console.log(`Using initial commit: ${initialCommit}`);
+      } catch {
+        // If that fails too, just get all commits
+        range = 'HEAD';
+        console.log('Using HEAD for all commits');
+      }
+    }
+
     const commits = execSync(`git log ${range} --pretty=format:"%H|%s|%b"`, {
       encoding: 'utf-8',
     })
       .split('\n')
       .filter(Boolean);
+
+    console.log(`Found ${commits.length} commits`);
 
     return commits.map((commit) => {
       const parts = commit.split('|');
