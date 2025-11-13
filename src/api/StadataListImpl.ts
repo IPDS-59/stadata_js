@@ -8,6 +8,7 @@ import {
   PublicationListParams,
   InfographicListParams,
   NewsListParams,
+  NewsCategoryListParams,
   PressReleaseListParams,
   StaticTableListParams,
 } from '../types';
@@ -15,6 +16,7 @@ import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
 import { News, NewsInjector } from '../features/news';
+import { NewsCategory, NewsCategoryInjector } from '../features/news-category';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
 import { StaticTable, StaticTableInjector } from '../features/static-table';
 
@@ -45,6 +47,13 @@ export class StadataListImpl implements StadataList {
 
   async news(params: NewsListParams): Promise<Result<ListResult<News>, ApiFailure>> {
     const useCase = NewsInjector.getAllNewsUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async newsCategories(
+    params?: NewsCategoryListParams
+  ): Promise<Result<ListResult<NewsCategory>, ApiFailure>> {
+    const useCase = NewsCategoryInjector.getAllNewsCategoriesUseCase(this.injector);
     return useCase.execute(params);
   }
 

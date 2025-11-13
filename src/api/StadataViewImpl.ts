@@ -7,6 +7,7 @@ import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
 import { News, NewsInjector } from '../features/news';
+import { NewsCategory, NewsCategoryInjector } from '../features/news-category';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
 import { StaticTable, StaticTableInjector } from '../features/static-table';
 
@@ -33,6 +34,11 @@ export class StadataViewImpl implements StadataView {
 
   async news(params: ViewParams): Promise<Result<News, ApiFailure>> {
     const useCase = NewsInjector.getNewsByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async newsCategory(params: ViewParams): Promise<Result<NewsCategory, ApiFailure>> {
+    const useCase = NewsCategoryInjector.getNewsCategoryByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
