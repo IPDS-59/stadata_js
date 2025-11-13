@@ -129,6 +129,12 @@ export {
   GetAllSubjectCategories,
   GetSubjectCategoryById,
 } from './features/subject-category';
+export {
+  StrategicIndicator,
+  StrategicIndicatorRepository,
+  GetAllStrategicIndicators,
+  GetStrategicIndicatorById,
+} from './features/strategic-indicator';
 
 // TODO: Export other features when implemented
 // ... etc

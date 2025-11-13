@@ -10,6 +10,7 @@ import { PressRelease } from '../features/press-release';
 import { StaticTable } from '../features/static-table';
 import { Subject } from '../features/subject';
 import { SubjectCategory } from '../features/subject-category';
+import { StrategicIndicator } from '../features/strategic-indicator';
 
 /**
  * Interface for view API operations
@@ -61,8 +62,12 @@ export interface StadataView {
    */
   subjectCategory(params: ViewParams): Promise<Result<SubjectCategory, ApiFailure>>;
 
+  /**
+   * Gets a strategic indicator by ID
+   */
+  strategicIndicator(params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // strategicIndicator(params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>>;
   // variable(params: ViewParams): Promise<Result<Variable, ApiFailure>>;
   // verticalVariable(params: ViewParams): Promise<Result<VerticalVariable, ApiFailure>>;
   // unit(params: ViewParams): Promise<Result<Unit, ApiFailure>>;
