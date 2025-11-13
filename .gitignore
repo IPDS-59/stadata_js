@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Temporary files
+*.tmp
+.cache/
+.temp/
+
+# OS
+Thumbs.db
+
+# Documentation (personal notes)
+ARCHITECTURE_DOCS_INDEX.md
+FLUTTER_SDK_ARCHITECTURE.md
+JS_ARCHITECTURE_MAPPING.md
+SDK_EXPLORATION_SUMMARY.md
+IMPLEMENTATION_SUMMARY.md
+CI-CD-SETUP.md
+DEVELOPMENT.md
+QUICK-START.md
+CHECKLIST.md
+SETUP.md
+WORKFLOWS-SUMMARY.md
+PROJECT_STATUS.md

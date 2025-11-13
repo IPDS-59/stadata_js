@@ -1,0 +1,118 @@
+name: PR Bundle Size Analysis
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  analyze-size:
+    name: Analyze Bundle Size
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PR bundle
+        run: npm run build --if-present
+
+      - name: Analyze PR bundle size
+        id: pr_size
+        run: |
+          if [ -d "dist" ] || [ -d "lib" ] || [ -d "build" ]; then
+            node .github/scripts/analyze-bundle-size.js pr > pr-size.json
+            cat pr-size.json
+          else
+            echo "No build output found, skipping size analysis"
+            echo '{"total": 0, "files": []}' > pr-size.json
+          fi
+
+      - name: Upload PR bundle info
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-bundle-size
+          path: pr-size.json
+          retention-days: 1
+
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref }}
+          clean: false
+
+      - name: Install base dependencies
+        run: |
+          rm -rf node_modules
+          npm ci
+
+      - name: Build base bundle
+        run: npm run build --if-present
+
+      - name: Analyze base bundle size
+        id: base_size
+        run: |
+          if [ -d "dist" ] || [ -d "lib" ] || [ -d "build" ]; then
+            node .github/scripts/analyze-bundle-size.js base > base-size.json
+            cat base-size.json
+          else
+            echo "No build output found in base branch"
+            echo '{"total": 0, "files": []}' > base-size.json
+          fi
+
+      - name: Compare bundle sizes
+        id: compare
+        run: |
+          node .github/scripts/compare-bundle-sizes.js pr-size.json base-size.json > size-diff.md
+          cat size-diff.md
+
+      - name: Post size analysis comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: bundle-size
+          path: size-diff.md
+
+      - name: Check size increase threshold
+        run: |
+          # Extract size increase percentage
+          INCREASE=$(node -p "
+            const prSize = require('./pr-size.json');
+            const baseSize = require('./base-size.json');
+            if (baseSize.total === 0) {
+              console.log('0');
+              process.exit(0);
+            }
+            const diff = ((prSize.total - baseSize.total) / baseSize.total * 100).toFixed(2);
+            console.log(diff);
+          ")
+
+          echo "Bundle size change: ${INCREASE}%"
+
+          # Fail if increase is more than 10%
+          if (( $(echo "$INCREASE > 10" | bc -l) )); then
+            echo "Warning: Bundle size increased by more than 10%"
+            echo "Consider optimizing the bundle or justifying the increase"
+            # Uncomment to fail the build
+            # exit 1
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          if [ -f "size-diff.md" ]; then
+            echo "## Bundle Size Analysis" >> $GITHUB_STEP_SUMMARY
+            cat size-diff.md >> $GITHUB_STEP_SUMMARY
+          fi

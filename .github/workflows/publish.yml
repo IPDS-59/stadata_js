@@ -1,0 +1,130 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+-*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate:
+    name: Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: extract
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          echo "version=${TAG_NAME}" >> $GITHUB_OUTPUT
+          echo "Publishing version: ${TAG_NAME}"
+
+      - name: Validate tag matches package.json
+        run: |
+          TAG_VERSION="${{ steps.extract.outputs.version }}"
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Error: Tag version ($TAG_VERSION) does not match package.json version ($PACKAGE_VERSION)"
+            exit 1
+          fi
+
+          echo "Version validation passed: $TAG_VERSION"
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint --if-present
+
+      - name: Run type check
+        run: npm run type-check --if-present || npx tsc --noEmit
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build package
+        run: npm run build --if-present
+
+  publish-npm:
+    name: Publish to npm Registry
+    runs-on: ubuntu-latest
+    needs: [validate, test]
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/${{ github.event.repository.name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build --if-present
+
+      - name: Check package contents
+        run: |
+          echo "Package contents:"
+          npm pack --dry-run
+
+      - name: Publish to npm (with provenance)
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify publication
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          VERSION="${{ needs.validate.outputs.version }}"
+
+          echo "Waiting for package to be available on npm..."
+          sleep 10
+
+          # Check if package is available
+          if npm view "${PACKAGE_NAME}@${VERSION}" version &>/dev/null; then
+            echo "Successfully published ${PACKAGE_NAME}@${VERSION}"
+          else
+            echo "Warning: Package may not be immediately available"
+          fi
+
+      - name: Summary
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          VERSION="${{ needs.validate.outputs.version }}"
+
+          echo "## Publication Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package**: ${PACKAGE_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Registry**: npm (https://www.npmjs.com)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Install Command**: \`npm install ${PACKAGE_NAME}@${VERSION}\`" >> $GITHUB_STEP_SUMMARY

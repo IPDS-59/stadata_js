@@ -1,0 +1,107 @@
+name: Bump Version
+
+on:
+  push:
+    branches:
+      - 'release/**'
+
+permissions:
+  contents: write
+
+jobs:
+  bump-version:
+    name: Bump Package Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Extract version from branch
+        id: extract_version
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          VERSION="${BRANCH_NAME#release/}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: ${VERSION}"
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
+            exit 1
+          fi
+          echo "Version format is valid"
+
+      - name: Check current version in package.json
+        id: current_version
+        run: |
+          if [ -f "package.json" ]; then
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            echo "current=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+            echo "Current version in package.json: ${CURRENT_VERSION}"
+          else
+            echo "package.json not found"
+            exit 1
+          fi
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT="${{ steps.current_version.outputs.current }}"
+          NEW="${{ steps.extract_version.outputs.version }}"
+
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "Version is already up to date: $CURRENT"
+          else
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "Version needs update: $CURRENT -> $NEW"
+          fi
+
+      - name: Update package.json version
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Update package-lock.json
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm install --package-lock-only
+          fi
+
+      - name: Commit version bump
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          VERSION="${{ steps.extract_version.outputs.version }}"
+
+          git add package.json
+          if [ -f "package-lock.json" ]; then
+            git add package-lock.json
+          fi
+
+          git commit -m "chore: bump version to ${VERSION}"
+          git push origin ${{ github.ref_name }}
+
+      - name: Summary
+        run: |
+          echo "## Version Bump Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Previous Version**: ${{ steps.current_version.outputs.current }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **New Version**: ${{ steps.extract_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Updated**: ${{ steps.compare.outputs.needs_update }}" >> $GITHUB_STEP_SUMMARY
