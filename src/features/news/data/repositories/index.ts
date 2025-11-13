@@ -1,0 +1,1 @@
+export { NewsRepositoryImpl } from './NewsRepositoryImpl';

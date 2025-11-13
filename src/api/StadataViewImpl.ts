@@ -6,6 +6,7 @@ import { ViewParams } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
+import { News, NewsInjector } from '../features/news';
 
 /**
  * Implementation of StadataView interface
@@ -25,6 +26,11 @@ export class StadataViewImpl implements StadataView {
 
   async infographic(params: ViewParams): Promise<Result<Infographic, ApiFailure>> {
     const useCase = InfographicInjector.getInfographicByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async news(params: ViewParams): Promise<Result<News, ApiFailure>> {
+    const useCase = NewsInjector.getNewsByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
