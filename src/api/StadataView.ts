@@ -13,6 +13,7 @@ import { SubjectCategory } from '../features/subject-category';
 import { StrategicIndicator } from '../features/strategic-indicator';
 import { Variable } from '../features/variable';
 import { VerticalVariable } from '../features/vertical-variable';
+import { Unit } from '../features/unit';
 
 /**
  * Interface for view API operations
@@ -79,8 +80,12 @@ export interface StadataView {
    */
   verticalVariable(params: ViewParams): Promise<Result<VerticalVariable, ApiFailure>>;
 
+  /**
+   * Gets a unit by ID
+   */
+  unit(params: ViewParams): Promise<Result<Unit, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // unit(params: ViewParams): Promise<Result<Unit, ApiFailure>>;
   // period(params: ViewParams): Promise<Result<Period, ApiFailure>>;
   // derivedPeriod(params: ViewParams): Promise<Result<DerivedPeriod, ApiFailure>>;
   // derivedVariable(params: ViewParams): Promise<Result<DerivedVariable, ApiFailure>>;

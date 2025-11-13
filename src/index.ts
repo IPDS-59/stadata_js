@@ -147,6 +147,7 @@ export {
   GetAllVerticalVariables,
   GetVerticalVariableById,
 } from './features/vertical-variable';
+export { Unit, UnitRepository, GetAllUnits, GetUnitById } from './features/unit';
 
 // TODO: Export other features when implemented
 // ... etc

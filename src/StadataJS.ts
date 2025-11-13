@@ -15,6 +15,7 @@ import { SubjectCategoryInjector } from './features/subject-category';
 import { StrategicIndicatorInjector } from './features/strategic-indicator';
 import { VariableInjector } from './features/variable';
 import { VerticalVariableInjector } from './features/vertical-variable';
+import { UnitInjector } from './features/unit';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -252,6 +253,9 @@ export class StadataJS {
 
     // Register vertical variable feature
     VerticalVariableInjector.register(this.injector, this.networkClient);
+
+    // Register unit feature
+    UnitInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc
