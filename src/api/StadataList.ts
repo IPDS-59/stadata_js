@@ -6,10 +6,10 @@ import {
   PublicationListParams,
   InfographicListParams,
   NewsListParams,
+  NewsCategoryListParams,
   PressReleaseListParams,
   StaticTableListParams,
   // TODO: Uncomment when implemented
-  // NewsCategoryListParams,
   // SubjectListParams,
   // SubjectCategoryListParams,
   // StrategicIndicatorListParams,
@@ -29,6 +29,7 @@ import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
+import { NewsCategory } from '../features/news-category';
 import { PressRelease } from '../features/press-release';
 import { StaticTable } from '../features/static-table';
 
@@ -56,6 +57,13 @@ export interface StadataList {
    * Gets all news
    */
   news(params: NewsListParams): Promise<Result<ListResult<News>, ApiFailure>>;
+
+  /**
+   * Gets all news categories
+   */
+  newsCategories(
+    params?: NewsCategoryListParams
+  ): Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
 
   /**
    * Gets all press releases

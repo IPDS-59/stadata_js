@@ -105,6 +105,12 @@ export {
 } from './features/infographic';
 export { News, NewsRepository, GetAllNews, GetNewsById } from './features/news';
 export {
+  NewsCategory,
+  NewsCategoryRepository,
+  GetAllNewsCategories,
+  GetNewsCategoryById,
+} from './features/news-category';
+export {
   PressRelease,
   PressReleaseRepository,
   GetAllPressReleases,
