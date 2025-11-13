@@ -1,0 +1,129 @@
+name: Create Release
+
+on:
+  workflow_run:
+    workflows: ["Publish to npm"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Get version from package.json
+        id: package_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Release version: ${VERSION}"
+
+      - name: Extract changelog for version
+        id: changelog
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+
+          if [ -f "CHANGELOG.md" ]; then
+            # Extract the section for this version
+            node .github/scripts/extract-changelog-section.js "${VERSION}" > release-notes.md
+          else
+            echo "No CHANGELOG.md found, generating release notes from commits"
+            node .github/scripts/generate-release-notes.js "${VERSION}" > release-notes.md
+          fi
+
+          # Add installation instructions
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          cat >> release-notes.md <<EOF
+
+          ## Installation
+
+          ### npm
+          \`\`\`bash
+          npm install ${PACKAGE_NAME}@${VERSION}
+          \`\`\`
+
+          ### yarn
+          \`\`\`bash
+          yarn add ${PACKAGE_NAME}@${VERSION}
+          \`\`\`
+
+          ### pnpm
+          \`\`\`bash
+          pnpm add ${PACKAGE_NAME}@${VERSION}
+          \`\`\`
+
+          ## Links
+
+          - [npm Package](https://www.npmjs.com/package/${PACKAGE_NAME}/v/${VERSION})
+          - [Documentation](https://github.com/${{ github.repository }}#readme)
+          EOF
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+          if gh release view "v${VERSION}" &>/dev/null || gh release view "${VERSION}" &>/dev/null; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release already exists for version ${VERSION}"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "No existing release found for version ${VERSION}"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.package_version.outputs.version }}
+          name: Release ${{ steps.package_version.outputs.version }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: ${{ contains(steps.package_version.outputs.version, '-') }}
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update release if exists
+        if: steps.check_release.outputs.exists == 'true'
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+          # Try both tag formats
+          if gh release view "v${VERSION}" &>/dev/null; then
+            TAG="v${VERSION}"
+          else
+            TAG="${VERSION}"
+          fi
+
+          gh release edit "${TAG}" \
+            --notes-file release-notes.md \
+            --latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          VERSION="${{ steps.package_version.outputs.version }}"
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Package**: ${PACKAGE_NAME}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Type**: ${{ contains(steps.package_version.outputs.version, '-') && 'Pre-release' || 'Stable' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/${VERSION}" >> $GITHUB_STEP_SUMMARY

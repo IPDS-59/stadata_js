@@ -1,0 +1,16 @@
+# Code owners for automated review assignment
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything
+* @ryanaidilp
+
+# GitHub workflows and CI/CD
+/.github/ @ryanaidilp
+
+# Package configuration
+/package.json @ryanaidilp
+/package-lock.json @ryanaidilp
+
+# Documentation
+*.md @ryanaidilp
+/docs/ @ryanaidilp

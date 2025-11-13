@@ -1,0 +1,31 @@
+module.exports = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  roots: ['<rootDir>/src'],
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/**/*.d.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/*.test.ts',
+    '!src/**/__tests__/**',
+    '!src/**/index.ts',
+    '!src/**/*_model.ts',
+    '!src/**/models/**',
+    '!src/core/base_entity.ts',
+    '!src/core/injector.ts',
+    '!src/core/network/http_client.ts',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 4,
+      functions: 4,
+      lines: 4,
+      statements: 4,
+    },
+  },
+  coverageReporters: ['text', 'lcov', 'json', 'html'],
+  coverageDirectory: 'coverage',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  verbose: true,
+};

@@ -1,0 +1,59 @@
+name: Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup-artifacts:
+    name: Delete PR Artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Delete artifacts
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: |
+            coverage-report-pr-${{ github.event.pull_request.number }}
+            build-output-pr-${{ github.event.pull_request.number }}
+            pr-bundle-size
+            test-results-pr-${{ github.event.pull_request.number }}
+          failOnError: false
+
+      - name: Summary
+        run: |
+          echo "## Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **PR Number**: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Action**: Artifacts cleaned up" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: ${{ github.event.pull_request.merged && 'Merged' || 'Closed without merging' }}" >> $GITHUB_STEP_SUMMARY
+
+  cleanup-caches:
+    name: Cleanup PR Caches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cleanup caches
+        run: |
+          echo "Cleaning up caches for PR #${{ github.event.pull_request.number }}"
+
+          # List and delete PR-specific caches
+          gh cache list --ref "refs/pull/${{ github.event.pull_request.number }}/merge" | \
+          cut -f1 | \
+          xargs -I {} gh cache delete {} || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Cache Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Caches for PR #${{ github.event.pull_request.number }} have been cleaned up." >> $GITHUB_STEP_SUMMARY
