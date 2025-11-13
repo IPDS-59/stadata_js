@@ -11,6 +11,7 @@ import {
   NewsCategoryListParams,
   PressReleaseListParams,
   StaticTableListParams,
+  SubjectListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -19,6 +20,7 @@ import { News, NewsInjector } from '../features/news';
 import { NewsCategory, NewsCategoryInjector } from '../features/news-category';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
 import { StaticTable, StaticTableInjector } from '../features/static-table';
+import { Subject, SubjectInjector } from '../features/subject';
 
 /**
  * Implementation of StadataList interface
@@ -68,6 +70,11 @@ export class StadataListImpl implements StadataList {
     params: StaticTableListParams
   ): Promise<Result<ListResult<StaticTable>, ApiFailure>> {
     const useCase = StaticTableInjector.getAllStaticTablesUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async subjects(params?: SubjectListParams): Promise<Result<ListResult<Subject>, ApiFailure>> {
+    const useCase = SubjectInjector.getAllSubjectsUseCase(this.injector);
     return useCase.execute(params);
   }
 

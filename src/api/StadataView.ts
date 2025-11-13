@@ -8,6 +8,7 @@ import { News } from '../features/news';
 import { NewsCategory } from '../features/news-category';
 import { PressRelease } from '../features/press-release';
 import { StaticTable } from '../features/static-table';
+import { Subject } from '../features/subject';
 
 /**
  * Interface for view API operations
@@ -49,9 +50,12 @@ export interface StadataView {
    */
   staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
 
+  /**
+   * Gets a subject by ID
+   */
+  subject(params: ViewParams): Promise<Result<Subject, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // newsCategory(params: ViewParams): Promise<Result<NewsCategory, ApiFailure>>;
-  // subject(params: ViewParams): Promise<Result<Subject, ApiFailure>>;
   // subjectCategory(params: ViewParams): Promise<Result<SubjectCategory, ApiFailure>>;
   // strategicIndicator(params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>>;
   // variable(params: ViewParams): Promise<Result<Variable, ApiFailure>>;

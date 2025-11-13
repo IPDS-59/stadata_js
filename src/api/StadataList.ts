@@ -9,8 +9,8 @@ import {
   NewsCategoryListParams,
   PressReleaseListParams,
   StaticTableListParams,
+  SubjectListParams,
   // TODO: Uncomment when implemented
-  // SubjectListParams,
   // SubjectCategoryListParams,
   // StrategicIndicatorListParams,
   // VariableListParams,
@@ -32,6 +32,7 @@ import { News } from '../features/news';
 import { NewsCategory } from '../features/news-category';
 import { PressRelease } from '../features/press-release';
 import { StaticTable } from '../features/static-table';
+import { Subject } from '../features/subject';
 
 /**
  * Interface for list API operations
@@ -77,9 +78,12 @@ export interface StadataList {
    */
   staticTables(params: StaticTableListParams): Promise<Result<ListResult<StaticTable>, ApiFailure>>;
 
+  /**
+   * Gets all subjects
+   */
+  subjects(params?: SubjectListParams): Promise<Result<ListResult<Subject>, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // newsCategories(params?: NewsCategoryListParams): Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
-  // subjects(params?: SubjectListParams): Promise<Result<ListResult<Subject>, ApiFailure>>;
   // subjectCategories(params?: SubjectCategoryListParams): Promise<Result<ListResult<SubjectCategory>, ApiFailure>>;
   // strategicIndicators(params?: StrategicIndicatorListParams): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>>;
   // variables(params?: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>>;

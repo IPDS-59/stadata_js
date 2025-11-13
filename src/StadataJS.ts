@@ -10,6 +10,7 @@ import { NewsInjector } from './features/news';
 import { NewsCategoryInjector } from './features/news-category';
 import { PressReleaseInjector } from './features/press-release';
 import { StaticTableInjector } from './features/static-table';
+import { SubjectInjector } from './features/subject';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -232,6 +233,9 @@ export class StadataJS {
 
     // Register static table feature
     StaticTableInjector.register(this.injector, this.networkClient);
+
+    // Register subject feature
+    SubjectInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc
