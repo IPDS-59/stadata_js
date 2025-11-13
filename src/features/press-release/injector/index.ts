@@ -1,0 +1,1 @@
+export { PressReleaseInjector } from './PressReleaseInjector';

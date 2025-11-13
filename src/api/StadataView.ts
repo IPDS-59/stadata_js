@@ -5,6 +5,7 @@ import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
+import { PressRelease } from '../features/press-release';
 
 /**
  * Interface for view API operations
@@ -31,10 +32,14 @@ export interface StadataView {
    */
   news(params: ViewParams): Promise<Result<News, ApiFailure>>;
 
+  /**
+   * Gets a press release by ID
+   */
+  pressRelease(params: ViewParams): Promise<Result<PressRelease, ApiFailure>>;
+
   // TODO: Add methods for other features
   // staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
   // newsCategory(params: ViewParams): Promise<Result<NewsCategory, ApiFailure>>;
-  // pressRelease(params: ViewParams): Promise<Result<PressRelease, ApiFailure>>;
   // subject(params: ViewParams): Promise<Result<Subject, ApiFailure>>;
   // subjectCategory(params: ViewParams): Promise<Result<SubjectCategory, ApiFailure>>;
   // strategicIndicator(params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>>;
