@@ -4,8 +4,8 @@ import { ListResult } from '../shared/domain/entities';
 import {
   DomainListParams,
   PublicationListParams,
+  InfographicListParams,
   // TODO: Uncomment when implemented
-  // InfographicListParams,
   // StaticTableListParams,
   // NewsListParams,
   // NewsCategoryListParams,
@@ -27,6 +27,7 @@ import {
 // Import entities (these will be created for each feature)
 import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
+import { Infographic } from '../features/infographic';
 
 /**
  * Interface for list API operations
@@ -43,8 +44,12 @@ export interface StadataList {
    */
   publications(params: PublicationListParams): Promise<Result<ListResult<Publication>, ApiFailure>>;
 
+  /**
+   * Gets all infographics
+   */
+  infographics(params: InfographicListParams): Promise<Result<ListResult<Infographic>, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // infographics(params?: InfographicListParams): Promise<Result<ListResult<Infographic>, ApiFailure>>;
   // staticTables(params?: StaticTableListParams): Promise<Result<ListResult<StaticTable>, ApiFailure>>;
   // news(params?: NewsListParams): Promise<Result<ListResult<News>, ApiFailure>>;
   // newsCategories(params?: NewsCategoryListParams): Promise<Result<ListResult<NewsCategory>, ApiFailure>>;

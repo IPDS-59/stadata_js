@@ -3,6 +3,7 @@ import { ApiFailure } from '../core/failures';
 import { ViewParams } from '../types';
 import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
+import { Infographic } from '../features/infographic';
 
 /**
  * Interface for view API operations
@@ -19,8 +20,12 @@ export interface StadataView {
    */
   publication(params: ViewParams): Promise<Result<Publication, ApiFailure>>;
 
+  /**
+   * Gets an infographic by ID
+   */
+  infographic(params: ViewParams): Promise<Result<Infographic, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // infographic(params: ViewParams): Promise<Result<Infographic, ApiFailure>>;
   // staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
   // news(params: ViewParams): Promise<Result<News, ApiFailure>>;
   // newsCategory(params: ViewParams): Promise<Result<NewsCategory, ApiFailure>>;
