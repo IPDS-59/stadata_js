@@ -2,6 +2,7 @@ import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 import { ViewParams } from '../types';
 import { Domain } from '../features/domain';
+import { Publication } from '../features/publication';
 
 /**
  * Interface for view API operations
@@ -13,8 +14,12 @@ export interface StadataView {
    */
   domain(params: ViewParams): Promise<Result<Domain, ApiFailure>>;
 
+  /**
+   * Gets a publication by ID
+   */
+  publication(params: ViewParams): Promise<Result<Publication, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // publication(params: ViewParams): Promise<Result<Publication, ApiFailure>>;
   // infographic(params: ViewParams): Promise<Result<Infographic, ApiFailure>>;
   // staticTable(params: ViewParams): Promise<Result<StaticTable, ApiFailure>>;
   // news(params: ViewParams): Promise<Result<News, ApiFailure>>;
