@@ -103,12 +103,7 @@ export {
   GetAllInfographics,
   GetInfographicById,
 } from './features/infographic';
-export {
-  News,
-  NewsRepository,
-  GetAllNews,
-  GetNewsById,
-} from './features/news';
+export { News, NewsRepository, GetAllNews, GetNewsById } from './features/news';
 
 // TODO: Export other features when implemented
 // ... etc

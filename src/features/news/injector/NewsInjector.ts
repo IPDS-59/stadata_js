@@ -19,7 +19,10 @@ export class NewsInjector {
    */
   static register(injector: Injector, networkClient: NetworkClient): void {
     // Register data source
-    injector.registerFactory(this.REMOTE_DATA_SOURCE, () => new NewsRemoteDataSource(networkClient));
+    injector.registerFactory(
+      this.REMOTE_DATA_SOURCE,
+      () => new NewsRemoteDataSource(networkClient)
+    );
 
     // Register repository
     injector.registerFactory(this.REPOSITORY, () => {

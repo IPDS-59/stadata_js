@@ -3,7 +3,12 @@ import { StadataList } from './StadataList';
 import { ApiFailure } from '../core/failures';
 import { ListResult } from '../shared/domain/entities';
 import { Injector } from '../core/di';
-import { DomainListParams, PublicationListParams, InfographicListParams, NewsListParams } from '../types';
+import {
+  DomainListParams,
+  PublicationListParams,
+  InfographicListParams,
+  NewsListParams,
+} from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
 import { Infographic, InfographicInjector } from '../features/infographic';
