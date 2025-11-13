@@ -15,6 +15,7 @@ import { Variable } from '../features/variable';
 import { VerticalVariable } from '../features/vertical-variable';
 import { Unit } from '../features/unit';
 import { Period } from '../features/period';
+import { DerivedPeriod } from '../features/derived-period';
 
 /**
  * Interface for view API operations
@@ -91,8 +92,12 @@ export interface StadataView {
    */
   period(params: ViewParams): Promise<Result<Period, ApiFailure>>;
 
+  /**
+   * Gets a derived period by ID
+   */
+  derivedPeriod(params: ViewParams): Promise<Result<DerivedPeriod, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // derivedPeriod(params: ViewParams): Promise<Result<DerivedPeriod, ApiFailure>>;
   // derivedVariable(params: ViewParams): Promise<Result<DerivedVariable, ApiFailure>>;
   // statisticClassification(params: ViewParams): Promise<Result<StatisticClassification, ApiFailure>>;
   // census(params: ViewParams): Promise<Result<Census, ApiFailure>>;
