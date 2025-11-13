@@ -24,7 +24,7 @@ module.exports = {
       statements: 4,
     },
   },
-  coverageReporters: ['text', 'lcov', 'json', 'html'],
+  coverageReporters: ['text', 'lcov', 'json', 'json-summary', 'html'],
   coverageDirectory: 'coverage',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   verbose: true,
