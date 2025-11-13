@@ -6,7 +6,7 @@ on:
 
 permissions:
   actions: write
-  contents: read
+  contents: write
 
 jobs:
   cleanup-artifacts:
@@ -57,3 +57,24 @@ jobs:
           echo "## Cache Cleanup Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Caches for PR #${{ github.event.pull_request.number }} have been cleaned up." >> $GITHUB_STEP_SUMMARY
+
+  delete-source-branch:
+    name: Delete Source Branch
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Delete branch
+        run: |
+          echo "Deleting source branch: ${{ github.event.pull_request.head.ref }}"
+          gh api \
+            --method DELETE \
+            repos/${{ github.repository }}/git/refs/heads/${{ github.event.pull_request.head.ref }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## Branch Deletion Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: \`${{ github.event.pull_request.head.ref }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Deleted" >> $GITHUB_STEP_SUMMARY
