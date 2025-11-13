@@ -55,11 +55,13 @@ jobs:
           clean: false
 
       - name: Install base dependencies
+        continue-on-error: true
         run: |
           rm -rf node_modules
           npm ci || npm install
 
       - name: Build base bundle
+        continue-on-error: true
         run: npm run build --if-present
 
       - name: Analyze base bundle size
