@@ -11,6 +11,7 @@ import { NewsCategory, NewsCategoryInjector } from '../features/news-category';
 import { PressRelease, PressReleaseInjector } from '../features/press-release';
 import { StaticTable, StaticTableInjector } from '../features/static-table';
 import { Subject, SubjectInjector } from '../features/subject';
+import { SubjectCategory, SubjectCategoryInjector } from '../features/subject-category';
 
 /**
  * Implementation of StadataView interface
@@ -55,6 +56,11 @@ export class StadataViewImpl implements StadataView {
 
   async subject(params: ViewParams): Promise<Result<Subject, ApiFailure>> {
     const useCase = SubjectInjector.getSubjectByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async subjectCategory(params: ViewParams): Promise<Result<SubjectCategory, ApiFailure>> {
+    const useCase = SubjectCategoryInjector.getSubjectCategoryByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
