@@ -16,6 +16,7 @@ import {
   StrategicIndicatorListParams,
   VariableListParams,
   VerticalVariableListParams,
+  UnitListParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
@@ -29,6 +30,7 @@ import { SubjectCategory, SubjectCategoryInjector } from '../features/subject-ca
 import { StrategicIndicator, StrategicIndicatorInjector } from '../features/strategic-indicator';
 import { Variable, VariableInjector } from '../features/variable';
 import { VerticalVariable, VerticalVariableInjector } from '../features/vertical-variable';
+import { Unit, UnitInjector } from '../features/unit';
 
 /**
  * Implementation of StadataList interface
@@ -109,6 +111,11 @@ export class StadataListImpl implements StadataList {
     params: VerticalVariableListParams
   ): Promise<Result<ListResult<VerticalVariable>, ApiFailure>> {
     const useCase = VerticalVariableInjector.getAllVerticalVariablesUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async units(params?: UnitListParams): Promise<Result<ListResult<Unit>, ApiFailure>> {
+    const useCase = UnitInjector.getAllUnitsUseCase(this.injector);
     return useCase.execute(params);
   }
 

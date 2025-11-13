@@ -14,8 +14,8 @@ import {
   StrategicIndicatorListParams,
   VariableListParams,
   VerticalVariableListParams,
+  UnitListParams,
   // TODO: Uncomment when implemented
-  // UnitListParams,
   // PeriodListParams,
   // DerivedPeriodListParams,
   // DerivedVariableListParams,
@@ -37,6 +37,7 @@ import { SubjectCategory } from '../features/subject-category';
 import { StrategicIndicator } from '../features/strategic-indicator';
 import { Variable } from '../features/variable';
 import { VerticalVariable } from '../features/vertical-variable';
+import { Unit } from '../features/unit';
 
 /**
  * Interface for list API operations
@@ -113,8 +114,12 @@ export interface StadataList {
     params: VerticalVariableListParams
   ): Promise<Result<ListResult<VerticalVariable>, ApiFailure>>;
 
+  /**
+   * Gets all units
+   */
+  units(params?: UnitListParams): Promise<Result<ListResult<Unit>, ApiFailure>>;
+
   // TODO: Add methods for other features
-  // units(params?: UnitListParams): Promise<Result<ListResult<Unit>, ApiFailure>>;
   // periods(params?: PeriodListParams): Promise<Result<ListResult<Period>, ApiFailure>>;
   // derivedPeriods(params?: DerivedPeriodListParams): Promise<Result<ListResult<DerivedPeriod>, ApiFailure>>;
   // derivedVariables(params?: DerivedVariableListParams): Promise<Result<ListResult<DerivedVariable>, ApiFailure>>;
