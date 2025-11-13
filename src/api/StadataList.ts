@@ -6,10 +6,10 @@ import {
   PublicationListParams,
   InfographicListParams,
   NewsListParams,
+  PressReleaseListParams,
   // TODO: Uncomment when implemented
   // StaticTableListParams,
   // NewsCategoryListParams,
-  // PressReleaseListParams,
   // SubjectListParams,
   // SubjectCategoryListParams,
   // StrategicIndicatorListParams,
@@ -29,6 +29,7 @@ import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
+import { PressRelease } from '../features/press-release';
 
 /**
  * Interface for list API operations
@@ -55,10 +56,16 @@ export interface StadataList {
    */
   news(params: NewsListParams): Promise<Result<ListResult<News>, ApiFailure>>;
 
+  /**
+   * Gets all press releases
+   */
+  pressReleases(
+    params: PressReleaseListParams
+  ): Promise<Result<ListResult<PressRelease>, ApiFailure>>;
+
   // TODO: Add methods for other features
   // staticTables(params?: StaticTableListParams): Promise<Result<ListResult<StaticTable>, ApiFailure>>;
   // newsCategories(params?: NewsCategoryListParams): Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
-  // pressReleases(params?: PressReleaseListParams): Promise<Result<ListResult<PressRelease>, ApiFailure>>;
   // subjects(params?: SubjectListParams): Promise<Result<ListResult<Subject>, ApiFailure>>;
   // subjectCategories(params?: SubjectCategoryListParams): Promise<Result<ListResult<SubjectCategory>, ApiFailure>>;
   // strategicIndicators(params?: StrategicIndicatorListParams): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>>;

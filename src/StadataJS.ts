@@ -7,6 +7,7 @@ import { DomainInjector } from './features/domain';
 import { PublicationInjector } from './features/publication';
 import { InfographicInjector } from './features/infographic';
 import { NewsInjector } from './features/news';
+import { PressReleaseInjector } from './features/press-release';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -220,6 +221,9 @@ export class StadataJS {
 
     // Register news feature
     NewsInjector.register(this.injector, this.networkClient);
+
+    // Register press release feature
+    PressReleaseInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc
