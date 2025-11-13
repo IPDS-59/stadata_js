@@ -14,6 +14,7 @@ import { Subject, SubjectInjector } from '../features/subject';
 import { SubjectCategory, SubjectCategoryInjector } from '../features/subject-category';
 import { StrategicIndicator, StrategicIndicatorInjector } from '../features/strategic-indicator';
 import { Variable, VariableInjector } from '../features/variable';
+import { VerticalVariable, VerticalVariableInjector } from '../features/vertical-variable';
 
 /**
  * Implementation of StadataView interface
@@ -73,6 +74,11 @@ export class StadataViewImpl implements StadataView {
 
   async variable(params: ViewParams): Promise<Result<Variable, ApiFailure>> {
     const useCase = VariableInjector.getVariableByIdUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async verticalVariable(params: ViewParams): Promise<Result<VerticalVariable, ApiFailure>> {
+    const useCase = VerticalVariableInjector.getVerticalVariableByIdUseCase(this.injector);
     return useCase.execute(params);
   }
 
