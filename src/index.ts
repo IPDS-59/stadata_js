@@ -88,10 +88,16 @@ export {
 // Type exports
 export * from './types';
 
-// Feature exports (Domain as example)
+// Feature exports
 export { Domain, DomainRepository, GetAllDomains, GetDomainById } from './features/domain';
+export {
+  Publication,
+  RelatedPublication,
+  PublicationRepository,
+  GetAllPublications,
+  GetPublicationById,
+} from './features/publication';
 
 // TODO: Export other features when implemented
-// export { Publication, PublicationRepository, ... } from './features/publication';
 // export { Infographic, InfographicRepository, ... } from './features/infographic';
 // ... etc
