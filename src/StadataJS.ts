@@ -21,6 +21,7 @@ import { DerivedPeriodInjector } from './features/derived-period';
 import { DerivedVariableInjector } from './features/derived-variable';
 import { StatisticClassificationInjector } from './features/statistic-classification';
 import { CensusInjector } from './features/census';
+import { DynamicTableInjector } from './features/dynamic-table';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -276,6 +277,9 @@ export class StadataJS {
 
     // Register census feature
     CensusInjector.register(this.injector, this.networkClient);
+
+    // Register dynamic table feature
+    DynamicTableInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc

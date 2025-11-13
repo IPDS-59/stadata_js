@@ -168,6 +168,11 @@ export {
   GetStatisticClassificationById,
 } from './features/statistic-classification';
 export { Census, CensusRepository, GetAllCensuses, GetCensusById } from './features/census';
+export {
+  DynamicTable,
+  DynamicTableRepository,
+  GetAllDynamicTables,
+} from './features/dynamic-table';
 
 // TODO: Export other features when implemented
 // ... etc

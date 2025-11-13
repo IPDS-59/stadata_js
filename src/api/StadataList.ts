@@ -20,8 +20,7 @@ import {
   DerivedVariableListParams,
   StatisticClassificationListParams,
   CensusListParams,
-  // TODO: Uncomment when implemented
-  // DynamicTableParams,
+  DynamicTableParams,
 } from '../types';
 
 // Import entities (these will be created for each feature)
@@ -43,6 +42,7 @@ import { DerivedPeriod } from '../features/derived-period';
 import { DerivedVariable } from '../features/derived-variable';
 import { StatisticClassification } from '../features/statistic-classification';
 import { Census } from '../features/census';
+import { DynamicTable } from '../features/dynamic-table';
 
 /**
  * Interface for list API operations
@@ -155,6 +155,8 @@ export interface StadataList {
    */
   censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>>;
 
-  // TODO: Add methods for other features
-  // dynamicTable(params: DynamicTableParams): Promise<Result<unknown, ApiFailure>>;
+  /**
+   * Gets all dynamic tables
+   */
+  dynamicTables(params: DynamicTableParams): Promise<Result<ListResult<DynamicTable>, ApiFailure>>;
 }
