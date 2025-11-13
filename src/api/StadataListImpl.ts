@@ -3,9 +3,10 @@ import { StadataList } from './StadataList';
 import { ApiFailure } from '../core/failures';
 import { ListResult } from '../shared/domain/entities';
 import { Injector } from '../core/di';
-import { DomainListParams, PublicationListParams } from '../types';
+import { DomainListParams, PublicationListParams, InfographicListParams } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
 import { Publication, PublicationInjector } from '../features/publication';
+import { Infographic, InfographicInjector } from '../features/infographic';
 
 /**
  * Implementation of StadataList interface
@@ -22,6 +23,13 @@ export class StadataListImpl implements StadataList {
     params: PublicationListParams
   ): Promise<Result<ListResult<Publication>, ApiFailure>> {
     const useCase = PublicationInjector.getAllPublicationsUseCase(this.injector);
+    return useCase.execute(params);
+  }
+
+  async infographics(
+    params: InfographicListParams
+  ): Promise<Result<ListResult<Infographic>, ApiFailure>> {
+    const useCase = InfographicInjector.getAllInfographicsUseCase(this.injector);
     return useCase.execute(params);
   }
 

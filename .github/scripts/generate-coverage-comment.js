@@ -6,6 +6,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { analyzeCoverageByFeature, generateMarkdownTable: generateFeatureTable } = require(
+  './analyze-coverage-by-feature'
+);
 
 function generateCoverageComment() {
   const coveragePath = path.join(process.cwd(), 'coverage', 'coverage-summary.json');
@@ -63,6 +66,16 @@ function generateCoverageComment() {
   }
 
   comment += `\nAverage coverage: **${avgCoverage}%**\n`;
+
+  // Add feature breakdown
+  try {
+    const features = analyzeCoverageByFeature();
+    if (features && features.length > 0) {
+      comment += generateFeatureTable(features);
+    }
+  } catch (error) {
+    // If feature analysis fails, just skip it
+  }
 
   console.log(comment);
 }

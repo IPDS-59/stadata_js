@@ -97,7 +97,12 @@ export {
   GetAllPublications,
   GetPublicationById,
 } from './features/publication';
+export {
+  Infographic,
+  InfographicRepository,
+  GetAllInfographics,
+  GetInfographicById,
+} from './features/infographic';
 
 // TODO: Export other features when implemented
-// export { Infographic, InfographicRepository, ... } from './features/infographic';
 // ... etc

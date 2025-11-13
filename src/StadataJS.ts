@@ -5,6 +5,7 @@ import { ApiConfig } from './config';
 import { StadataList, StadataView, StadataListImpl, StadataViewImpl } from './api';
 import { DomainInjector } from './features/domain';
 import { PublicationInjector } from './features/publication';
+import { InfographicInjector } from './features/infographic';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -213,8 +214,10 @@ export class StadataJS {
     // Register publication feature
     PublicationInjector.register(this.injector, this.networkClient);
 
+    // Register infographic feature
+    InfographicInjector.register(this.injector, this.networkClient);
+
     // TODO: Register other features
-    // InfographicInjector.register(this.injector, this.networkClient);
     // ... etc
   }
 
