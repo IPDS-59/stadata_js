@@ -18,6 +18,7 @@ import { VerticalVariableInjector } from './features/vertical-variable';
 import { UnitInjector } from './features/unit';
 import { PeriodInjector } from './features/period';
 import { DerivedPeriodInjector } from './features/derived-period';
+import { DerivedVariableInjector } from './features/derived-variable';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 
 /**
@@ -264,6 +265,9 @@ export class StadataJS {
 
     // Register derived period feature
     DerivedPeriodInjector.register(this.injector, this.networkClient);
+
+    // Register derived variable feature
+    DerivedVariableInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc

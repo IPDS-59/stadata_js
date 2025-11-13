@@ -155,6 +155,12 @@ export {
   GetAllDerivedPeriods,
   GetDerivedPeriodById,
 } from './features/derived-period';
+export {
+  DerivedVariable,
+  DerivedVariableRepository,
+  GetAllDerivedVariables,
+  GetDerivedVariableById,
+} from './features/derived-variable';
 
 // TODO: Export other features when implemented
 // ... etc
