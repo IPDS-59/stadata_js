@@ -22,17 +22,60 @@ export class CensusRepositoryImpl implements CensusRepository {
 
     return result.map((response) => {
       try {
+        // Handle null or missing data gracefully - return empty list
+        if (!response.data || response.data === null) {
+          return ListResult.fromJson(
+            {
+              data: [],
+              pagination: {
+                page: 1,
+                per_page: 10,
+                total: 0,
+                pages: 0,
+                count: 0,
+              },
+            },
+            (json: Record<string, unknown>) => Census.fromJson(json)
+          );
+        }
+
         // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
-        // Validate that response.data exists and is an array with at least 2 elements
-        if (!response.data || !Array.isArray(response.data) || response.data.length < 2) {
-          throw new ParseFailure('Invalid response structure: missing or invalid data array');
+        // Validate that response.data is an array with at least 2 elements
+        if (!Array.isArray(response.data) || response.data.length < 2) {
+          // Return empty list for invalid structure
+          return ListResult.fromJson(
+            {
+              data: [],
+              pagination: {
+                page: 1,
+                per_page: 10,
+                total: 0,
+                pages: 0,
+                count: 0,
+              },
+            },
+            (json: Record<string, unknown>) => Census.fromJson(json)
+          );
         }
 
         const paginationInfo = response.data[0] as Record<string, unknown>;
         const censusesData = response.data[1] as unknown as Record<string, unknown>[];
 
-        if (!paginationInfo || !censusesData) {
-          throw new ParseFailure('Invalid response structure');
+        // Handle null or non-array census data
+        if (!censusesData || !Array.isArray(censusesData)) {
+          return ListResult.fromJson(
+            {
+              data: [],
+              pagination: {
+                page: Number(paginationInfo?.page || 1),
+                per_page: Number(paginationInfo?.per_page || 10),
+                total: Number(paginationInfo?.total || 0),
+                pages: Number(paginationInfo?.pages || 0),
+                count: 0,
+              },
+            },
+            (json: Record<string, unknown>) => Census.fromJson(json)
+          );
         }
 
         const censuses = censusesData.map((item) => Census.fromJson(item));
