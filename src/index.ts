@@ -173,6 +173,7 @@ export {
   DynamicTableRepository,
   GetAllDynamicTables,
 } from './features/dynamic-table';
+export { Trade, TradeRepository, GetTrade } from './features/trade';
 
 // TODO: Export other features when implemented
 // ... etc

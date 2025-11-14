@@ -22,7 +22,12 @@ import { DerivedVariableInjector } from './features/derived-variable';
 import { StatisticClassificationInjector } from './features/statistic-classification';
 import { CensusInjector } from './features/census';
 import { DynamicTableInjector } from './features/dynamic-table';
+import { TradeInjector } from './features/trade';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
+import { GetTrade } from './features/trade';
+import { TradeParams, ResponseData } from './types';
+import { Result } from 'neverthrow';
+import { ApiFailure } from './core/failures';
 
 /**
  * Configuration options for StadataJS
@@ -221,6 +226,33 @@ export class StadataJS {
   }
 
   /**
+   * Gets trade data from BPS API
+   * @param params - Trade query parameters
+   * @returns Trade data result
+   *
+   * @example
+   * ```typescript
+   * const result = await stadata.trade({
+   *   source: TradeSource.Export,
+   *   period: TradePeriod.Monthly,
+   *   hsCode: '01',
+   *   hsType: HSCodeType.TwoDigit,
+   *   year: '2023'
+   * });
+   *
+   * if (result.isOk()) {
+   *   console.log(result.value);
+   * }
+   * ```
+   */
+  async trade(
+    params: TradeParams
+  ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
+    const useCase = this.injector.resolve<GetTrade>('GetTrade');
+    return useCase.execute(params);
+  }
+
+  /**
    * Sets up all feature dependencies
    */
   private setupDependencies(): void {
@@ -280,6 +312,9 @@ export class StadataJS {
 
     // Register dynamic table feature
     DynamicTableInjector.register(this.injector, this.networkClient);
+
+    // Register trade feature
+    TradeInjector.register(this.injector, this.networkClient);
 
     // TODO: Register other features
     // ... etc
