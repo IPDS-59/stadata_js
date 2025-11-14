@@ -83,7 +83,18 @@ jobs:
           # Set PR title based on type
           if [ "$BRANCH_TYPE" = "release" ]; then
             PR_TITLE="release: version ${VERSION}"
-            PR_BODY="## Release ${VERSION}
+          else
+            PR_TITLE="fix: hotfix ${VERSION}"
+          fi
+
+          # Create PR with body from heredoc
+          if [ "$BRANCH_TYPE" = "release" ]; then
+            gh pr create \
+              --base main \
+              --head "$BRANCH_NAME" \
+              --title "$PR_TITLE" \
+              --body "$(cat <<EOF
+## Release ${VERSION}
 
 This PR merges the release branch for version **${VERSION}** to the main branch.
 
@@ -109,10 +120,18 @@ After merging this PR:
 2. A GitHub release will be generated
 3. A back-merge PR to develop will be created
 
-**⚠️ Do not merge until ready to release to production**"
+**⚠️ Do not merge until ready to release to production**
+EOF
+)" \
+              --label "release" \
+              --label "release-candidate"
           else
-            PR_TITLE="fix: hotfix ${VERSION}"
-            PR_BODY="## Hotfix ${VERSION}
+            gh pr create \
+              --base main \
+              --head "$BRANCH_NAME" \
+              --title "$PR_TITLE" \
+              --body "$(cat <<EOF
+## Hotfix ${VERSION}
 
 This PR merges the hotfix branch for version **${VERSION}** to the main branch.
 
@@ -139,17 +158,12 @@ After merging this PR:
 2. A GitHub release will be generated
 3. A back-merge PR to develop will be created
 
-**⚠️ Do not merge until ready to deploy hotfix**"
+**⚠️ Do not merge until ready to deploy hotfix**
+EOF
+)" \
+              --label "hotfix" \
+              --label "release-candidate"
           fi
-
-          # Create PR
-          gh pr create \
-            --base main \
-            --head "$BRANCH_NAME" \
-            --title "$PR_TITLE" \
-            --body "$PR_BODY" \
-            --label "${BRANCH_TYPE}" \
-            --label "release-candidate"
 
           echo "✅ Created PR from $BRANCH_NAME to main"
 
