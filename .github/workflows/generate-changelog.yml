@@ -62,30 +62,23 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}"
           PR_BRANCH="changelog/v${VERSION}"
 
-          # Check if there's already a PR from this branch
+          # Check if there's already an open PR from this branch
           EXISTING_PRS=$(gh pr list --head "$PR_BRANCH" --base "${{ github.ref_name }}" --state open --json number,title 2>/dev/null || echo "[]")
 
           if [ "$(echo "$EXISTING_PRS" | jq '. | length')" -gt 0 ]; then
-            echo "⚠️ Found existing PR from $PR_BRANCH:"
+            echo "⚠️ Found existing open PR from $PR_BRANCH:"
             echo "$EXISTING_PRS" | jq -r '.[] | "#\(.number): \(.title)"'
             echo "skip_pr=true" >> $GITHUB_OUTPUT
             PR_NUMBER=$(echo "$EXISTING_PRS" | jq -r '.[0].number')
             echo "existing_pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
           else
-            echo "✅ No existing PR found"
+            echo "✅ No existing open PR found"
             echo "skip_pr=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Commit changelog
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_existing_pr.outputs.skip_pr == 'false'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog for version ${{ steps.extract_version.outputs.version }}"
-
       - name: Create Pull Request
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_existing_pr.outputs.skip_pr == 'false'
+        id: create_pr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.PAT_TOKEN }}
@@ -110,19 +103,10 @@ jobs:
           commit-message: "docs: update changelog for version ${{ steps.extract_version.outputs.version }}"
 
       - name: Auto-merge changelog PR
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_existing_pr.outputs.skip_pr == 'false'
-        run: |
-          # Wait for PR to be created
-          sleep 5
-
-          # Get the PR number
-          PR_NUMBER=$(gh pr list --head "changelog/v${{ steps.extract_version.outputs.version }}" --json number --jq '.[0].number')
-
-          if [ -n "$PR_NUMBER" ]; then
-            echo "Auto-merging PR #${PR_NUMBER}"
-            gh pr merge ${PR_NUMBER} --auto --squash --delete-branch
-          else
-            echo "PR not found, skipping auto-merge"
-          fi
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_existing_pr.outputs.skip_pr == 'false' && steps.create_pr.outputs.pull-request-number
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
+          echo "Auto-merging PR #${PR_NUMBER}"
+          gh pr merge ${PR_NUMBER} --auto --squash --delete-branch
