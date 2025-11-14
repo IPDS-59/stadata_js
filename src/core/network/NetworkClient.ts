@@ -120,13 +120,24 @@ export class NetworkClient {
       // Build full URL
       const fullUrl = this.buildUrl(url);
 
+      // Build headers - omit Content-Type for GET requests to avoid CORS preflight
+      const headers: Record<string, string> = {};
+      if (method !== 'GET') {
+        Object.assign(headers, this.defaultHeaders);
+      } else {
+        // For GET requests, only include non-Content-Type headers
+        Object.entries(this.defaultHeaders).forEach(([key, value]) => {
+          if (key.toLowerCase() !== 'content-type') {
+            headers[key] = value;
+          }
+        });
+      }
+      Object.assign(headers, options.headers);
+
       // Build request init
       let init: RequestInit = {
         method,
-        headers: {
-          ...this.defaultHeaders,
-          ...options.headers,
-        },
+        headers,
       };
 
       // Add body for non-GET requests
