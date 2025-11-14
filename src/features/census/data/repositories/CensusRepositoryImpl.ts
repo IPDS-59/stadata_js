@@ -1,6 +1,6 @@
 import { Result } from 'neverthrow';
 import { ApiFailure, ParseFailure } from '../../../../core/failures';
-import { ListResult } from '../../../../shared';
+import { ListResult, Pagination } from '../../../../shared';
 import { CensusListParams, ViewParams } from '../../../../types';
 import {
   CensusEvent,
@@ -65,18 +65,16 @@ export class CensusRepositoryImpl implements CensusRepository {
         const count = Number(paginationInfo.count) || censusesData.length;
         const perPage = Number(paginationInfo.per_page) || count;
 
-        return ListResult.fromJson(
-          {
-            data: censuses,
-            pagination: {
-              page: Number(paginationInfo.page || 1),
-              per_page: perPage,
-              total: Number(paginationInfo.total || 0),
-              pages: Number(paginationInfo.pages || 1),
-              count: count,
-            },
-          },
-          (json: Record<string, unknown>) => this.parseEntity(json, params?.type)
+        // Create ListResult directly with already-parsed entities
+        return new ListResult(
+          censuses,
+          new Pagination(
+            Number(paginationInfo.page || 1),
+            perPage,
+            Number(paginationInfo.total || 0),
+            Number(paginationInfo.pages || 1),
+            count
+          )
         );
       } catch (error) {
         throw new ParseFailure(
