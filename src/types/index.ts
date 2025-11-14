@@ -1,4 +1,4 @@
-import { DataLanguage } from '../shared/enums';
+import { DataLanguage, ClassificationType, ClassificationLevel } from '../shared/enums';
 import { CancelToken } from '../core/utils';
 
 /**
@@ -181,9 +181,9 @@ export interface VariableListParams extends BaseListParams {
  */
 export interface VerticalVariableListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -196,9 +196,9 @@ export interface UnitListParams extends BaseListParams {}
  */
 export interface PeriodListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -206,9 +206,9 @@ export interface PeriodListParams extends BaseListParams {
  */
 export interface DerivedPeriodListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -216,9 +216,9 @@ export interface DerivedPeriodListParams extends BaseListParams {
  */
 export interface DerivedVariableListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -255,6 +255,16 @@ export interface DynamicTableParams extends BaseListParams {
  * Parameters for statistic classification list
  */
 export interface StatisticClassificationListParams extends BaseListParams {
+  /**
+   * Classification type (defaults to KBLI_2020)
+   */
+  type?: ClassificationType;
+
+  /**
+   * Classification level (optional filter)
+   */
+  level?: ClassificationLevel;
+
   /**
    * Keyword search
    */

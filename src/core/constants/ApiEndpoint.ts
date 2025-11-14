@@ -1,10 +1,12 @@
+import { ClassificationType } from '../../shared/enums';
+
 /**
  * API endpoint constants
  */
 export const ApiEndpoint = {
   // Domain endpoints
-  DOMAIN_LIST: '/list/model/domain',
-  DOMAIN_VIEW: '/view/model/domain',
+  DOMAIN_LIST: 'domain',
+  DOMAIN_VIEW: 'domain',
 
   // Publication endpoints
   PUBLICATION_LIST: '/list/model/publication',
@@ -55,8 +57,8 @@ export const ApiEndpoint = {
   UNIT_VIEW: '/view/model/unit',
 
   // Period endpoints
-  PERIOD_LIST: '/list/model/period',
-  PERIOD_VIEW: '/view/model/period',
+  PERIOD_LIST: '/list/model/th',
+  PERIOD_VIEW: '/view/model/th',
 
   // Derived period endpoints
   DERIVED_PERIOD_LIST: '/list/model/turth',
@@ -67,11 +69,11 @@ export const ApiEndpoint = {
   DERIVED_VARIABLE_VIEW: '/view/model/turvar',
 
   // Dynamic table endpoints
-  DYNAMIC_TABLE_LIST: '/list/model/dynamictable',
+  DYNAMIC_TABLE_LIST: '/list/model/data',
 
-  // Statistic classification endpoints
-  STATISTIC_CLASSIFICATION_LIST: '/list/model/kbli',
-  STATISTIC_CLASSIFICATION_VIEW: '/view/model/kbli',
+  // Statistic classification endpoint (dynamic based on type, no separate list/view)
+  statisticClassification: (type: ClassificationType = ClassificationType.KBLI_2020) =>
+    `/view/model/${type}`,
 
   // Census endpoints
   CENSUS_LIST: '/list/model/sensus',
