@@ -35,8 +35,8 @@ export const ApiEndpoint = {
   SUBJECT_VIEW: '/view/model/subject',
 
   // Subject category endpoints
-  SUBJECT_CATEGORY_LIST: '/list/model/subjectcat',
-  SUBJECT_CATEGORY_VIEW: '/view/model/subjectcat',
+  SUBJECT_CATEGORY_LIST: '/list/model/subcat',
+  SUBJECT_CATEGORY_VIEW: '/view/model/subcat',
 
   // Strategic indicator endpoints
   STRATEGIC_INDICATOR_LIST: '/list/model/indicators',

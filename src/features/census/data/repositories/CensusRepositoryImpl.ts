@@ -23,6 +23,11 @@ export class CensusRepositoryImpl implements CensusRepository {
     return result.map((response) => {
       try {
         // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        // Validate that response.data exists and is an array with at least 2 elements
+        if (!response.data || !Array.isArray(response.data) || response.data.length < 2) {
+          throw new ParseFailure('Invalid response structure: missing or invalid data array');
+        }
+
         const paginationInfo = response.data[0] as Record<string, unknown>;
         const censusesData = response.data[1] as unknown as Record<string, unknown>[];
 
@@ -31,15 +36,20 @@ export class CensusRepositoryImpl implements CensusRepository {
         }
 
         const censuses = censusesData.map((item) => Census.fromJson(item));
+
+        // Calculate fallback values for missing pagination fields
+        const count = Number(paginationInfo.count) || censusesData.length;
+        const perPage = Number(paginationInfo.per_page) || count;
+
         return ListResult.fromJson(
           {
             data: censuses,
             pagination: {
               page: Number(paginationInfo.page || 1),
-              per_page: Number(paginationInfo.per_page || 10),
+              per_page: perPage,
               total: Number(paginationInfo.total || 0),
               pages: Number(paginationInfo.pages || 1),
-              count: Number(paginationInfo.count || 0),
+              count: count,
             },
           },
           (json: Record<string, unknown>) => Census.fromJson(json)
