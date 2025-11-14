@@ -1,4 +1,4 @@
-import { BaseNetworkInterceptor } from './BaseNetworkInterceptor';
+import { BaseNetworkInterceptor, InterceptedRequest } from './BaseNetworkInterceptor';
 import { Logger } from '../../log';
 
 /**
@@ -12,12 +12,12 @@ export class LoggingInterceptor extends BaseNetworkInterceptor {
     this.logger = logger || Logger.getInstance();
   }
 
-  onRequest(url: string, init: RequestInit): RequestInit {
+  onRequest(url: string, init: RequestInit): InterceptedRequest {
     this.logger.debug(`HTTP Request: ${init.method || 'GET'} ${url}`, {
       headers: init.headers,
       body: init.body,
     });
-    return init;
+    return { url, init };
   }
 
   onResponse(response: Response): Response {

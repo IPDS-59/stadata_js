@@ -3,6 +3,7 @@ import { NetworkClient } from '../../../../core/network';
 import { ApiFailure } from '../../../../core/failures';
 import { ApiEndpoint } from '../../../../core/constants';
 import { StatisticClassificationListParams, ViewParams, ResponseData } from '../../../../types';
+import { ClassificationType } from '../../../../shared/enums';
 
 /**
  * Remote data source for statistic classification operations
@@ -34,8 +35,13 @@ export class StatisticClassificationRemoteDataSource {
       queryParams['keyword'] = params.keyword;
     }
 
+    if (params?.level) {
+      queryParams['level'] = params.level;
+    }
+
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.STATISTIC_CLASSIFICATION_LIST}${queryString ? `?${queryString}` : ''}`;
+    const classificationType = params?.type || ClassificationType.KBLI_2020;
+    const url = `${ApiEndpoint.statisticClassification(classificationType)}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
       cancelToken: params?.cancelToken,
@@ -46,10 +52,10 @@ export class StatisticClassificationRemoteDataSource {
    * Gets a statistic classification by ID from the API
    */
   async getById(
-    params: ViewParams
+    params: ViewParams & { type?: ClassificationType }
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const queryParams: Record<string, string> = {
-      domain: params.domain,
+      id: params.id.toString(),
     };
 
     if (params.lang) {
@@ -57,7 +63,8 @@ export class StatisticClassificationRemoteDataSource {
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.STATISTIC_CLASSIFICATION_VIEW}/${params.id}${queryString ? `?${queryString}` : ''}`;
+    const classificationType = params.type || ClassificationType.KBLI_2020;
+    const url = `${ApiEndpoint.statisticClassification(classificationType)}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
       cancelToken: params.cancelToken,

@@ -3,7 +3,7 @@ import { NetworkClient } from '../../../core/network';
 import { DomainRemoteDataSource } from '../data/datasources';
 import { DomainRepositoryImpl } from '../data/repositories';
 import { DomainRepository } from '../domain/repositories';
-import { GetAllDomains, GetDomainById } from '../domain/usecases';
+import { GetAllDomains } from '../domain/usecases';
 
 /**
  * Dependency injection setup for Domain feature
@@ -12,7 +12,6 @@ export class DomainInjector {
   private static readonly REMOTE_DATA_SOURCE = 'DomainRemoteDataSource';
   private static readonly REPOSITORY = 'DomainRepository';
   private static readonly GET_ALL_USE_CASE = 'GetAllDomains';
-  private static readonly GET_BY_ID_USE_CASE = 'GetDomainById';
 
   /**
    * Registers all domain dependencies
@@ -35,11 +34,6 @@ export class DomainInjector {
       const repository = injector.resolve<DomainRepository>(this.REPOSITORY);
       return new GetAllDomains(repository);
     });
-
-    injector.registerFactory(this.GET_BY_ID_USE_CASE, () => {
-      const repository = injector.resolve<DomainRepository>(this.REPOSITORY);
-      return new GetDomainById(repository);
-    });
   }
 
   /**
@@ -47,12 +41,5 @@ export class DomainInjector {
    */
   static getAllDomainsUseCase(injector: Injector): GetAllDomains {
     return injector.resolve<GetAllDomains>(this.GET_ALL_USE_CASE);
-  }
-
-  /**
-   * Resolves GetDomainById use case
-   */
-  static getDomainByIdUseCase(injector: Injector): GetDomainById {
-    return injector.resolve<GetDomainById>(this.GET_BY_ID_USE_CASE);
   }
 }

@@ -22,7 +22,7 @@ export class TradeRemoteDataSource {
       periode: params.period.toString(),
       kodehs: params.hsCode,
       jenishs: params.hsType.toString(),
-      Tahun: params.year,
+      tahun: params.year,
     };
 
     const queryString = new URLSearchParams(queryParams).toString();
