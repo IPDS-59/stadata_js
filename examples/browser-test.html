@@ -792,17 +792,13 @@
 
       window.testListCensuses = async function () {
         if (!sdkInitialized) return;
-        showStatus('🔄 Fetching censuses...', 'info');
+        showStatus('🔄 Fetching census events...', 'info');
 
-        const result = await SDK.instance.list.censuses({
-          lang: DataLanguage.ID,
-          page: 1,
-          perPage: 5,
-        });
+        const result = await SDK.instance.list.censusEvents();
 
         result.match(
           (data) => {
-            showStatus(`✅ Success! Found ${data.totalItems} censuses`, 'success');
+            showStatus(`✅ Success! Found ${data.totalItems} census events`, 'success');
             showResults(data);
           },
           (error) => {
