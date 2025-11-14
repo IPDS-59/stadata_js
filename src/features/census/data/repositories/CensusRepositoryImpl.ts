@@ -22,11 +22,25 @@ export class CensusRepositoryImpl implements CensusRepository {
 
     return result.map((response) => {
       try {
-        const censuses = response.data.map((item) => Census.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const censusesData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !censusesData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const censuses = censusesData.map((item) => Census.fromJson(item));
         return ListResult.fromJson(
           {
             data: censuses,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: Number(paginationInfo.per_page || 10),
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: Number(paginationInfo.count || 0),
+            },
           },
           (json: Record<string, unknown>) => Census.fromJson(json)
         );

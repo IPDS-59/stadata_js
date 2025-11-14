@@ -17,11 +17,25 @@ export class PeriodRepositoryImpl implements PeriodRepository {
 
     return result.map((response) => {
       try {
-        const periods = response.data.map((item) => Period.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const periodsData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !periodsData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const periods = periodsData.map((item) => Period.fromJson(item));
         return ListResult.fromJson(
           {
             data: periods,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: Number(paginationInfo.per_page || 10),
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: Number(paginationInfo.count || 0),
+            },
           },
           (json: Record<string, unknown>) => Period.fromJson(json)
         );

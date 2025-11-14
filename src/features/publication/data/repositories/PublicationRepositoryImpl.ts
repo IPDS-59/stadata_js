@@ -21,7 +21,7 @@ export class PublicationRepositoryImpl implements PublicationRepository {
       try {
         // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
         const paginationInfo = response.data[0] as Record<string, unknown>;
-        const publicationsData = response.data[1] as Record<string, unknown>[];
+        const publicationsData = response.data[1] as unknown as Record<string, unknown>[];
 
         if (!paginationInfo || !publicationsData) {
           throw new ParseFailure('Invalid response structure');

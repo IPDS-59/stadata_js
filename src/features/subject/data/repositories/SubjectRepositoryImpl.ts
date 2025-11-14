@@ -17,11 +17,25 @@ export class SubjectRepositoryImpl implements SubjectRepository {
 
     return result.map((response) => {
       try {
-        const subjects = response.data.map((item) => Subject.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const subjectsData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !subjectsData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const subjects = subjectsData.map((item) => Subject.fromJson(item));
         return ListResult.fromJson(
           {
             data: subjects,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: Number(paginationInfo.per_page || 10),
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: Number(paginationInfo.count || 0),
+            },
           },
           (json: Record<string, unknown>) => Subject.fromJson(json)
         );

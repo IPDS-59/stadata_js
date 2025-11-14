@@ -19,11 +19,25 @@ export class VerticalVariableRepositoryImpl implements VerticalVariableRepositor
 
     return result.map((response) => {
       try {
-        const verticalVariables = response.data.map((item) => VerticalVariable.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const verticalVariablesData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !verticalVariablesData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const verticalVariables = verticalVariablesData.map((item) => VerticalVariable.fromJson(item));
         return ListResult.fromJson(
           {
             data: verticalVariables,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: Number(paginationInfo.per_page || 10),
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: Number(paginationInfo.count || 0),
+            },
           },
           (json: Record<string, unknown>) => VerticalVariable.fromJson(json)
         );

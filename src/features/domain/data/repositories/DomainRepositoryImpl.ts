@@ -18,10 +18,22 @@ export class DomainRepositoryImpl implements DomainRepository {
 
     return result.map((response) => {
       try {
-        const domains = response.data.map((item) => Domain.fromJson(item));
-        const pagination = response.pagination
-          ? Pagination.fromJson(response.pagination)
-          : new Pagination(1, domains.length, domains.length, 1, domains.length);
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const domainsData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !domainsData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const domains = domainsData.map((item) => Domain.fromJson(item));
+        const pagination = new Pagination(
+          Number(paginationInfo.page || 1),
+          Number(paginationInfo.per_page || 10),
+          Number(paginationInfo.total || 0),
+          Number(paginationInfo.pages || 1),
+          Number(paginationInfo.count || 0)
+        );
 
         return new ListResult(domains, pagination);
       } catch (error) {
