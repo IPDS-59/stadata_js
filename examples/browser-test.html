@@ -233,15 +233,12 @@
       </div>
     </div>
 
-    <!-- Include the built SDK (you'll need to build it first with npm run build) -->
-    <script type="module">
-      // Import from the built dist folder
-      // For development, you might need to use a dev server or adjust the path
-      import { StadataJS, DataLanguage } from '../dist/index.mjs';
+    <!-- Include the built SDK IIFE bundle (build it first with npm run build) -->
+    <script src="../dist/index.global.js"></script>
 
-      // Make it available globally for the onclick handlers
-      window.StadataJS = StadataJS;
-      window.DataLanguage = DataLanguage;
+    <script>
+      // The SDK is now available globally as window.StadataJS
+      const { StadataJS, DataLanguage } = window.StadataJS;
 
       let sdkInitialized = false;
 
@@ -308,7 +305,9 @@
         elements.apiKey.value = '';
       }
 
-      // Export functions globally
+      // Make SDK and functions available globally
+      window.StadataJS = StadataJS;
+      window.DataLanguage = DataLanguage;
       window.initializeSDK = initializeSDK;
       window.destroySDK = destroySDK;
 
