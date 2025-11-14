@@ -287,6 +287,8 @@
           elements.destroyBtn.disabled = false;
           elements.actionsCard.classList.remove('hidden');
           elements.apiKey.disabled = true;
+          elements.initBtn.disabled = false;
+          elements.initBtn.textContent = 'Initialize SDK';
         } catch (error) {
           showStatus(`❌ Failed to initialize: ${error.message}`, 'error');
           elements.initBtn.disabled = false;
