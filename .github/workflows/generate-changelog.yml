@@ -118,11 +118,18 @@ jobs:
             automated
           commit-message: "docs: update changelog for version ${{ steps.extract_version.outputs.version }}"
 
-      - name: Auto-merge changelog PR
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_existing_pr.outputs.skip_pr == 'false' && steps.create_pr.outputs.pull-request-number
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Summary
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          PR_NUMBER="${{ steps.create_pr.outputs.pull-request-number }}"
-          echo "Auto-merging PR #${PR_NUMBER}"
-          gh pr merge ${PR_NUMBER} --auto --squash --delete-branch
+          echo "## Changelog Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.extract_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.check_existing_pr.outputs.skip_pr }}" = "true" ]; then
+            echo "- **Status**: Skipped - PR already exists (#${{ steps.check_existing_pr.outputs.existing_pr_number }})" >> $GITHUB_STEP_SUMMARY
+          elif [ -n "${{ steps.create_pr.outputs.pull-request-number }}" ]; then
+            echo "- **Status**: PR created (#${{ steps.create_pr.outputs.pull-request-number }})" >> $GITHUB_STEP_SUMMARY
+            echo "- **Action Required**: Please review and merge the changelog PR" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: No PR created" >> $GITHUB_STEP_SUMMARY
+          fi
