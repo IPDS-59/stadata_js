@@ -1,4 +1,4 @@
-import { DataLanguage } from '../shared/enums';
+import { DataLanguage, ClassificationType, ClassificationLevel, DomainType } from '../shared/enums';
 import { CancelToken } from '../core/utils';
 
 /**
@@ -40,6 +40,16 @@ export interface BaseListParams {
  * Parameters for domain list
  */
 export interface DomainListParams extends Omit<BaseListParams, 'domain'> {
+  /**
+   * Domain type (required)
+   */
+  type: DomainType;
+
+  /**
+   * Province code (required when type is REGENCY_BY_PROVINCE)
+   */
+  provinceCode?: string;
+
   /**
    * Keyword search
    */
@@ -181,9 +191,9 @@ export interface VariableListParams extends BaseListParams {
  */
 export interface VerticalVariableListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -196,9 +206,9 @@ export interface UnitListParams extends BaseListParams {}
  */
 export interface PeriodListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -206,9 +216,9 @@ export interface PeriodListParams extends BaseListParams {
  */
 export interface DerivedPeriodListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -216,9 +226,9 @@ export interface DerivedPeriodListParams extends BaseListParams {
  */
 export interface DerivedVariableListParams extends BaseListParams {
   /**
-   * Variable ID
+   * Variable ID (optional)
    */
-  variableId: number;
+  variableId?: number;
 }
 
 /**
@@ -256,6 +266,16 @@ export interface DynamicTableParams extends BaseListParams {
  */
 export interface StatisticClassificationListParams extends BaseListParams {
   /**
+   * Classification type (defaults to KBLI_2020)
+   */
+  type?: ClassificationType;
+
+  /**
+   * Classification level (optional filter)
+   */
+  level?: ClassificationLevel;
+
+  /**
    * Keyword search
    */
   keyword?: string;
@@ -264,7 +284,37 @@ export interface StatisticClassificationListParams extends BaseListParams {
 /**
  * Parameters for census list
  */
-export interface CensusListParams extends BaseListParams {}
+export interface CensusListParams {
+  /**
+   * Type of census data to retrieve
+   */
+  type?: 'events' | 'topics' | 'areas' | 'datasets' | 'data';
+
+  /**
+   * Census ID (required for topics, areas, datasets, data)
+   */
+  censusId?: string;
+
+  /**
+   * Topic ID (required for datasets)
+   */
+  topicId?: number;
+
+  /**
+   * Census Area ID (required for data)
+   */
+  censusAreaId?: string;
+
+  /**
+   * Dataset ID (required for data)
+   */
+  datasetId?: string;
+
+  /**
+   * Cancel token for request cancellation
+   */
+  cancelToken?: CancelToken;
+}
 
 /**
  * Parameters for view requests

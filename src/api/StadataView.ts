@@ -1,7 +1,6 @@
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 import { ViewParams } from '../types';
-import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
@@ -18,18 +17,13 @@ import { Period } from '../features/period';
 import { DerivedPeriod } from '../features/derived-period';
 import { DerivedVariable } from '../features/derived-variable';
 import { StatisticClassification } from '../features/statistic-classification';
-import { Census } from '../features/census';
+import { CensusEvent } from '../features/census';
 
 /**
  * Interface for view API operations
  * Provides access to all view endpoints
  */
 export interface StadataView {
-  /**
-   * Gets a domain by ID
-   */
-  domain(params: ViewParams): Promise<Result<Domain, ApiFailure>>;
-
   /**
    * Gets a publication by ID
    */
@@ -113,7 +107,7 @@ export interface StadataView {
   /**
    * Gets a census by ID
    */
-  census(params: ViewParams): Promise<Result<Census, ApiFailure>>;
+  census(params: ViewParams): Promise<Result<CensusEvent, ApiFailure>>;
 
   // TODO: Add methods for other features
 }

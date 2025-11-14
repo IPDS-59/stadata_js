@@ -19,11 +19,35 @@ export class DerivedVariableRepositoryImpl implements DerivedVariableRepository 
 
     return result.map((response) => {
       try {
-        const derivedVariables = response.data.map((item) => DerivedVariable.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        // Validate that response.data exists and is an array with at least 2 elements
+        if (!response.data || !Array.isArray(response.data) || response.data.length < 2) {
+          throw new ParseFailure('Invalid response structure: missing or invalid data array');
+        }
+
+        const paginationInfo = response.data[0];
+        const derivedVariablesData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !derivedVariablesData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const derivedVariables = derivedVariablesData.map((item) => DerivedVariable.fromJson(item));
+
+        // Calculate fallback values for missing pagination fields
+        const count = Number(paginationInfo.count) || derivedVariablesData.length;
+        const perPage = Number(paginationInfo.per_page) || count;
+
         return ListResult.fromJson(
           {
             data: derivedVariables,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: perPage,
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: count,
+            },
           },
           (json: Record<string, unknown>) => DerivedVariable.fromJson(json)
         );

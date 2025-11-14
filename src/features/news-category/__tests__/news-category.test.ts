@@ -13,14 +13,14 @@ describe('NewsCategory Entity', () => {
 
     const json = newsCategory.toJson();
 
-    expect(json.category_id).toBe('1');
-    expect(json.category_name).toBe('Economy');
+    expect(json.newscat_id).toBe('1');
+    expect(json.newscat_name).toBe('Economy');
   });
 
   it('should create from JSON correctly', () => {
     const json = {
-      category_id: '1',
-      category_name: 'Economy',
+      newscat_id: '1',
+      newscat_name: 'Economy',
     };
 
     const newsCategory = NewsCategory.fromJson(json);
@@ -43,8 +43,8 @@ describe('NewsCategory Entity', () => {
 
   it('should handle empty string values correctly', () => {
     const json = {
-      category_id: '',
-      category_name: '',
+      newscat_id: '',
+      newscat_name: '',
     };
 
     const newsCategory = NewsCategory.fromJson(json);
@@ -64,7 +64,7 @@ describe('NewsCategory Entity', () => {
 
   it('should handle partial JSON data', () => {
     const json = {
-      category_id: '1',
+      newscat_id: '1',
     };
 
     const newsCategory = NewsCategory.fromJson(json);
@@ -75,8 +75,8 @@ describe('NewsCategory Entity', () => {
 
   it('should handle numeric ID by converting to string', () => {
     const json = {
-      category_id: 1,
-      category_name: 'Economy',
+      newscat_id: 1,
+      newscat_name: 'Economy',
     };
 
     const newsCategory = NewsCategory.fromJson(json);

@@ -5,8 +5,17 @@ import { BaseEntity } from '../../../../core';
  */
 export class StrategicIndicator extends BaseEntity {
   constructor(
-    public readonly id: number,
-    public readonly name: string
+    public readonly variableId: number,
+    public readonly indicatorId: number,
+    public readonly subjectCsa: number,
+    public readonly title: string,
+    public readonly name: string,
+    public readonly dataSource: string,
+    public readonly value: number,
+    public readonly unit: string,
+    public readonly category: number,
+    public readonly hashId: string,
+    public readonly period: string
   ) {
     super();
   }
@@ -16,8 +25,17 @@ export class StrategicIndicator extends BaseEntity {
    */
   toJson(): Record<string, unknown> {
     return {
-      ind_id: this.id,
-      ind_name: this.name,
+      var: this.variableId,
+      indicator_id: this.indicatorId,
+      subject_csa: this.subjectCsa,
+      title: this.title,
+      name: this.name,
+      data_source: this.dataSource,
+      value: this.value,
+      unit: this.unit,
+      category: this.category,
+      hash_id: this.hashId,
+      periode: this.period,
     };
   }
 
@@ -26,8 +44,17 @@ export class StrategicIndicator extends BaseEntity {
    */
   static fromJson(json: Record<string, unknown>): StrategicIndicator {
     return new StrategicIndicator(
-      Number(json.ind_id || json.id || 0),
-      String(json.ind_name || json.name || '')
+      Number(json.var || json.variableId || 0),
+      Number(json.indicator_id || json.indicatorId || 0),
+      Number(json.subject_csa || json.subjectCsa || 0),
+      String(json.title || ''),
+      String(json.name || ''),
+      String(json.data_source || json.dataSource || ''),
+      Number(json.value || 0),
+      String(json.unit || ''),
+      Number(json.category || 0),
+      String(json.hash_id || json.hashId || ''),
+      String(json.periode || json.period || '')
     );
   }
 }
