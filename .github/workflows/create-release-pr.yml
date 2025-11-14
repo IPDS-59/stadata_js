@@ -112,7 +112,7 @@ jobs:
 
           # Set PR title based on type
           if [ "$BRANCH_TYPE" = "release" ]; then
-            PR_TITLE="release: version ${VERSION}"
+            PR_TITLE="chore: release version ${VERSION}"
           else
             PR_TITLE="fix: hotfix ${VERSION}"
           fi
