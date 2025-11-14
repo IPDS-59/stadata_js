@@ -1,9 +1,7 @@
 name: Bump Version
 
 on:
-  push:
-    branches:
-      - 'release/**'
+  create:
 
 permissions:
   contents: write
@@ -13,10 +11,12 @@ jobs:
   bump-version:
     name: Bump Package Version
     runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
@@ -29,7 +29,7 @@ jobs:
       - name: Extract version from branch
         id: extract_version
         run: |
-          BRANCH_NAME="${{ github.ref_name }}"
+          BRANCH_NAME="${{ github.event.ref }}"
           VERSION="${BRANCH_NAME#release/}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Extracted version: ${VERSION}"
