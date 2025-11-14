@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.1] - 2025-11-14
+
+### 🐛 Bug Fixes
+
+- **ci**: add hotfix branch support to changelog and version bump workflows ([87c5c40])
+- **network**: remove Content-Type header from GET requests to prevent CORS preflight ([1adfeb0])
+
+### 🔧 Chores
+
+- back-merge release 0.1.0 to develop ([df4d93f])
+- bump version to 0.2.0 for next development cycle ([2f63388])
+
+
 ## [0.1.0] - 2025-11-14
 
 ### ✨ Features
