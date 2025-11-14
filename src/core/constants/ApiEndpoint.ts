@@ -74,9 +74,8 @@ export const ApiEndpoint = {
   statisticClassification: (type: ClassificationType = ClassificationType.KBLI_2020) =>
     `/view/model/${type}`,
 
-  // Census endpoints
-  CENSUS_LIST: '/list/model/census',
-  CENSUS_VIEW: '/view/model/census',
+  // Census endpoint (uses datasource, not model)
+  CENSUS: '/datasource/sensus',
 
   // Trade endpoints
   TRADE: '/dataexim',

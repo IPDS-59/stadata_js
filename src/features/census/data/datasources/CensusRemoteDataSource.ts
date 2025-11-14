@@ -69,7 +69,7 @@ export class CensusRemoteDataSource {
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.CENSUS_LIST}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.CENSUS}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
       cancelToken: params?.cancelToken,
@@ -92,7 +92,7 @@ export class CensusRemoteDataSource {
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.CENSUS_VIEW}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.CENSUS}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<Record<string, unknown>>(url, {
       cancelToken: params.cancelToken,
