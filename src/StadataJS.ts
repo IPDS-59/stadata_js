@@ -25,7 +25,9 @@ import { DynamicTableInjector } from './features/dynamic-table';
 import { TradeInjector } from './features/trade';
 import { Logger, LogLevel, ProductionLogFilter } from './core/log';
 import { GetTrade } from './features/trade';
-import { TradeParams } from './types';
+import { TradeParams, ResponseData } from './types';
+import { Result } from 'neverthrow';
+import { ApiFailure } from './core/failures';
 
 /**
  * Configuration options for StadataJS
@@ -243,7 +245,9 @@ export class StadataJS {
    * }
    * ```
    */
-  async trade(params: TradeParams) {
+  async trade(
+    params: TradeParams
+  ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const useCase = this.injector.resolve<GetTrade>('GetTrade');
     return useCase.execute(params);
   }

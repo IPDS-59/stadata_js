@@ -202,7 +202,9 @@ describe('GetTrade Use Case', () => {
     if (result.isOk()) {
       expect(result.value).toEqual(mockData);
     }
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockRepository.get).toHaveBeenCalledWith(params);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockRepository.get).toHaveBeenCalledTimes(1);
   });
 
@@ -224,7 +226,9 @@ describe('GetTrade Use Case', () => {
     if (result.isErr()) {
       expect(result.error).toEqual(mockFailure);
     }
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockRepository.get).toHaveBeenCalledWith(params);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockRepository.get).toHaveBeenCalledTimes(1);
   });
 
@@ -242,6 +246,7 @@ describe('GetTrade Use Case', () => {
 
     await useCase.execute(params);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(mockRepository.get).toHaveBeenCalledWith(params);
   });
 
