@@ -238,7 +238,9 @@
 
     <script>
       // The SDK is now available globally as window.StadataJS
-      const { StadataJS, DataLanguage } = window.StadataJS;
+      // Extract the exports from the global object
+      const SDK = window.StadataJS.StadataJS;
+      const DataLanguage = window.StadataJS.DataLanguage;
 
       let sdkInitialized = false;
 
@@ -275,7 +277,7 @@
         elements.initBtn.innerHTML = '<span class="loading"></span>Initializing...';
 
         try {
-          await StadataJS.init({
+          await SDK.init({
             apiKey: apiKey,
             debug: true,
           });
@@ -293,7 +295,7 @@
       }
 
       function destroySDK() {
-        StadataJS.destroy();
+        SDK.destroy();
         sdkInitialized = false;
         showStatus('🗑️ SDK destroyed', 'info');
         elements.initBtn.disabled = false;
@@ -305,9 +307,7 @@
         elements.apiKey.value = '';
       }
 
-      // Make SDK and functions available globally
-      window.StadataJS = StadataJS;
-      window.DataLanguage = DataLanguage;
+      // Make functions available globally for onclick handlers
       window.initializeSDK = initializeSDK;
       window.destroySDK = destroySDK;
 
@@ -316,7 +316,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching domains...', 'info');
 
-        const result = await StadataJS.instance.list.domains({
+        const result = await SDK.instance.list.domains({
           lang: DataLanguage.ID,
           page: 1,
           perPage: 5,
@@ -338,7 +338,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching domain details...', 'info');
 
-        const result = await StadataJS.instance.view.domain({
+        const result = await SDK.instance.view.domain({
           id: '7200',
           domain: '7200',
           lang: DataLanguage.ID,
@@ -360,7 +360,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching publications...', 'info');
 
-        const result = await StadataJS.instance.list.publications({
+        const result = await SDK.instance.list.publications({
           lang: DataLanguage.ID,
           domain: '7200',
           page: 1,
@@ -383,7 +383,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching subjects...', 'info');
 
-        const result = await StadataJS.instance.list.subjects({
+        const result = await SDK.instance.list.subjects({
           lang: DataLanguage.ID,
           domain: '7200',
           page: 1,
@@ -406,7 +406,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching strategic indicators...', 'info');
 
-        const result = await StadataJS.instance.list.strategicIndicators({
+        const result = await SDK.instance.list.strategicIndicators({
           lang: DataLanguage.ID,
           domain: '7200',
           page: 1,
@@ -429,7 +429,7 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching news...', 'info');
 
-        const result = await StadataJS.instance.list.news({
+        const result = await SDK.instance.list.news({
           lang: DataLanguage.ID,
           domain: '7200',
           page: 1,
