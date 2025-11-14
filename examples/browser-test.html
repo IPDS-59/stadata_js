@@ -254,7 +254,15 @@
           <button class="btn-secondary" onclick="testListPeriods()">📅 List Periods</button>
           <button class="btn-secondary" onclick="testListDerivedPeriods()">🗓️ List Derived Periods</button>
           <button class="btn-secondary" onclick="testListStatisticClassifications()">📊 List Statistic Classifications</button>
-          <button class="btn-secondary" onclick="testListCensuses()">🏘️ List Censuses</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Census Data</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListCensuses()">🏘️ Census Events</button>
+          <button class="btn-secondary" onclick="testCensusTopics()">📋 Census Topics</button>
+          <button class="btn-secondary" onclick="testCensusAreas()">🗺️ Census Areas</button>
+          <button class="btn-secondary" onclick="testCensusDatasets()">📊 Census Datasets</button>
+          <button class="btn-secondary" onclick="testCensusData()">📈 Census Data</button>
         </div>
 
         <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Trade Data</h3>
@@ -799,6 +807,85 @@
         result.match(
           (data) => {
             showStatus(`✅ Success! Found ${data.totalItems} census events`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusTopics = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census topics...', 'info');
+
+        const result = await SDK.instance.list.censusTopics({ censusId: 'sp2020' });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census topics`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusAreas = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census areas...', 'info');
+
+        const result = await SDK.instance.list.censusEventAreas({ censusId: 'sp2020' });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census areas`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusDatasets = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census datasets...', 'info');
+
+        const result = await SDK.instance.list.censusEventDatasets({
+          censusId: 'sp2020',
+          topicId: 20,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census datasets`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusData = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census data...', 'info');
+
+        const result = await SDK.instance.list.censusData({
+          censusId: 'sp2020',
+          censusAreaId: '1667',
+          datasetId: '1',
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census data items`, 'success');
             showResults(data);
           },
           (error) => {

@@ -56,7 +56,6 @@ export class StatisticClassificationRemoteDataSource {
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const queryParams: Record<string, string> = {
       id: params.id.toString(),
-      domain: params.domain,
     };
 
     if (params.lang) {
