@@ -93,7 +93,7 @@ export {
 export * from './types';
 
 // Feature exports
-export { Domain, DomainRepository, GetAllDomains, GetDomainById } from './features/domain';
+export { Domain, DomainRepository, GetAllDomains } from './features/domain';
 export {
   Publication,
   RelatedPublication,

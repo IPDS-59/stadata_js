@@ -1,7 +1,6 @@
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 import { ViewParams } from '../types';
-import { Domain } from '../features/domain';
 import { Publication } from '../features/publication';
 import { Infographic } from '../features/infographic';
 import { News } from '../features/news';
@@ -25,11 +24,6 @@ import { Census } from '../features/census';
  * Provides access to all view endpoints
  */
 export interface StadataView {
-  /**
-   * Gets a domain by ID
-   */
-  domain(params: ViewParams): Promise<Result<Domain, ApiFailure>>;
-
   /**
    * Gets a publication by ID
    */

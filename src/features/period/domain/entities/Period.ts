@@ -6,7 +6,7 @@ import { BaseEntity } from '../../../../core';
 export class Period extends BaseEntity {
   constructor(
     public readonly id: number,
-    public readonly label: string
+    public readonly period: number
   ) {
     super();
   }
@@ -16,8 +16,8 @@ export class Period extends BaseEntity {
    */
   toJson(): Record<string, unknown> {
     return {
-      period_id: this.id,
-      label: this.label,
+      th_id: this.id,
+      th: this.period,
     };
   }
 
@@ -26,8 +26,8 @@ export class Period extends BaseEntity {
    */
   static fromJson(json: Record<string, unknown>): Period {
     return new Period(
-      Number(json.period_id || json.id || 0),
-      String(json.label || json.name || '')
+      Number(json.th_id || json.id || 0),
+      Number(json.th || json.period || 0)
     );
   }
 }

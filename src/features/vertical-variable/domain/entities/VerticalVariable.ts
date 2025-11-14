@@ -6,9 +6,10 @@ import { BaseEntity } from '../../../../core';
 export class VerticalVariable extends BaseEntity {
   constructor(
     public readonly id: number,
-    public readonly variableId: number,
     public readonly label: string,
-    public readonly alias: string
+    public readonly itemId: number,
+    public readonly groupId: number,
+    public readonly groupName: string
   ) {
     super();
   }
@@ -18,10 +19,11 @@ export class VerticalVariable extends BaseEntity {
    */
   toJson(): Record<string, unknown> {
     return {
-      vervar_id: this.id,
-      var_id: this.variableId,
-      label: this.label,
-      alias: this.alias,
+      kode_ver_id: this.id,
+      vervar: this.label,
+      item_ver_id: this.itemId,
+      group_ver_id: this.groupId,
+      name_group_ver_id: this.groupName,
     };
   }
 
@@ -30,10 +32,11 @@ export class VerticalVariable extends BaseEntity {
    */
   static fromJson(json: Record<string, unknown>): VerticalVariable {
     return new VerticalVariable(
-      Number(json.vervar_id || json.id || 0),
-      Number(json.var_id || json.variableId || 0),
-      String(json.label || ''),
-      String(json.alias || '')
+      Number(json.kode_ver_id || json.id || 0),
+      String(json.vervar || json.label || ''),
+      Number(json.item_ver_id || json.itemId || 0),
+      Number(json.group_ver_id || json.groupId || 0),
+      String(json.name_group_ver_id || json.groupName || '')
     );
   }
 }

@@ -6,7 +6,6 @@ import { ClassificationType } from '../../shared/enums';
 export const ApiEndpoint = {
   // Domain endpoints
   DOMAIN_LIST: '/domain',
-  DOMAIN_VIEW: '/domain',
 
   // Publication endpoints
   PUBLICATION_LIST: '/list/model/publication',
