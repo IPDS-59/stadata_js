@@ -644,7 +644,15 @@
               derivedVariables: table.derivedVariables.map(d => ({ value: d.value, label: d.label })),
               derivedPeriods: table.derivedPeriods.map(d => ({ value: d.value, label: d.label })),
               dataContentSample: Object.entries(table.dataContent).slice(0, 5),
-              totalDataPoints: Object.keys(table.dataContent).length
+              totalDataPoints: Object.keys(table.dataContent).length,
+              relatedTables: table.related.map(r => ({
+                id: r.id,
+                title: r.title,
+                tableSource: r.tableSource,
+                lastUpdate: r.lastUpdate,
+                link: r.link
+              })),
+              lastUpdate: table.lastUpdate
             };
 
             showResults(output);

@@ -4,6 +4,7 @@ import {
   VerticalVariableInfo,
   PeriodInfo,
   SubjectInfo,
+  RelatedTable,
 } from './VariableInfo';
 
 /**
@@ -25,7 +26,7 @@ export class DynamicTable extends BaseEntity {
     public readonly derivedVariables: VerticalVariableInfo[],
     public readonly derivedPeriods: VerticalVariableInfo[],
     public readonly dataContent: Record<string, unknown>,
-    public readonly related: unknown[],
+    public readonly related: RelatedTable[],
     public readonly lastUpdate?: string | null
   ) {
     super();
@@ -44,7 +45,7 @@ export class DynamicTable extends BaseEntity {
       turvar: this.derivedVariables.map((d) => d.toJson()),
       turtahun: this.derivedPeriods.map((d) => d.toJson()),
       datacontent: this.dataContent,
-      related: this.related,
+      related: this.related.map((r) => r.toJson()),
       last_update: this.lastUpdate,
     };
   }
@@ -70,7 +71,7 @@ export class DynamicTable extends BaseEntity {
       turvarArray.map((d) => VerticalVariableInfo.fromJson(d as Record<string, unknown>)),
       turtahunArray.map((d) => VerticalVariableInfo.fromJson(d as Record<string, unknown>)),
       (json.datacontent as Record<string, unknown>) || {},
-      relatedArray,
+      relatedArray.map((r) => RelatedTable.fromJson(r as Record<string, unknown>)),
       json.last_update !== undefined ? (json.last_update as string | null) : undefined
     );
   }

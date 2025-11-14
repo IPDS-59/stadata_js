@@ -243,8 +243,9 @@ export interface DynamicTableParams extends BaseListParams {
   /**
    * Period ID (th parameter) - required
    * Can be a single value, range (separated by :), or multiple values (separated by ;)
+   * Examples: 117, "117:123", "117;123"
    */
-  periodId: number;
+  periodId: number | string;
 
   /**
    * Derived variable ID (turvar parameter)

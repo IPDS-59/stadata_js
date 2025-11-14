@@ -103,3 +103,38 @@ export class SubjectInfo extends BaseEntity {
     return new SubjectInfo(Number(json.val || 0), String(json.label || ''));
   }
 }
+
+/**
+ * Related table information
+ */
+export class RelatedTable extends BaseEntity {
+  constructor(
+    public readonly id: string,
+    public readonly title: string,
+    public readonly tableSource: number,
+    public readonly lastUpdate: string | null,
+    public readonly link: string
+  ) {
+    super();
+  }
+
+  toJson(): Record<string, unknown> {
+    return {
+      id: this.id,
+      title: this.title,
+      tablesource: this.tableSource,
+      last_update: this.lastUpdate,
+      link: this.link,
+    };
+  }
+
+  static fromJson(json: Record<string, unknown>): RelatedTable {
+    return new RelatedTable(
+      String(json.id || ''),
+      String(json.title || ''),
+      Number(json.tablesource || 0),
+      json.last_update !== null ? String(json.last_update || '') : null,
+      String(json.link || '')
+    );
+  }
+}
