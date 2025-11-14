@@ -29,23 +29,19 @@ export class CensusData extends BaseEntity {
       nama_wilayah: this.regionName,
       id_indikator: this.indicatorId,
       nama_indikator: this.indicatorName,
+      categories: this.categories.map((category) => ({
+        id: category.id,
+        name: category.name,
+        item_id: category.itemId,
+        item_code: category.itemCode,
+        item_name: category.itemName,
+      })),
       period: this.period,
       nilai: this.value,
     };
 
     if (this.regionLevel !== undefined && this.regionLevel !== null) {
       json.level_wilayah = this.regionLevel;
-    }
-
-    // Serialize categories back to individual fields
-    for (let i = 0; i < this.categories.length && i < 5; i++) {
-      const category = this.categories[i];
-      const num = i + 1;
-      json[`id_kategori_${num}`] = category.id;
-      json[`nama_kategori_${num}`] = category.name;
-      json[`id_item_kategori_${num}`] = category.itemId;
-      json[`kode_item_kategori_${num}`] = category.itemCode;
-      json[`nama_item__kategori_${num}`] = category.itemName;
     }
 
     return json;
