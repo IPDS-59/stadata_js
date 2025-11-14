@@ -45,12 +45,28 @@ jobs:
       - name: Check for changelog changes
         id: check_changes
         run: |
-          if git diff --quiet CHANGELOG.md; then
+          # Check if CHANGELOG.md was created or modified
+          if [ ! -f "CHANGELOG.md" ]; then
+            # File doesn't exist, something went wrong
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "No changes in CHANGELOG.md"
+            echo "ERROR: CHANGELOG.md was not created"
+            exit 1
+          fi
+
+          # Check if file is tracked by git
+          if git ls-files --error-unmatch CHANGELOG.md > /dev/null 2>&1; then
+            # File is tracked, check for changes
+            if git diff --quiet CHANGELOG.md; then
+              echo "has_changes=false" >> $GITHUB_OUTPUT
+              echo "No changes in CHANGELOG.md"
+            else
+              echo "has_changes=true" >> $GITHUB_OUTPUT
+              echo "Changes detected in CHANGELOG.md"
+            fi
           else
+            # File is untracked (new file)
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected in CHANGELOG.md"
+            echo "CHANGELOG.md is a new file"
           fi
 
       - name: Check for existing PR
