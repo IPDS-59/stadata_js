@@ -217,13 +217,44 @@
       <div id="actionsCard" class="card hidden">
         <h2 style="margin-bottom: 20px; color: #333">API Tests</h2>
 
+        <h3 style="margin-top: 0; margin-bottom: 15px; color: #555; font-size: 16px;">Domain & Subjects</h3>
         <div class="grid">
           <button class="btn-secondary" onclick="testListDomains()">📋 List Domains</button>
           <button class="btn-secondary" onclick="testViewDomain()">🔍 View Domain</button>
-          <button class="btn-secondary" onclick="testListPublications()">📚 List Publications</button>
           <button class="btn-secondary" onclick="testListSubjects()">📊 List Subjects</button>
-          <button class="btn-secondary" onclick="testListIndicators()">📈 List Indicators</button>
+          <button class="btn-secondary" onclick="testListSubjectCategories()">🏷️ List Subject Categories</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Publications & News</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListPublications()">📚 List Publications</button>
           <button class="btn-secondary" onclick="testListNews()">📰 List News</button>
+          <button class="btn-secondary" onclick="testListNewsCategories()">📑 List News Categories</button>
+          <button class="btn-secondary" onclick="testListPressReleases()">📢 List Press Releases</button>
+          <button class="btn-secondary" onclick="testListInfographics()">📊 List Infographics</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Indicators & Tables</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListIndicators()">📈 List Strategic Indicators</button>
+          <button class="btn-secondary" onclick="testListStaticTables()">📋 List Static Tables</button>
+          <button class="btn-secondary" onclick="testListDynamicTables()">🔄 List Dynamic Tables</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Variables & Units</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListVariables()">🔢 List Variables</button>
+          <button class="btn-secondary" onclick="testListVerticalVariables()">📐 List Vertical Variables</button>
+          <button class="btn-secondary" onclick="testListDerivedVariables()">🧮 List Derived Variables</button>
+          <button class="btn-secondary" onclick="testListUnits()">📏 List Units</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Periods & Classifications</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListPeriods()">📅 List Periods</button>
+          <button class="btn-secondary" onclick="testListDerivedPeriods()">🗓️ List Derived Periods</button>
+          <button class="btn-secondary" onclick="testListStatisticClassifications()">📊 List Statistic Classifications</button>
+          <button class="btn-secondary" onclick="testListCensuses()">🏘️ List Censuses</button>
         </div>
 
         <!-- Results -->
@@ -441,6 +472,327 @@
         result.match(
           (data) => {
             showStatus(`✅ Success! Found ${data.totalItems} news items`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListSubjectCategories = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching subject categories...', 'info');
+
+        const result = await SDK.instance.list.subjectCategories({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} subject categories`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListNewsCategories = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching news categories...', 'info');
+
+        const result = await SDK.instance.list.newsCategories({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} news categories`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListPressReleases = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching press releases...', 'info');
+
+        const result = await SDK.instance.list.pressReleases({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} press releases`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListInfographics = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching infographics...', 'info');
+
+        const result = await SDK.instance.list.infographics({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} infographics`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListStaticTables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching static tables...', 'info');
+
+        const result = await SDK.instance.list.staticTables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} static tables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDynamicTables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching dynamic tables...', 'info');
+
+        const result = await SDK.instance.list.dynamicTables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} dynamic tables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching variables...', 'info');
+
+        const result = await SDK.instance.list.variables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListVerticalVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching vertical variables...', 'info');
+
+        const result = await SDK.instance.list.verticalVariables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} vertical variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDerivedVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching derived variables...', 'info');
+
+        const result = await SDK.instance.list.derivedVariables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} derived variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListUnits = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching units...', 'info');
+
+        const result = await SDK.instance.list.units({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} units`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListPeriods = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching periods...', 'info');
+
+        const result = await SDK.instance.list.periods({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} periods`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDerivedPeriods = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching derived periods...', 'info');
+
+        const result = await SDK.instance.list.derivedPeriods({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} derived periods`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListStatisticClassifications = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching statistic classifications...', 'info');
+
+        const result = await SDK.instance.list.statisticClassifications({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} statistic classifications`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListCensuses = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching censuses...', 'info');
+
+        const result = await SDK.instance.list.censuses({
+          lang: DataLanguage.ID,
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} censuses`, 'success');
             showResults(data);
           },
           (error) => {
