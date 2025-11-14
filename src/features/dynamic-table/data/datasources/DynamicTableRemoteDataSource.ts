@@ -21,7 +21,7 @@ export class DynamicTableRemoteDataSource {
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const queryParams: Record<string, string> = {
       model: 'data',
-      domain: params.domain || params.tableId,
+      domain: params.domain || '',
       var: params.variableId.toString(),
     };
 
@@ -33,15 +33,19 @@ export class DynamicTableRemoteDataSource {
       queryParams['page'] = params.page.toString();
     }
 
-    if (params.periodId) {
-      queryParams['th'] = params.periodId.toString();
+    if (params.verticalVariableId !== undefined) {
+      queryParams['vervar'] = params.verticalVariableId.toString();
     }
 
-    if (params.derivedVariableId) {
+    if (params.derivedVariableId !== undefined) {
       queryParams['turvar'] = params.derivedVariableId.toString();
     }
 
-    if (params.derivedPeriodId) {
+    if (params.periodId !== undefined) {
+      queryParams['th'] = params.periodId.toString();
+    }
+
+    if (params.derivedPeriodId !== undefined) {
       queryParams['turth'] = params.derivedPeriodId.toString();
     }
 

@@ -236,27 +236,27 @@ export interface DerivedVariableListParams extends BaseListParams {
  */
 export interface DynamicTableParams extends BaseListParams {
   /**
-   * Table ID
-   */
-  tableId: string;
-
-  /**
-   * Variable ID
+   * Variable ID - required
    */
   variableId: number;
 
   /**
-   * Period ID
+   * Period ID (th parameter)
    */
   periodId?: number;
 
   /**
-   * Derived variable ID
+   * Derived variable ID (turvar parameter)
    */
   derivedVariableId?: number;
 
   /**
-   * Derived period ID
+   * Vertical variable ID (vervar parameter)
+   */
+  verticalVariableId?: number;
+
+  /**
+   * Derived period ID (turth parameter)
    */
   derivedPeriodId?: number;
 }

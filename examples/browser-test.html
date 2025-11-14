@@ -616,18 +616,18 @@
 
       window.testListDynamicTables = async function () {
         if (!sdkInitialized) return;
-        showStatus('🔄 Fetching dynamic tables...', 'info');
+        showStatus('🔄 Fetching dynamic table data...', 'info');
 
         const result = await SDK.instance.list.dynamicTables({
           lang: DataLanguage.ID,
           domain: '7200',
+          variableId: 2,
           page: 1,
-          perPage: 5,
         });
 
         result.match(
           (data) => {
-            showStatus(`✅ Success! Found ${data.totalItems} dynamic tables`, 'success');
+            showStatus(`✅ Success! Found ${data.totalItems} data rows`, 'success');
             showResults(data);
           },
           (error) => {
