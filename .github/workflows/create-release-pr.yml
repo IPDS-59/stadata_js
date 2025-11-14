@@ -71,6 +71,36 @@ jobs:
             echo "skip_pr=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Ensure labels exist
+        if: steps.check_pr.outputs.skip_pr == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          BRANCH_TYPE="${{ steps.branch_info.outputs.branch_type }}"
+
+          # Function to create label if it doesn't exist
+          create_label_if_not_exists() {
+            local label_name=$1
+            local label_color=$2
+            local label_description=$3
+
+            if ! gh label list --json name --jq '.[].name' | grep -q "^${label_name}$"; then
+              echo "Creating label: ${label_name}"
+              gh label create "${label_name}" --color "${label_color}" --description "${label_description}" || true
+            else
+              echo "Label already exists: ${label_name}"
+            fi
+          }
+
+          # Create labels based on branch type
+          if [ "$BRANCH_TYPE" = "release" ]; then
+            create_label_if_not_exists "release" "0e8a16" "Release branch PR"
+          else
+            create_label_if_not_exists "hotfix" "d73a4a" "Hotfix branch PR"
+          fi
+
+          create_label_if_not_exists "release-candidate" "fbca04" "Release candidate PR"
+
       - name: Create PR to main
         if: steps.check_pr.outputs.skip_pr == 'false'
         env:
