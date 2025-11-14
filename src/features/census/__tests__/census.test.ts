@@ -1,99 +1,85 @@
-import { Census } from '../domain/entities/Census';
+import { CensusEvent } from '../domain/entities/CensusEvent';
 
-describe('Census Entity', () => {
-  it('should create a census with all fields', () => {
-    const census = new Census(1, 'Sensus Penduduk', '2020');
+describe('CensusEvent Entity', () => {
+  it('should create a census event with all fields', () => {
+    const census = new CensusEvent('1', 'Sensus Penduduk', 2020);
 
-    expect(census.id).toBe(1);
-    expect(census.activity).toBe('Sensus Penduduk');
-    expect(census.year).toBe('2020');
+    expect(census.id).toBe('1');
+    expect(census.name).toBe('Sensus Penduduk');
+    expect(census.year).toBe(2020);
   });
 
   it('should convert to JSON correctly', () => {
-    const census = new Census(1, 'Sensus Penduduk', '2020');
+    const census = new CensusEvent('1', 'Sensus Penduduk', 2020);
 
     const json = census.toJson();
 
-    expect(json.id).toBe(1);
+    expect(json.id).toBe('1');
     expect(json.kegiatan).toBe('Sensus Penduduk');
-    expect(json.tahun_kegiatan).toBe('2020');
+    expect(json.tahun_kegiatan).toBe(2020);
   });
 
   it('should create from JSON correctly', () => {
     const json = {
-      id: 1,
+      id: '1',
       kegiatan: 'Sensus Penduduk',
-      tahun_kegiatan: '2020',
+      tahun_kegiatan: 2020,
     };
 
-    const census = Census.fromJson(json);
+    const census = CensusEvent.fromJson(json);
 
-    expect(census.id).toBe(1);
-    expect(census.activity).toBe('Sensus Penduduk');
-    expect(census.year).toBe('2020');
-  });
-
-  it('should handle alternative JSON field names', () => {
-    const json = {
-      id: 1,
-      activity: 'Sensus Ekonomi',
-      year: '2016',
-    };
-
-    const census = Census.fromJson(json);
-
-    expect(census.id).toBe(1);
-    expect(census.activity).toBe('Sensus Ekonomi');
-    expect(census.year).toBe('2016');
+    expect(census.id).toBe('1');
+    expect(census.name).toBe('Sensus Penduduk');
+    expect(census.year).toBe(2020);
   });
 
   it('should handle missing fields by defaulting to empty values', () => {
     const json = {};
 
-    const census = Census.fromJson(json);
+    const census = CensusEvent.fromJson(json);
 
-    expect(census.id).toBe(0);
-    expect(census.activity).toBe('');
-    expect(census.year).toBe('');
+    expect(census.id).toBe('');
+    expect(census.name).toBe('');
+    expect(census.year).toBe(0);
   });
 
   it('should handle partial JSON data', () => {
     const json = {
-      id: 1,
+      id: '1',
     };
 
-    const census = Census.fromJson(json);
+    const census = CensusEvent.fromJson(json);
 
-    expect(census.id).toBe(1);
-    expect(census.activity).toBe('');
-    expect(census.year).toBe('');
+    expect(census.id).toBe('1');
+    expect(census.name).toBe('');
+    expect(census.year).toBe(0);
   });
 
-  it('should handle numeric year by converting to string', () => {
+  it('should handle numeric year correctly', () => {
     const json = {
-      id: 1,
+      id: '1',
       kegiatan: 'Sensus Pertanian',
       tahun_kegiatan: 2023,
     };
 
-    const census = Census.fromJson(json);
+    const census = CensusEvent.fromJson(json);
 
-    expect(census.id).toBe(1);
-    expect(census.activity).toBe('Sensus Pertanian');
-    expect(census.year).toBe('2023');
+    expect(census.id).toBe('1');
+    expect(census.name).toBe('Sensus Pertanian');
+    expect(census.year).toBe(2023);
   });
 
   it('should handle empty string values correctly', () => {
     const json = {
-      id: 0,
+      id: '',
       kegiatan: '',
-      tahun_kegiatan: '',
+      tahun_kegiatan: 0,
     };
 
-    const census = Census.fromJson(json);
+    const census = CensusEvent.fromJson(json);
 
-    expect(census.id).toBe(0);
-    expect(census.activity).toBe('');
-    expect(census.year).toBe('');
+    expect(census.id).toBe('');
+    expect(census.name).toBe('');
+    expect(census.year).toBe(0);
   });
 });

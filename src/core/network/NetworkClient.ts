@@ -118,15 +118,26 @@ export class NetworkClient {
   ): Promise<Result<T, ApiFailure>> {
     try {
       // Build full URL
-      const fullUrl = this.buildUrl(url);
+      let fullUrl = this.buildUrl(url);
+
+      // Build headers - omit Content-Type for GET requests to avoid CORS preflight
+      const headers: Record<string, string> = {};
+      if (method !== 'GET') {
+        Object.assign(headers, this.defaultHeaders);
+      } else {
+        // For GET requests, only include non-Content-Type headers
+        Object.entries(this.defaultHeaders).forEach(([key, value]) => {
+          if (key.toLowerCase() !== 'content-type') {
+            headers[key] = value;
+          }
+        });
+      }
+      Object.assign(headers, options.headers);
 
       // Build request init
       let init: RequestInit = {
         method,
-        headers: {
-          ...this.defaultHeaders,
-          ...options.headers,
-        },
+        headers,
       };
 
       // Add body for non-GET requests
@@ -142,7 +153,9 @@ export class NetworkClient {
       // Apply request interceptors
       for (const interceptor of this.interceptors) {
         if (interceptor.onRequest) {
-          init = await interceptor.onRequest(fullUrl, init);
+          const intercepted = await interceptor.onRequest(fullUrl, init);
+          fullUrl = intercepted.url;
+          init = intercepted.init;
         }
       }
 

@@ -19,11 +19,35 @@ export class StaticTableRepositoryImpl implements StaticTableRepository {
 
     return result.map((response) => {
       try {
-        const staticTables = response.data.map((item) => StaticTable.fromJson(item));
+        // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
+        // Validate that response.data exists and is an array with at least 2 elements
+        if (!response.data || !Array.isArray(response.data) || response.data.length < 2) {
+          throw new ParseFailure('Invalid response structure: missing or invalid data array');
+        }
+
+        const paginationInfo = response.data[0];
+        const staticTablesData = response.data[1] as unknown as Record<string, unknown>[];
+
+        if (!paginationInfo || !staticTablesData) {
+          throw new ParseFailure('Invalid response structure');
+        }
+
+        const staticTables = staticTablesData.map((item) => StaticTable.fromJson(item));
+
+        // Calculate fallback values for missing pagination fields
+        const count = Number(paginationInfo.count) || staticTablesData.length;
+        const perPage = Number(paginationInfo.per_page) || count;
+
         return ListResult.fromJson(
           {
             data: staticTables,
-            pagination: response.pagination,
+            pagination: {
+              page: Number(paginationInfo.page || 1),
+              per_page: perPage,
+              total: Number(paginationInfo.total || 0),
+              pages: Number(paginationInfo.pages || 1),
+              count: count,
+            },
           },
           (json: Record<string, unknown>) => StaticTable.fromJson(json)
         );

@@ -10,7 +10,7 @@ export class CensusRemoteDataSource {
   constructor(private client: NetworkClient) {}
 
   /**
-   * Gets all census events from the API
+   * Gets census data from the API based on type
    * @param params - List parameters
    * @returns Result containing response data or failure
    */
@@ -19,20 +19,57 @@ export class CensusRemoteDataSource {
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const queryParams: Record<string, string> = {};
 
-    if (params?.domain) {
-      queryParams['domain'] = params.domain;
-    }
+    // Determine which endpoint and parameters based on type
+    switch (params?.type) {
+      case 'topics':
+        // id=38 for census topics
+        queryParams['id'] = '38';
+        if (params.censusId) {
+          queryParams['kegiatan'] = params.censusId;
+        }
+        break;
 
-    if (params?.lang) {
-      queryParams['lang'] = params.lang;
-    }
+      case 'areas':
+        // id=39 for census areas
+        queryParams['id'] = '39';
+        if (params.censusId) {
+          queryParams['kegiatan'] = params.censusId;
+        }
+        break;
 
-    if (params?.page) {
-      queryParams['page'] = params.page.toString();
+      case 'datasets':
+        // id=40 for census datasets
+        queryParams['id'] = '40';
+        if (params.censusId) {
+          queryParams['kegiatan'] = params.censusId;
+        }
+        if (params.topicId) {
+          queryParams['topik'] = params.topicId.toString();
+        }
+        break;
+
+      case 'data':
+        // id=41 for census data
+        queryParams['id'] = '41';
+        if (params.censusId) {
+          queryParams['kegiatan'] = params.censusId;
+        }
+        if (params.censusAreaId) {
+          queryParams['wilayah_sensus'] = params.censusAreaId;
+        }
+        if (params.datasetId) {
+          queryParams['dataset'] = params.datasetId;
+        }
+        break;
+
+      default:
+        // id=37 for census events (default)
+        queryParams['id'] = '37';
+        break;
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.CENSUS_LIST}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.CENSUS}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
       cancelToken: params?.cancelToken,
@@ -46,6 +83,7 @@ export class CensusRemoteDataSource {
    */
   async getById(params: ViewParams): Promise<Result<Record<string, unknown>, ApiFailure>> {
     const queryParams: Record<string, string> = {
+      id: params.id.toString(),
       domain: params.domain,
     };
 
@@ -54,7 +92,7 @@ export class CensusRemoteDataSource {
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.CENSUS_VIEW}/${params.id}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.CENSUS}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<Record<string, unknown>>(url, {
       cancelToken: params.cancelToken,

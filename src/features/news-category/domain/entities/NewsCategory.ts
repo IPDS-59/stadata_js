@@ -16,8 +16,8 @@ export class NewsCategory extends BaseEntity {
    */
   toJson(): Record<string, unknown> {
     return {
-      category_id: this.id,
-      category_name: this.name,
+      newscat_id: this.id,
+      newscat_name: this.name,
     };
   }
 
@@ -26,8 +26,8 @@ export class NewsCategory extends BaseEntity {
    */
   static fromJson(json: Record<string, unknown>): NewsCategory {
     return new NewsCategory(
-      String(json.category_id || json.id || ''),
-      String(json.category_name || json.name || '')
+      String(json.newscat_id || json.id || ''),
+      String(json.newscat_name || json.name || '')
     );
   }
 }

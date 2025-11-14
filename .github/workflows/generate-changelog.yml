@@ -11,7 +11,7 @@ jobs:
   generate-changelog:
     name: Generate Changelog
     runs-on: ubuntu-latest
-    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/')
+    if: github.event.ref_type == 'branch' && (startsWith(github.event.ref, 'release/') || startsWith(github.event.ref, 'hotfix/'))
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -30,7 +30,11 @@ jobs:
         id: extract_version
         run: |
           BRANCH_NAME="${{ github.event.ref }}"
-          VERSION="${BRANCH_NAME#release/}"
+          if [[ $BRANCH_NAME == release/* ]]; then
+            VERSION="${BRANCH_NAME#release/}"
+          elif [[ $BRANCH_NAME == hotfix/* ]]; then
+            VERSION="${BRANCH_NAME#hotfix/}"
+          fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Extracted version: ${VERSION}"
 

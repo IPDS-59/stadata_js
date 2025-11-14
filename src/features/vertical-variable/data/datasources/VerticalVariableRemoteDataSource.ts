@@ -16,9 +16,11 @@ export class VerticalVariableRemoteDataSource {
   async getAll(
     params: VerticalVariableListParams
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
-    const queryParams: Record<string, string> = {
-      var: params.variableId.toString(),
-    };
+    const queryParams: Record<string, string> = {};
+
+    if (params.variableId !== undefined) {
+      queryParams['var'] = params.variableId.toString();
+    }
 
     if (params.domain) {
       queryParams['domain'] = params.domain;

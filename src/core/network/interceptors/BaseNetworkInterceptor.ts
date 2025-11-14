@@ -1,4 +1,12 @@
 /**
+ * Request interceptor result
+ */
+export interface InterceptedRequest {
+  url: string;
+  init: RequestInit;
+}
+
+/**
  * Base interface for network interceptors
  */
 export interface NetworkInterceptor {
@@ -6,9 +14,9 @@ export interface NetworkInterceptor {
    * Intercepts outgoing requests
    * @param url - Request URL
    * @param init - Request init options
-   * @returns Modified request init or null to proceed unchanged
+   * @returns Modified request (url and init) or null to proceed unchanged
    */
-  onRequest?(url: string, init: RequestInit): RequestInit | Promise<RequestInit>;
+  onRequest?(url: string, init: RequestInit): InterceptedRequest | Promise<InterceptedRequest>;
 
   /**
    * Intercepts incoming responses
@@ -29,7 +37,7 @@ export interface NetworkInterceptor {
  * Abstract base class for network interceptors
  */
 export abstract class BaseNetworkInterceptor implements NetworkInterceptor {
-  onRequest?(url: string, init: RequestInit): RequestInit | Promise<RequestInit>;
+  onRequest?(url: string, init: RequestInit): InterceptedRequest | Promise<InterceptedRequest>;
   onResponse?(response: Response): Response | Promise<Response>;
   onError?(error: Error): Error | Promise<Error> | null;
 }

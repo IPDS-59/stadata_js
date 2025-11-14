@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stadata JS SDK - Browser Test</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 28px;
+      }
+
+      .subtitle {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 14px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        flex: 1;
+        min-width: 150px;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+
+      .btn-primary:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      .btn-secondary {
+        background: #f5f5f5;
+        color: #333;
+      }
+
+      .btn-secondary:hover:not(:disabled) {
+        background: #e0e0e0;
+      }
+
+      .status {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .status-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .status-info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      .results {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .results pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 13px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        color: #333;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .loading {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        border-top-color: transparent;
+        animation: spin 0.6s linear infinite;
+        margin-right: 8px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header Card -->
+      <div class="card">
+        <h1>🚀 Stadata JS SDK - Browser Test</h1>
+        <p class="subtitle">
+          Test the SDK directly in your browser. Enter your BPS API key below and start exploring!
+        </p>
+
+        <!-- Status Message -->
+        <div id="status" class="hidden"></div>
+
+        <!-- API Key Form -->
+        <div class="form-group">
+          <label for="apiKey">BPS API Key</label>
+          <input
+            type="text"
+            id="apiKey"
+            placeholder="Enter your BPS API key here..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="button-group">
+          <button id="initBtn" class="btn-primary">Initialize SDK</button>
+          <button id="destroyBtn" class="btn-secondary" disabled>Destroy SDK</button>
+        </div>
+      </div>
+
+      <!-- Test Actions Card -->
+      <div id="actionsCard" class="card hidden">
+        <h2 style="margin-bottom: 20px; color: #333">API Tests</h2>
+
+        <h3 style="margin-top: 0; margin-bottom: 15px; color: #555; font-size: 16px;">Domain & Subjects</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListDomains()">📋 List Domains</button>
+          <button class="btn-secondary" onclick="testViewDomain()">🔍 View Domain</button>
+          <button class="btn-secondary" onclick="testListSubjects()">📊 List Subjects</button>
+          <button class="btn-secondary" onclick="testListSubjectCategories()">🏷️ List Subject Categories</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Publications & News</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListPublications()">📚 List Publications</button>
+          <button class="btn-secondary" onclick="testListNews()">📰 List News</button>
+          <button class="btn-secondary" onclick="testListNewsCategories()">📑 List News Categories</button>
+          <button class="btn-secondary" onclick="testListPressReleases()">📢 List Press Releases</button>
+          <button class="btn-secondary" onclick="testListInfographics()">📊 List Infographics</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Indicators & Tables</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListIndicators()">📈 List Strategic Indicators</button>
+          <button class="btn-secondary" onclick="testListStaticTables()">📋 List Static Tables</button>
+          <button class="btn-secondary" onclick="testListDynamicTables()">🔄 List Dynamic Tables</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Variables & Units</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListVariables()">🔢 List Variables</button>
+          <button class="btn-secondary" onclick="testListVerticalVariables()">📐 List Vertical Variables</button>
+          <button class="btn-secondary" onclick="testListDerivedVariables()">🧮 List Derived Variables</button>
+          <button class="btn-secondary" onclick="testListUnits()">📏 List Units</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Periods & Classifications</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListPeriods()">📅 List Periods</button>
+          <button class="btn-secondary" onclick="testListDerivedPeriods()">🗓️ List Derived Periods</button>
+          <button class="btn-secondary" onclick="testListStatisticClassifications()">📊 List Statistic Classifications</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Census Data</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testListCensuses()">🏘️ Census Events</button>
+          <button class="btn-secondary" onclick="testCensusTopics()">📋 Census Topics</button>
+          <button class="btn-secondary" onclick="testCensusAreas()">🗺️ Census Areas</button>
+          <button class="btn-secondary" onclick="testCensusDatasets()">📊 Census Datasets</button>
+          <button class="btn-secondary" onclick="testCensusData()">📈 Census Data</button>
+        </div>
+
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Trade Data</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testGetTrade()">📦 Get Trade Data</button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="results hidden">
+          <pre id="resultsContent"></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Include the built SDK IIFE bundle (build it first with npm run build) -->
+    <script src="../dist/index.global.js"></script>
+
+    <script>
+      // The SDK is now available globally as window.StadataJS
+      // Extract the exports from the global object
+      const SDK = window.StadataJS.StadataJS;
+      const DataLanguage = window.StadataJS.DataLanguage;
+      const DomainType = window.StadataJS.DomainType;
+      const TradeSource = window.StadataJS.TradeSource;
+      const TradePeriod = window.StadataJS.TradePeriod;
+      const HSCodeType = window.StadataJS.HSCodeType;
+
+      let sdkInitialized = false;
+
+      const elements = {
+        apiKey: document.getElementById('apiKey'),
+        initBtn: document.getElementById('initBtn'),
+        destroyBtn: document.getElementById('destroyBtn'),
+        status: document.getElementById('status'),
+        actionsCard: document.getElementById('actionsCard'),
+        results: document.getElementById('results'),
+        resultsContent: document.getElementById('resultsContent'),
+      };
+
+      function showStatus(message, type = 'info') {
+        elements.status.textContent = message;
+        elements.status.className = `status status-${type}`;
+        elements.status.classList.remove('hidden');
+      }
+
+      function showResults(data) {
+        elements.results.classList.remove('hidden');
+        elements.resultsContent.textContent = JSON.stringify(data, null, 2);
+      }
+
+      async function initializeSDK() {
+        const apiKey = elements.apiKey.value.trim();
+
+        if (!apiKey) {
+          showStatus('⚠️ Please enter your API key', 'error');
+          return;
+        }
+
+        elements.initBtn.disabled = true;
+        elements.initBtn.innerHTML = '<span class="loading"></span>Initializing...';
+
+        try {
+          await SDK.init({
+            apiKey: apiKey,
+            debug: true,
+          });
+
+          sdkInitialized = true;
+          showStatus('✅ SDK initialized successfully!', 'success');
+          elements.destroyBtn.disabled = false;
+          elements.actionsCard.classList.remove('hidden');
+          elements.apiKey.disabled = true;
+          elements.initBtn.disabled = false;
+          elements.initBtn.textContent = 'Initialize SDK';
+        } catch (error) {
+          showStatus(`❌ Failed to initialize: ${error.message}`, 'error');
+          elements.initBtn.disabled = false;
+          elements.initBtn.textContent = 'Initialize SDK';
+        }
+      }
+
+      function destroySDK() {
+        SDK.destroy();
+        sdkInitialized = false;
+        showStatus('🗑️ SDK destroyed', 'info');
+        elements.initBtn.disabled = false;
+        elements.initBtn.textContent = 'Initialize SDK';
+        elements.destroyBtn.disabled = true;
+        elements.actionsCard.classList.add('hidden');
+        elements.results.classList.add('hidden');
+        elements.apiKey.disabled = false;
+        elements.apiKey.value = '';
+      }
+
+      // Make functions available globally for onclick handlers
+      window.initializeSDK = initializeSDK;
+      window.destroySDK = destroySDK;
+
+      // Test functions
+      window.testListDomains = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching domains...', 'info');
+
+        const result = await SDK.instance.list.domains({
+          type: DomainType.ALL,
+          lang: DataLanguage.ID,
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} domains`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message, code: error.code });
+          }
+        );
+      };
+
+      window.testViewDomain = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching domain details...', 'info');
+
+        const result = await SDK.instance.view.domain({
+          id: '7200',
+          domain: '7200',
+          lang: DataLanguage.ID,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Domain: ${data.name}`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListPublications = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching publications...', 'info');
+
+        const result = await SDK.instance.list.publications({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} publications`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListSubjects = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching subjects...', 'info');
+
+        const result = await SDK.instance.list.subjects({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} subjects`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListIndicators = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching strategic indicators...', 'info');
+
+        const result = await SDK.instance.list.strategicIndicators({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} indicators`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListNews = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching news...', 'info');
+
+        const result = await SDK.instance.list.news({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} news items`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListSubjectCategories = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching subject categories...', 'info');
+
+        const result = await SDK.instance.list.subjectCategories({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} subject categories`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListNewsCategories = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching news categories...', 'info');
+
+        const result = await SDK.instance.list.newsCategories({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} news categories`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListPressReleases = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching press releases...', 'info');
+
+        const result = await SDK.instance.list.pressReleases({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} press releases`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListInfographics = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching infographics...', 'info');
+
+        const result = await SDK.instance.list.infographics({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} infographics`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListStaticTables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching static tables...', 'info');
+
+        const result = await SDK.instance.list.staticTables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} static tables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDynamicTables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching dynamic tables...', 'info');
+
+        const result = await SDK.instance.list.dynamicTables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} dynamic tables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching variables...', 'info');
+
+        const result = await SDK.instance.list.variables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListVerticalVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching vertical variables...', 'info');
+
+        const result = await SDK.instance.list.verticalVariables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} vertical variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDerivedVariables = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching derived variables...', 'info');
+
+        const result = await SDK.instance.list.derivedVariables({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} derived variables`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListUnits = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching units...', 'info');
+
+        const result = await SDK.instance.list.units({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} units`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListPeriods = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching periods...', 'info');
+
+        const result = await SDK.instance.list.periods({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} periods`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListDerivedPeriods = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching derived periods...', 'info');
+
+        const result = await SDK.instance.list.derivedPeriods({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} derived periods`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListStatisticClassifications = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching statistic classifications...', 'info');
+
+        const result = await SDK.instance.list.statisticClassifications({
+          lang: DataLanguage.ID,
+          domain: '7200',
+          page: 1,
+          perPage: 5,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} statistic classifications`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testListCensuses = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census events...', 'info');
+
+        const result = await SDK.instance.list.censusEvents();
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census events`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusTopics = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census topics...', 'info');
+
+        const result = await SDK.instance.list.censusTopics({ censusId: 'sp2020' });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census topics`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusAreas = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census areas...', 'info');
+
+        const result = await SDK.instance.list.censusEventAreas({ censusId: 'sp2020' });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census areas`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusDatasets = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census datasets...', 'info');
+
+        const result = await SDK.instance.list.censusEventDatasets({
+          censusId: 'sp2020',
+          topicId: 20,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census datasets`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testCensusData = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching census data...', 'info');
+
+        const result = await SDK.instance.list.censusData({
+          censusId: 'sp2020',
+          censusAreaId: '1667',
+          datasetId: '1',
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Found ${data.totalItems} census data items`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testGetTrade = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching trade data...', 'info');
+
+        const result = await SDK.instance.trade({
+          source: TradeSource.Export,
+          period: TradePeriod.Monthly,
+          hsCode: '01',
+          hsType: HSCodeType.TwoDigit,
+          year: '2023',
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Got trade data`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      // Event listeners
+      elements.initBtn.addEventListener('click', initializeSDK);
+      elements.destroyBtn.addEventListener('click', destroySDK);
+
+      // Allow Enter key to initialize
+      elements.apiKey.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !sdkInitialized) {
+          initializeSDK();
+        }
+      });
+    </script>
+  </body>
+</html>

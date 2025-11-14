@@ -83,13 +83,17 @@ export {
   // Enums
   DataLanguage,
   DataAvailability,
+  ClassificationType,
+  KBLILevel,
+  KBKILevel,
+  DomainType,
 } from './shared';
 
 // Type exports
 export * from './types';
 
 // Feature exports
-export { Domain, DomainRepository, GetAllDomains, GetDomainById } from './features/domain';
+export { Domain, DomainRepository, GetAllDomains } from './features/domain';
 export {
   Publication,
   RelatedPublication,
@@ -167,7 +171,17 @@ export {
   GetAllStatisticClassifications,
   GetStatisticClassificationById,
 } from './features/statistic-classification';
-export { Census, CensusRepository, GetAllCensuses, GetCensusById } from './features/census';
+export {
+  CensusEvent,
+  CensusTopic,
+  CensusArea,
+  CensusDataset,
+  CensusData,
+  CensusCategory,
+  CensusRepository,
+  GetAllCensuses,
+  GetCensusById,
+} from './features/census';
 export {
   DynamicTable,
   DynamicTableRepository,
