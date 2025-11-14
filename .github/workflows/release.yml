@@ -1,0 +1,140 @@
+name: Release Workflow - Tag, Release & Back-merge
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-process:
+    if: github.event.pull_request.merged == true && (startsWith(github.head_ref, 'release/') || startsWith(github.head_ref, 'hotfix/'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Extract version from branch name
+        id: version
+        run: |
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+          if [[ $BRANCH_NAME == release/* ]]; then
+            VERSION=$(echo $BRANCH_NAME | sed 's/release\///')
+            TYPE="release"
+            BASE_BRANCH="develop"
+          elif [[ $BRANCH_NAME == hotfix/* ]]; then
+            VERSION=$(echo $BRANCH_NAME | sed 's/hotfix\///')
+            TYPE="hotfix"
+            BASE_BRANCH="main"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          echo "base_branch=$BASE_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          if git tag -l | grep -q "^${VERSION}$"; then
+            echo "tag_exists=true" >> $GITHUB_OUTPUT
+            echo "⚠️  Tag $VERSION already exists"
+          else
+            echo "tag_exists=false" >> $GITHUB_OUTPUT
+            echo "✅ Tag $VERSION does not exist, will create"
+          fi
+
+      - name: Create and push tag
+        if: steps.check_tag.outputs.tag_exists == 'false'
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TYPE="${{ steps.version.outputs.type }}"
+
+          # Create annotated tag
+          git tag -a "$VERSION" -m "$TYPE: $VERSION"
+
+          # Push tag
+          git push origin "$VERSION"
+
+          echo "✅ Created and pushed tag $VERSION"
+
+      - name: Create back-merge PR
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TYPE="${{ steps.version.outputs.type }}"
+          BASE_BRANCH="${{ steps.version.outputs.base_branch }}"
+
+          # Create back-merge branch
+          BACKMERGE_BRANCH="backmerge/${TYPE}-${VERSION}-to-${BASE_BRANCH}"
+
+          # Check if branch already exists
+          if git ls-remote --heads origin "$BACKMERGE_BRANCH" | grep -q "$BACKMERGE_BRANCH"; then
+            echo "⚠️ Back-merge branch already exists, skipping"
+            exit 0
+          fi
+
+          # Checkout base branch and create back-merge branch
+          git fetch origin "$BASE_BRANCH"
+          git checkout -b "$BACKMERGE_BRANCH" "origin/$BASE_BRANCH"
+
+          # Merge main into back-merge branch
+          git merge main --no-edit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}"
+
+          # Push back-merge branch
+          git push origin "$BACKMERGE_BRANCH"
+
+          # Create PR
+          gh pr create \
+            --base "$BASE_BRANCH" \
+            --head "$BACKMERGE_BRANCH" \
+            --title "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}" \
+            --body "## Back-merge ${TYPE} ${VERSION}
+
+          This PR merges the changes from the ${TYPE} ${VERSION} back to the ${BASE_BRANCH} branch.
+
+          ### Changes
+          - ${TYPE} ${VERSION} has been merged to main
+          - Tag ${VERSION} has been created
+          - This PR syncs ${BASE_BRANCH} with the released changes
+
+          ### Auto-merge
+          This PR should be merged automatically if there are no conflicts." \
+            --label "automated" \
+            --label "back-merge"
+
+          echo "✅ Created back-merge PR from main to $BASE_BRANCH"
+
+      - name: Summary
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          TYPE="${{ steps.version.outputs.type }}"
+          BASE_BRANCH="${{ steps.version.outputs.base_branch }}"
+
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: $VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- **Type**: $TYPE" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${VERSION}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Back-merge**: main → $BASE_BRANCH" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Tag $VERSION pushed - this will trigger npm publish workflow" >> $GITHUB_STEP_SUMMARY
+          echo "2. After npm publish completes, GitHub release will be created" >> $GITHUB_STEP_SUMMARY
+          echo "3. Review and merge the back-merge PR to $BASE_BRANCH" >> $GITHUB_STEP_SUMMARY

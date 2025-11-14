@@ -1,9 +1,7 @@
 name: Bump Version
 
 on:
-  push:
-    branches:
-      - 'release/**'
+  create:
 
 permissions:
   contents: write
@@ -13,15 +11,17 @@ jobs:
   bump-version:
     name: Bump Package Version
     runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/')
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
+          ref: ${{ github.event.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
@@ -29,7 +29,7 @@ jobs:
       - name: Extract version from branch
         id: extract_version
         run: |
-          BRANCH_NAME="${{ github.ref_name }}"
+          BRANCH_NAME="${{ github.event.ref }}"
           VERSION="${BRANCH_NAME#release/}"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "Extracted version: ${VERSION}"
@@ -113,14 +113,14 @@ jobs:
     needs: bump-version
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: develop
           token: ${{ secrets.PAT_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
@@ -157,7 +157,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.PAT_TOKEN }}
           commit-message: "chore: bump version to ${{ steps.next_version.outputs.next_version }} for next development cycle"

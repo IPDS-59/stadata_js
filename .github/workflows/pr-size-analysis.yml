@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
@@ -42,14 +42,19 @@ jobs:
           fi
 
       - name: Upload PR bundle info
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pr-bundle-size
           path: pr-size.json
           retention-days: 1
 
+      - name: Save PR analysis scripts
+        run: |
+          mkdir -p /tmp/pr-scripts
+          cp -r .github/scripts/* /tmp/pr-scripts/ || true
+
       - name: Checkout base branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.base_ref }}
           clean: false
@@ -67,7 +72,10 @@ jobs:
       - name: Analyze base bundle size
         id: base_size
         run: |
-          if [ -d "dist" ] || [ -d "lib" ] || [ -d "build" ]; then
+          if [ ! -f ".github/scripts/analyze-bundle-size.js" ]; then
+            echo "Bundle analysis script not found in base branch, skipping"
+            echo '{"total": 0, "files": []}' > base-size.json
+          elif [ -d "dist" ] || [ -d "lib" ] || [ -d "build" ]; then
             node .github/scripts/analyze-bundle-size.js base > base-size.json
             cat base-size.json
           else
@@ -78,7 +86,13 @@ jobs:
       - name: Compare bundle sizes
         id: compare
         run: |
-          node .github/scripts/compare-bundle-sizes.js pr-size.json base-size.json > size-diff.md
+          # Use PR scripts if base doesn't have them
+          if [ ! -f ".github/scripts/compare-bundle-sizes.js" ]; then
+            echo "Using PR scripts for comparison"
+            node /tmp/pr-scripts/compare-bundle-sizes.js pr-size.json base-size.json > size-diff.md
+          else
+            node .github/scripts/compare-bundle-sizes.js pr-size.json base-size.json > size-diff.md
+          fi
           cat size-diff.md
 
       - name: Post size analysis comment

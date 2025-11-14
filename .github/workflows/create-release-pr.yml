@@ -15,10 +15,12 @@ jobs:
   create-release-pr:
     name: Create PR to Main Branch
     runs-on: ubuntu-latest
-    if: github.event_name == 'create' || (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/')))
+    if: |
+      (github.event_name == 'create' && github.event.ref_type == 'branch' && (startsWith(github.event.ref, 'release/') || startsWith(github.event.ref, 'hotfix/'))) ||
+      (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/')))
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
@@ -71,6 +73,36 @@ jobs:
             echo "skip_pr=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Ensure labels exist
+        if: steps.check_pr.outputs.skip_pr == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          BRANCH_TYPE="${{ steps.branch_info.outputs.branch_type }}"
+
+          # Function to create label if it doesn't exist
+          create_label_if_not_exists() {
+            local label_name=$1
+            local label_color=$2
+            local label_description=$3
+
+            if ! gh label list --json name --jq '.[].name' | grep -q "^${label_name}$"; then
+              echo "Creating label: ${label_name}"
+              gh label create "${label_name}" --color "${label_color}" --description "${label_description}" || true
+            else
+              echo "Label already exists: ${label_name}"
+            fi
+          }
+
+          # Create labels based on branch type
+          if [ "$BRANCH_TYPE" = "release" ]; then
+            create_label_if_not_exists "release" "0e8a16" "Release branch PR"
+          else
+            create_label_if_not_exists "hotfix" "d73a4a" "Hotfix branch PR"
+          fi
+
+          create_label_if_not_exists "release-candidate" "fbca04" "Release candidate PR"
+
       - name: Create PR to main
         if: steps.check_pr.outputs.skip_pr == 'false'
         env:
@@ -82,74 +114,88 @@ jobs:
 
           # Set PR title based on type
           if [ "$BRANCH_TYPE" = "release" ]; then
-            PR_TITLE="release: version ${VERSION}"
-            PR_BODY="## Release ${VERSION}
-
-This PR merges the release branch for version **${VERSION}** to the main branch.
-
-### Release Details
-- **Version**: ${VERSION}
-- **Type**: Release
-- **Branch**: \`${BRANCH_NAME}\`
-
-### What's included
-- All features and bug fixes for version ${VERSION}
-- Updated changelog (if merged)
-- Version bump in package.json
-
-### Checklist
-- [ ] Changelog has been reviewed and merged
-- [ ] All tests are passing
-- [ ] Version is correct in package.json
-- [ ] Ready to release
-
-### Post-merge Actions
-After merging this PR:
-1. A git tag \`v${VERSION}\` will be created automatically
-2. A GitHub release will be generated
-3. A back-merge PR to develop will be created
-
-**⚠️ Do not merge until ready to release to production**"
+            PR_TITLE="chore: release version ${VERSION}"
           else
             PR_TITLE="fix: hotfix ${VERSION}"
-            PR_BODY="## Hotfix ${VERSION}
-
-This PR merges the hotfix branch for version **${VERSION}** to the main branch.
-
-### Hotfix Details
-- **Version**: ${VERSION}
-- **Type**: Hotfix
-- **Branch**: \`${BRANCH_NAME}\`
-
-### What's included
-- Critical bug fixes
-- Updated changelog (if merged)
-- Version bump in package.json
-
-### Checklist
-- [ ] Changelog has been reviewed and merged
-- [ ] All tests are passing
-- [ ] Version is correct in package.json
-- [ ] Hotfix has been tested
-- [ ] Ready to deploy
-
-### Post-merge Actions
-After merging this PR:
-1. A git tag \`v${VERSION}\` will be created automatically
-2. A GitHub release will be generated
-3. A back-merge PR to develop will be created
-
-**⚠️ Do not merge until ready to deploy hotfix**"
           fi
 
-          # Create PR
-          gh pr create \
-            --base main \
-            --head "$BRANCH_NAME" \
-            --title "$PR_TITLE" \
-            --body "$PR_BODY" \
-            --label "${BRANCH_TYPE}" \
-            --label "release-candidate"
+          # Create PR with body from heredoc
+          if [ "$BRANCH_TYPE" = "release" ]; then
+            gh pr create \
+              --base main \
+              --head "$BRANCH_NAME" \
+              --title "$PR_TITLE" \
+              --body "$(cat <<EOF
+          ## Release ${VERSION}
+                  
+          This PR merges the release branch for version **${VERSION}** to the main branch.
+                  
+          ### Release Details
+          - **Version**: ${VERSION}
+          - **Type**: Release
+          - **Branch**: \`${BRANCH_NAME}\`
+                  
+          ### What's included
+          - All features and bug fixes for version ${VERSION}
+          - Updated changelog (if merged)
+          - Version bump in package.json
+                  
+          ### Checklist
+          - [ ] Changelog has been reviewed and merged
+          - [ ] All tests are passing
+          - [ ] Version is correct in package.json
+          - [ ] Ready to release
+                  
+          ### Post-merge Actions
+          After merging this PR:
+          1. A git tag \`v${VERSION}\` will be created automatically
+          2. A GitHub release will be generated
+          3. A back-merge PR to develop will be created
+          
+          **⚠️ Do not merge until ready to release to production**
+          EOF
+          )" \
+                        --label "release" \
+                        --label "release-candidate"
+                    else
+                      gh pr create \
+                        --base main \
+                        --head "$BRANCH_NAME" \
+                        --title "$PR_TITLE" \
+                        --body "$(cat <<EOF
+          ## Hotfix ${VERSION}
+          
+          This PR merges the hotfix branch for version **${VERSION}** to the main branch.
+          
+          ### Hotfix Details
+          - **Version**: ${VERSION}
+          - **Type**: Hotfix
+          - **Branch**: \`${BRANCH_NAME}\`
+          
+          ### What's included
+          - Critical bug fixes
+          - Updated changelog (if merged)
+          - Version bump in package.json
+          
+          ### Checklist
+          - [ ] Changelog has been reviewed and merged
+          - [ ] All tests are passing
+          - [ ] Version is correct in package.json
+          - [ ] Hotfix has been tested
+          - [ ] Ready to deploy
+          
+          ### Post-merge Actions
+          After merging this PR:
+          1. A git tag \`v${VERSION}\` will be created automatically
+          2. A GitHub release will be generated
+          3. A back-merge PR to develop will be created
+          
+          **⚠️ Do not merge until ready to deploy hotfix**
+          EOF
+          )" \
+              --label "hotfix" \
+              --label "release-candidate"
+          fi
 
           echo "✅ Created PR from $BRANCH_NAME to main"
 
