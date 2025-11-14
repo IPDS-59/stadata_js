@@ -278,6 +278,9 @@
       const SDK = window.StadataJS.StadataJS;
       const DataLanguage = window.StadataJS.DataLanguage;
       const DomainType = window.StadataJS.DomainType;
+      const TradeSource = window.StadataJS.TradeSource;
+      const TradePeriod = window.StadataJS.TradePeriod;
+      const HSCodeType = window.StadataJS.HSCodeType;
 
       let sdkInitialized = false;
 
@@ -813,11 +816,12 @@
         if (!sdkInitialized) return;
         showStatus('🔄 Fetching trade data...', 'info');
 
-        const result = await SDK.instance.getTrade({
-          domain: '0000',
-          year: 2023,
-          month: 1,
-          lang: DataLanguage.ID,
+        const result = await SDK.instance.trade({
+          source: TradeSource.Export,
+          period: TradePeriod.Monthly,
+          hsCode: '01',
+          hsType: HSCodeType.TwoDigit,
+          year: '2023',
         });
 
         result.match(
