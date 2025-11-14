@@ -26,9 +26,7 @@ describe('DynamicTable Entity', () => {
     const derivedVariables = [new VerticalVariableInfo('0', 'Tidak ada')];
     const derivedPeriods = [new VerticalVariableInfo(0, 'Tahun')];
     const dataContent = { '72003301040': 7.46 };
-    const related = [
-      new RelatedTable('MTMwIzI=', 'Related Table', 2, '2025-11-06', '/link'),
-    ];
+    const related = [new RelatedTable('MTMwIzI=', 'Related Table', 2, '2025-11-06', '/link')];
 
     const dynamicTable = new DynamicTable(
       subjects,
@@ -82,7 +80,15 @@ describe('DynamicTable Entity', () => {
 
     expect(json.subject).toEqual([{ val: 521, label: 'Pendidikan' }]);
     expect(json.var).toEqual([
-      { val: 33, label: 'Rata-Rata Lama Sekolah', unit: 'Tahun', subj: 'IPM', def: '', note: '', decimal: 2 },
+      {
+        val: 33,
+        label: 'Rata-Rata Lama Sekolah',
+        unit: 'Tahun',
+        subj: 'IPM',
+        def: '',
+        note: '',
+        decimal: 2,
+      },
     ]);
     expect(json.vervar).toEqual([{ val: 7200, label: 'Sulawesi Tengah' }]);
     expect(json.labelvervar).toBe('Kabupaten/Kota');
@@ -190,18 +196,7 @@ describe('DynamicTable Entity', () => {
       '72013301050': 6.8,
     };
 
-    const dynamicTable = new DynamicTable(
-      [],
-      [],
-      [],
-      '',
-      [],
-      [],
-      [],
-      dataContent,
-      [],
-      null
-    );
+    const dynamicTable = new DynamicTable([], [], [], '', [], [], [], dataContent, [], null);
 
     expect(dynamicTable.getDataValue(7200, 33, 0, 104, 0)).toBe(7.46);
     expect(dynamicTable.getDataValue(7201, 33, 0, 105, 0)).toBe(6.8);
@@ -231,7 +226,15 @@ describe('DynamicTable Entity', () => {
 
 describe('VariableInfo Entity', () => {
   it('should create and convert to JSON', () => {
-    const variable = new VariableInfo(33, 'Test Variable', 'Tahun', 'Subject', 'Definition', 'Notes', 2);
+    const variable = new VariableInfo(
+      33,
+      'Test Variable',
+      'Tahun',
+      'Subject',
+      'Definition',
+      'Notes',
+      2
+    );
 
     expect(variable.value).toBe(33);
     expect(variable.label).toBe('Test Variable');
