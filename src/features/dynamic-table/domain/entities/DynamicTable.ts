@@ -1,25 +1,32 @@
 import { BaseEntity } from '../../../../core';
+import {
+  VariableInfo,
+  VerticalVariableInfo,
+  PeriodInfo,
+  SubjectInfo,
+} from './VariableInfo';
 
 /**
  * Represents a dynamic statistical table from BPS Web API
  *
- * For list endpoint, contains basic variable metadata.
- * For detail endpoint (not yet implemented), would include comprehensive data.
+ * Contains metadata and data content for rendering a multi-dimensional table.
+ * The table structure is: rows (vertical variables) × columns (derived variables × periods)
+ *
+ * Data is stored in a flat map with composite keys in format:
+ * {vervar}{var}{turvar}{tahun}{turtahun}
  */
 export class DynamicTable extends BaseEntity {
   constructor(
-    public readonly variableId: number,
-    public readonly title: string,
-    public readonly subjectId: number,
-    public readonly subjectName: string,
-    public readonly notes: string,
-    public readonly unit: string,
-    public readonly verticalVariableId: number,
-    public readonly domain: string,
-    public readonly csaSubjectId?: number,
-    public readonly csaSubjectName?: string,
-    public readonly graphId?: number,
-    public readonly graphName?: string
+    public readonly subjects: SubjectInfo[],
+    public readonly variables: VariableInfo[],
+    public readonly verticalVariables: VerticalVariableInfo[],
+    public readonly verticalVariableLabel: string,
+    public readonly periods: PeriodInfo[],
+    public readonly derivedVariables: VerticalVariableInfo[],
+    public readonly derivedPeriods: VerticalVariableInfo[],
+    public readonly dataContent: Record<string, unknown>,
+    public readonly related: unknown[],
+    public readonly lastUpdate?: string | null
   ) {
     super();
   }
@@ -29,18 +36,16 @@ export class DynamicTable extends BaseEntity {
    */
   toJson(): Record<string, unknown> {
     return {
-      var: this.variableId,
-      label: this.title,
-      subj: this.subjectId,
-      subj_label: this.subjectName,
-      notes: this.notes,
-      unit: this.unit,
-      vervar: this.verticalVariableId,
-      table: this.domain,
-      subcsa: this.csaSubjectId,
-      subcsa_label: this.csaSubjectName,
-      graph: this.graphId,
-      graph_label: this.graphName,
+      subject: this.subjects.map((s) => s.toJson()),
+      var: this.variables.map((v) => v.toJson()),
+      vervar: this.verticalVariables.map((v) => v.toJson()),
+      labelvervar: this.verticalVariableLabel,
+      tahun: this.periods.map((p) => p.toJson()),
+      turvar: this.derivedVariables.map((d) => d.toJson()),
+      turtahun: this.derivedPeriods.map((d) => d.toJson()),
+      datacontent: this.dataContent,
+      related: this.related,
+      last_update: this.lastUpdate,
     };
   }
 
@@ -48,22 +53,45 @@ export class DynamicTable extends BaseEntity {
    * Creates an entity from JSON
    */
   static fromJson(json: Record<string, unknown>): DynamicTable {
-    const varValue = json.var;
-    const subjValue = json.subj;
+    const subjectArray = Array.isArray(json.subject) ? json.subject : [];
+    const varArray = Array.isArray(json.var) ? json.var : [];
+    const vervarArray = Array.isArray(json.vervar) ? json.vervar : [];
+    const tahunArray = Array.isArray(json.tahun) ? json.tahun : [];
+    const turvarArray = Array.isArray(json.turvar) ? json.turvar : [];
+    const turtahunArray = Array.isArray(json.turtahun) ? json.turtahun : [];
+    const relatedArray = Array.isArray(json.related) ? json.related : [];
 
     return new DynamicTable(
-      typeof varValue === 'number' ? varValue : parseInt(String(varValue || 0)),
-      String(json.label || ''),
-      typeof subjValue === 'number' ? subjValue : parseInt(String(subjValue || 0)),
-      String(json.subj_label || ''),
-      String(json.notes || ''),
-      String(json.unit || ''),
-      Number(json.vervar || 0),
-      String(json.table || ''),
-      json.subcsa !== undefined ? Number(json.subcsa) : undefined,
-      json.subcsa_label !== undefined ? String(json.subcsa_label) : undefined,
-      json.graph !== undefined ? Number(json.graph) : undefined,
-      json.graph_label !== undefined ? String(json.graph_label) : undefined
+      subjectArray.map((s) => SubjectInfo.fromJson(s as Record<string, unknown>)),
+      varArray.map((v) => VariableInfo.fromJson(v as Record<string, unknown>)),
+      vervarArray.map((v) => VerticalVariableInfo.fromJson(v as Record<string, unknown>)),
+      String(json.labelvervar || ''),
+      tahunArray.map((p) => PeriodInfo.fromJson(p as Record<string, unknown>)),
+      turvarArray.map((d) => VerticalVariableInfo.fromJson(d as Record<string, unknown>)),
+      turtahunArray.map((d) => VerticalVariableInfo.fromJson(d as Record<string, unknown>)),
+      (json.datacontent as Record<string, unknown>) || {},
+      relatedArray,
+      json.last_update !== undefined ? (json.last_update as string | null) : undefined
     );
+  }
+
+  /**
+   * Gets a data value using composite key
+   * @param vervarValue - Vertical variable value
+   * @param varValue - Variable value
+   * @param turvarValue - Derived variable value (0 if none)
+   * @param tahunValue - Period value
+   * @param turtahunValue - Derived period value (0 if none)
+   * @returns The data value or undefined if not found
+   */
+  getDataValue(
+    vervarValue: number | string,
+    varValue: number | string,
+    turvarValue: number | string,
+    tahunValue: number | string,
+    turtahunValue: number | string
+  ): unknown {
+    const key = `${vervarValue}${varValue}${turvarValue}${tahunValue}${turtahunValue}`;
+    return this.dataContent[key];
   }
 }

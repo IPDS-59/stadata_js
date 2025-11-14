@@ -217,9 +217,7 @@ export class StadataListImpl implements StadataList {
     }) as Promise<Result<ListResult<CensusData>, ApiFailure>>;
   }
 
-  async dynamicTables(
-    params: DynamicTableParams
-  ): Promise<Result<ListResult<DynamicTable>, ApiFailure>> {
+  async dynamicTables(params: DynamicTableParams): Promise<Result<DynamicTable, ApiFailure>> {
     const useCase = DynamicTableInjector.getAllDynamicTablesUseCase(this.injector);
     return useCase.execute(params);
   }

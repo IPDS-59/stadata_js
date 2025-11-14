@@ -1,7 +1,25 @@
 import { Result } from 'neverthrow';
 import { ApiEndpoint, NetworkClient } from '../../../../core';
 import { ApiFailure } from '../../../../core/failures';
-import { DynamicTableParams, ResponseData } from '../../../../types';
+import { DynamicTableParams } from '../../../../types';
+
+/**
+ * Response type for dynamic table detail endpoint
+ */
+export interface DynamicTableResponse {
+  status: string;
+  'data-availability': string;
+  last_update?: string | null;
+  subject?: Array<Record<string, unknown>>;
+  var?: Array<Record<string, unknown>>;
+  turvar?: Array<Record<string, unknown>>;
+  labelvervar?: string;
+  vervar?: Array<Record<string, unknown>>;
+  tahun?: Array<Record<string, unknown>>;
+  turtahun?: Array<Record<string, unknown>>;
+  datacontent?: Record<string, unknown>;
+  related?: unknown[];
+}
 
 /**
  * Remote data source for DynamicTable operations
@@ -12,17 +30,15 @@ export class DynamicTableRemoteDataSource {
   constructor(private client: NetworkClient) {}
 
   /**
-   * Gets all dynamic table data from the API
+   * Gets dynamic table data from the API
    * @param params - Dynamic table parameters
-   * @returns Result containing response data or failure
+   * @returns Result containing dynamic table response or failure
    */
-  async getAll(
-    params: DynamicTableParams
-  ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
+  async getAll(params: DynamicTableParams): Promise<Result<DynamicTableResponse, ApiFailure>> {
     const queryParams: Record<string, string> = {
-      model: 'data',
       domain: params.domain || '',
       var: params.variableId.toString(),
+      th: params.periodId.toString(),
     };
 
     if (params.lang) {
@@ -41,10 +57,6 @@ export class DynamicTableRemoteDataSource {
       queryParams['turvar'] = params.derivedVariableId.toString();
     }
 
-    if (params.periodId !== undefined) {
-      queryParams['th'] = params.periodId.toString();
-    }
-
     if (params.derivedPeriodId !== undefined) {
       queryParams['turth'] = params.derivedPeriodId.toString();
     }
@@ -52,7 +64,7 @@ export class DynamicTableRemoteDataSource {
     const queryString = new URLSearchParams(queryParams).toString();
     const url = `${ApiEndpoint.DYNAMIC_TABLE_LIST}${queryString ? `?${queryString}` : ''}`;
 
-    return this.client.get<ResponseData<Record<string, unknown>>>(url, {
+    return this.client.get<DynamicTableResponse>(url, {
       cancelToken: params.cancelToken,
     });
   }
