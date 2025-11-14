@@ -15,20 +15,25 @@ export class DomainRemoteDataSource {
    * Fetches all domains from API
    */
   async getAll(
-    params?: DomainListParams
+    params: DomainListParams
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
-    const queryParams: Record<string, string> = {};
+    const queryParams: Record<string, string> = {
+      type: params.type,
+    };
 
-    if (params?.lang) {
+    if (params.provinceCode) {
+      queryParams['prov'] = params.provinceCode;
+    }
+    if (params.lang) {
       queryParams['lang'] = params.lang;
     }
-    if (params?.page) {
+    if (params.page) {
       queryParams['page'] = params.page.toString();
     }
-    if (params?.perPage) {
+    if (params.perPage) {
       queryParams['per_page'] = params.perPage.toString();
     }
-    if (params?.keyword) {
+    if (params.keyword) {
       queryParams['keyword'] = params.keyword;
     }
 
@@ -36,7 +41,7 @@ export class DomainRemoteDataSource {
     const url = `${ApiEndpoint.DOMAIN_LIST}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
-      cancelToken: params?.cancelToken,
+      cancelToken: params.cancelToken,
     });
   }
 

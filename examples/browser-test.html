@@ -272,6 +272,7 @@
       // Extract the exports from the global object
       const SDK = window.StadataJS.StadataJS;
       const DataLanguage = window.StadataJS.DataLanguage;
+      const DomainType = window.StadataJS.DomainType;
 
       let sdkInitialized = false;
 
@@ -350,6 +351,7 @@
         showStatus('🔄 Fetching domains...', 'info');
 
         const result = await SDK.instance.list.domains({
+          type: DomainType.ALL,
           lang: DataLanguage.ID,
           page: 1,
           perPage: 5,

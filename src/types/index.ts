@@ -1,4 +1,4 @@
-import { DataLanguage, ClassificationType, ClassificationLevel } from '../shared/enums';
+import { DataLanguage, ClassificationType, ClassificationLevel, DomainType } from '../shared/enums';
 import { CancelToken } from '../core/utils';
 
 /**
@@ -40,6 +40,16 @@ export interface BaseListParams {
  * Parameters for domain list
  */
 export interface DomainListParams extends Omit<BaseListParams, 'domain'> {
+  /**
+   * Domain type (required)
+   */
+  type: DomainType;
+
+  /**
+   * Province code (required when type is REGENCY_BY_PROVINCE)
+   */
+  provinceCode?: string;
+
   /**
    * Keyword search
    */

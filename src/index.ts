@@ -83,6 +83,10 @@ export {
   // Enums
   DataLanguage,
   DataAvailability,
+  ClassificationType,
+  KBLILevel,
+  KBKILevel,
+  DomainType,
 } from './shared';
 
 // Type exports
