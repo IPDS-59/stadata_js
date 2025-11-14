@@ -19,7 +19,6 @@ import {
   DerivedPeriodListParams,
   DerivedVariableListParams,
   StatisticClassificationListParams,
-  CensusListParams,
   DynamicTableParams,
 } from '../types';
 
@@ -151,9 +150,36 @@ export interface StadataList {
   ): Promise<Result<ListResult<StatisticClassification>, ApiFailure>>;
 
   /**
-   * Gets all censuses
+   * Gets all census events
    */
-  censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>>;
+  censusEvents(): Promise<Result<ListResult<Census>, ApiFailure>>;
+
+  /**
+   * Gets census topics for a specific census
+   */
+  censusTopics(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>>;
+
+  /**
+   * Gets census areas for a specific census
+   */
+  censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>>;
+
+  /**
+   * Gets census datasets for a specific census and topic
+   */
+  censusEventDatasets(params: {
+    censusId: string;
+    topicId: number;
+  }): Promise<Result<ListResult<Census>, ApiFailure>>;
+
+  /**
+   * Gets census data for a specific census, area, and dataset
+   */
+  censusData(params: {
+    censusId: string;
+    censusAreaId: string;
+    datasetId: string;
+  }): Promise<Result<ListResult<Census>, ApiFailure>>;
 
   /**
    * Gets all dynamic tables

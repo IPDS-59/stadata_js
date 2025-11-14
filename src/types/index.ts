@@ -284,7 +284,37 @@ export interface StatisticClassificationListParams extends BaseListParams {
 /**
  * Parameters for census list
  */
-export interface CensusListParams extends BaseListParams {}
+export interface CensusListParams {
+  /**
+   * Type of census data to retrieve
+   */
+  type?: 'events' | 'topics' | 'areas' | 'datasets' | 'data';
+
+  /**
+   * Census ID (required for topics, areas, datasets, data)
+   */
+  censusId?: string;
+
+  /**
+   * Topic ID (required for datasets)
+   */
+  topicId?: number;
+
+  /**
+   * Census Area ID (required for data)
+   */
+  censusAreaId?: string;
+
+  /**
+   * Dataset ID (required for data)
+   */
+  datasetId?: string;
+
+  /**
+   * Cancel token for request cancellation
+   */
+  cancelToken?: CancelToken;
+}
 
 /**
  * Parameters for view requests

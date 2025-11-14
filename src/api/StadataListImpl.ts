@@ -21,7 +21,6 @@ import {
   DerivedPeriodListParams,
   DerivedVariableListParams,
   StatisticClassificationListParams,
-  CensusListParams,
   DynamicTableParams,
 } from '../types';
 import { Domain, DomainInjector } from '../features/domain';
@@ -162,9 +161,41 @@ export class StadataListImpl implements StadataList {
     return useCase.execute(params);
   }
 
-  async censuses(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>> {
+  async censusEvents(): Promise<Result<ListResult<Census>, ApiFailure>> {
     const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
-    return useCase.execute(params);
+    return useCase.execute();
+  }
+
+  async censusTopics(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>> {
+    const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
+    return useCase.execute({ censusId: params.censusId, type: 'topics' });
+  }
+
+  async censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>> {
+    const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
+    return useCase.execute({ censusId: params.censusId, type: 'areas' });
+  }
+
+  async censusEventDatasets(params: {
+    censusId: string;
+    topicId: number;
+  }): Promise<Result<ListResult<Census>, ApiFailure>> {
+    const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
+    return useCase.execute({ censusId: params.censusId, topicId: params.topicId, type: 'datasets' });
+  }
+
+  async censusData(params: {
+    censusId: string;
+    censusAreaId: string;
+    datasetId: string;
+  }): Promise<Result<ListResult<Census>, ApiFailure>> {
+    const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
+    return useCase.execute({
+      censusId: params.censusId,
+      censusAreaId: params.censusAreaId,
+      datasetId: params.datasetId,
+      type: 'data',
+    });
   }
 
   async dynamicTables(

@@ -10,27 +10,62 @@ export class CensusRemoteDataSource {
   constructor(private client: NetworkClient) {}
 
   /**
-   * Gets all census events from the API
+   * Gets census data from the API based on type
    * @param params - List parameters
    * @returns Result containing response data or failure
    */
   async getAll(
     params?: CensusListParams
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
-    const queryParams: Record<string, string> = {
-      id: '37', // Census events require id=37
-    };
+    const queryParams: Record<string, string> = {};
 
-    if (params?.domain) {
-      queryParams['domain'] = params.domain;
-    }
+    // Determine which endpoint and parameters based on type
+    switch (params?.type) {
+      case 'topics':
+        // id=38 for census topics
+        queryParams['id'] = '38';
+        if (params.censusId) {
+          queryParams['event'] = params.censusId;
+        }
+        break;
 
-    if (params?.lang) {
-      queryParams['lang'] = params.lang;
-    }
+      case 'areas':
+        // id=39 for census areas
+        queryParams['id'] = '39';
+        if (params.censusId) {
+          queryParams['event'] = params.censusId;
+        }
+        break;
 
-    if (params?.page) {
-      queryParams['page'] = params.page.toString();
+      case 'datasets':
+        // id=40 for census datasets
+        queryParams['id'] = '40';
+        if (params.censusId) {
+          queryParams['event'] = params.censusId;
+        }
+        if (params.topicId) {
+          queryParams['topic'] = params.topicId.toString();
+        }
+        break;
+
+      case 'data':
+        // id=41 for census data
+        queryParams['id'] = '41';
+        if (params.censusId) {
+          queryParams['event'] = params.censusId;
+        }
+        if (params.censusAreaId) {
+          queryParams['censusarea'] = params.censusAreaId;
+        }
+        if (params.datasetId) {
+          queryParams['dataset'] = params.datasetId;
+        }
+        break;
+
+      default:
+        // id=37 for census events (default)
+        queryParams['id'] = '37';
+        break;
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
