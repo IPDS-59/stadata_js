@@ -2,11 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.1.2] - 2025-11-14
+## [0.2.0] - 2025-11-14
+
+### ✨ Features
+
+- add RelatedTable entity and improve dynamic table structure ([44f5725])
 
 ### 🐛 Bug Fixes
 
-- **api**: add /model/ path segment to all API endpoints ([ba4e6ae])
+- exclude source maps from npm package to reduce bundle size ([8c2b207])
+- add required periodId parameter to dynamic table test ([ec84d8b])
+- correct dynamic table implementation to match API documentation ([b96cefa])
+- use correct endpoint for dynamic table data ([2f2d427])
+- improve back-merge workflow reliability ([481822e])
+
+### 💎 Styles
+
+- apply prettier formatting to tests ([08bdc0b])
+- apply linter formatting fixes ([af2b96f])
+
+### ♻️ Code Refactoring
+
+- restructure dynamic table to match BPS API response format ([e2e9d94])
+
+### ✅ Tests
+
+- update dynamic table tests to match new entity structure ([d97540d])
+
+### 🔧 Chores
+
+- exclude source maps and dist files from PR diff analysis ([b97139b])
 
 
 ## [0.1.1] - 2025-11-14

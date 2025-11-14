@@ -1,0 +1,6 @@
+# Exclude source maps from PR diffs and language stats
+*.map linguist-generated=true
+*.map -diff
+
+# Exclude generated dist files from language stats
+dist/** linguist-generated=true

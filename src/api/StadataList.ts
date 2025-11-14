@@ -190,7 +190,7 @@ export interface StadataList {
   }): Promise<Result<ListResult<CensusData>, ApiFailure>>;
 
   /**
-   * Gets all dynamic tables
+   * Gets dynamic table data with metadata for rendering
    */
-  dynamicTables(params: DynamicTableParams): Promise<Result<ListResult<DynamicTable>, ApiFailure>>;
+  dynamicTables(params: DynamicTableParams): Promise<Result<DynamicTable, ApiFailure>>;
 }

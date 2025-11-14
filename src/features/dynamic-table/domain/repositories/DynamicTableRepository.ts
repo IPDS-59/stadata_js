@@ -1,6 +1,5 @@
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../../../../core/failures';
-import { ListResult } from '../../../../shared';
 import { DynamicTableParams } from '../../../../types';
 import { DynamicTable } from '../entities';
 
@@ -9,9 +8,9 @@ import { DynamicTable } from '../entities';
  */
 export interface DynamicTableRepository {
   /**
-   * Gets all dynamic tables (uses variable endpoint under the hood)
+   * Gets dynamic table data with metadata for rendering
    * @param params - Dynamic table parameters
-   * @returns Result containing list of dynamic tables or failure
+   * @returns Result containing dynamic table or failure
    */
-  getAll(params: DynamicTableParams): Promise<Result<ListResult<DynamicTable>, ApiFailure>>;
+  getAll(params: DynamicTableParams): Promise<Result<DynamicTable, ApiFailure>>;
 }
