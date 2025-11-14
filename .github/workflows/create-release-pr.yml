@@ -15,7 +15,9 @@ jobs:
   create-release-pr:
     name: Create PR to Main Branch
     runs-on: ubuntu-latest
-    if: github.event_name == 'create' || (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/')))
+    if: |
+      (github.event_name == 'create' && github.event.ref_type == 'branch' && (startsWith(github.event.ref, 'release/') || startsWith(github.event.ref, 'hotfix/'))) ||
+      (github.event_name == 'push' && (startsWith(github.ref, 'refs/heads/release/') || startsWith(github.ref, 'refs/heads/hotfix/')))
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
