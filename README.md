@@ -305,8 +305,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Links
 
 - [npm Package](https://www.npmjs.com/package/stadata-js)
-- [GitHub Repository](https://github.com/ryanaidilp/stadata-js)
-- [Issue Tracker](https://github.com/ryanaidilp/stadata-js/issues)
+- [GitHub Repository](https://github.com/IPDS-59/stadata_js)
+- [Issue Tracker](https://github.com/IPDS-59/stadata_js/issues)
 - [BPS Website](https://www.bps.go.id)
 
 ## Acknowledgments
