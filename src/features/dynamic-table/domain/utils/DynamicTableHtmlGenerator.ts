@@ -13,7 +13,8 @@ export class DynamicTableHtmlGenerator {
    * @returns HTML string representation of the table
    */
   static generate(table: DynamicTable): string {
-    const hasDerivedVars = table.derivedVariables.length > 1 || table.derivedVariables[0]?.value !== 0;
+    const hasDerivedVars =
+      table.derivedVariables.length > 1 || table.derivedVariables[0]?.value !== 0;
     const hasDerivedPeriods =
       table.derivedPeriods.length > 1 || table.derivedPeriods[0]?.value !== 0;
 

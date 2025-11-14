@@ -1,181 +1,280 @@
-import { DynamicTable } from '../domain/entities/DynamicTable';
+import {
+  DynamicTable,
+  VariableInfo,
+  VerticalVariableInfo,
+  PeriodInfo,
+  SubjectInfo,
+  RelatedTable,
+} from '../domain/entities';
 
 describe('DynamicTable Entity', () => {
-  it('should create a dynamic table with all required fields', () => {
+  it('should create a dynamic table with all fields', () => {
+    const subjects = [new SubjectInfo(521, 'Pendidikan')];
+    const variables = [
+      new VariableInfo(
+        33,
+        'Rata-Rata Lama Sekolah',
+        'Tahun',
+        'Indeks Pembangunan Manusia',
+        '',
+        '',
+        2
+      ),
+    ];
+    const verticalVariables = [new VerticalVariableInfo(7200, 'Sulawesi Tengah')];
+    const periods = [new PeriodInfo(104, '2004')];
+    const derivedVariables = [new VerticalVariableInfo('0', 'Tidak ada')];
+    const derivedPeriods = [new VerticalVariableInfo(0, 'Tahun')];
+    const dataContent = { '72003301040': 7.46 };
+    const related = [
+      new RelatedTable('MTMwIzI=', 'Related Table', 2, '2025-11-06', '/link'),
+    ];
+
     const dynamicTable = new DynamicTable(
-      123,
-      'Population Growth Rate',
-      45,
-      'Demographics',
-      'Population growth rate by region',
-      'Percent',
-      67,
-      '7200'
+      subjects,
+      variables,
+      verticalVariables,
+      'Kabupaten/Kota',
+      periods,
+      derivedVariables,
+      derivedPeriods,
+      dataContent,
+      related,
+      null
     );
 
-    expect(dynamicTable.variableId).toBe(123);
-    expect(dynamicTable.title).toBe('Population Growth Rate');
-    expect(dynamicTable.subjectId).toBe(45);
-    expect(dynamicTable.subjectName).toBe('Demographics');
-    expect(dynamicTable.notes).toBe('Population growth rate by region');
-    expect(dynamicTable.unit).toBe('Percent');
-    expect(dynamicTable.verticalVariableId).toBe(67);
-    expect(dynamicTable.domain).toBe('7200');
-  });
-
-  it('should create a dynamic table with optional fields', () => {
-    const dynamicTable = new DynamicTable(
-      123,
-      'Population Growth Rate',
-      45,
-      'Demographics',
-      'Population growth rate by region',
-      'Percent',
-      67,
-      '7200',
-      10,
-      'CSA Subject',
-      5,
-      'Line Graph'
-    );
-
-    expect(dynamicTable.csaSubjectId).toBe(10);
-    expect(dynamicTable.csaSubjectName).toBe('CSA Subject');
-    expect(dynamicTable.graphId).toBe(5);
-    expect(dynamicTable.graphName).toBe('Line Graph');
+    expect(dynamicTable.subjects).toEqual(subjects);
+    expect(dynamicTable.variables).toEqual(variables);
+    expect(dynamicTable.verticalVariables).toEqual(verticalVariables);
+    expect(dynamicTable.verticalVariableLabel).toBe('Kabupaten/Kota');
+    expect(dynamicTable.periods).toEqual(periods);
+    expect(dynamicTable.derivedVariables).toEqual(derivedVariables);
+    expect(dynamicTable.derivedPeriods).toEqual(derivedPeriods);
+    expect(dynamicTable.dataContent).toEqual(dataContent);
+    expect(dynamicTable.related).toEqual(related);
+    expect(dynamicTable.lastUpdate).toBeNull();
   });
 
   it('should convert to JSON correctly', () => {
+    const subjects = [new SubjectInfo(521, 'Pendidikan')];
+    const variables = [new VariableInfo(33, 'Rata-Rata Lama Sekolah', 'Tahun', 'IPM', '', '', 2)];
+    const verticalVariables = [new VerticalVariableInfo(7200, 'Sulawesi Tengah')];
+    const periods = [new PeriodInfo(104, '2004')];
+    const derivedVariables = [new VerticalVariableInfo('0', 'Tidak ada')];
+    const derivedPeriods = [new VerticalVariableInfo(0, 'Tahun')];
+    const dataContent = { '72003301040': 7.46 };
+    const related = [new RelatedTable('MTMwIzI=', 'Related Table', 2, '2025-11-06', '/link')];
+
     const dynamicTable = new DynamicTable(
-      123,
-      'Population Growth Rate',
-      45,
-      'Demographics',
-      'Population growth rate by region',
-      'Percent',
-      67,
-      '7200',
-      10,
-      'CSA Subject',
-      5,
-      'Line Graph'
+      subjects,
+      variables,
+      verticalVariables,
+      'Kabupaten/Kota',
+      periods,
+      derivedVariables,
+      derivedPeriods,
+      dataContent,
+      related,
+      null
     );
 
     const json = dynamicTable.toJson();
 
-    expect(json.var).toBe(123);
-    expect(json.label).toBe('Population Growth Rate');
-    expect(json.subj).toBe(45);
-    expect(json.subj_label).toBe('Demographics');
-    expect(json.notes).toBe('Population growth rate by region');
-    expect(json.unit).toBe('Percent');
-    expect(json.vervar).toBe(67);
-    expect(json.table).toBe('7200');
-    expect(json.subcsa).toBe(10);
-    expect(json.subcsa_label).toBe('CSA Subject');
-    expect(json.graph).toBe(5);
-    expect(json.graph_label).toBe('Line Graph');
+    expect(json.subject).toEqual([{ val: 521, label: 'Pendidikan' }]);
+    expect(json.var).toEqual([
+      { val: 33, label: 'Rata-Rata Lama Sekolah', unit: 'Tahun', subj: 'IPM', def: '', note: '', decimal: 2 },
+    ]);
+    expect(json.vervar).toEqual([{ val: 7200, label: 'Sulawesi Tengah' }]);
+    expect(json.labelvervar).toBe('Kabupaten/Kota');
+    expect(json.tahun).toEqual([{ val: 104, label: '2004' }]);
+    expect(json.turvar).toEqual([{ val: '0', label: 'Tidak ada' }]);
+    expect(json.turtahun).toEqual([{ val: 0, label: 'Tahun' }]);
+    expect(json.datacontent).toEqual({ '72003301040': 7.46 });
+    expect(json.related).toEqual([
+      {
+        id: 'MTMwIzI=',
+        title: 'Related Table',
+        tablesource: 2,
+        last_update: '2025-11-06',
+        link: '/link',
+      },
+    ]);
+    expect(json.last_update).toBeNull();
   });
 
   it('should create from JSON correctly', () => {
     const json = {
-      var: 123,
-      label: 'Population Growth Rate',
-      subj: 45,
-      subj_label: 'Demographics',
-      notes: 'Population growth rate by region',
-      unit: 'Percent',
-      vervar: 67,
-      table: '7200',
-      subcsa: 10,
-      subcsa_label: 'CSA Subject',
-      graph: 5,
-      graph_label: 'Line Graph',
+      subject: [{ val: 521, label: 'Pendidikan' }],
+      var: [
+        {
+          val: 33,
+          label: 'Rata-Rata Lama Sekolah',
+          unit: 'Tahun',
+          subj: 'IPM',
+          def: '',
+          note: '',
+          decimal: 2,
+        },
+      ],
+      vervar: [{ val: 7200, label: 'Sulawesi Tengah' }],
+      labelvervar: 'Kabupaten/Kota',
+      tahun: [{ val: 104, label: '2004' }],
+      turvar: [{ val: '0', label: 'Tidak ada' }],
+      turtahun: [{ val: 0, label: 'Tahun' }],
+      datacontent: { '72003301040': 7.46 },
+      related: [
+        {
+          id: 'MTMwIzI=',
+          title: 'Related Table',
+          tablesource: 2,
+          last_update: '2025-11-06',
+          link: '/link',
+        },
+      ],
+      last_update: null,
     };
 
     const dynamicTable = DynamicTable.fromJson(json);
 
-    expect(dynamicTable.variableId).toBe(123);
-    expect(dynamicTable.title).toBe('Population Growth Rate');
-    expect(dynamicTable.subjectId).toBe(45);
-    expect(dynamicTable.subjectName).toBe('Demographics');
-    expect(dynamicTable.notes).toBe('Population growth rate by region');
-    expect(dynamicTable.unit).toBe('Percent');
-    expect(dynamicTable.verticalVariableId).toBe(67);
-    expect(dynamicTable.domain).toBe('7200');
-    expect(dynamicTable.csaSubjectId).toBe(10);
-    expect(dynamicTable.csaSubjectName).toBe('CSA Subject');
-    expect(dynamicTable.graphId).toBe(5);
-    expect(dynamicTable.graphName).toBe('Line Graph');
+    expect(dynamicTable.subjects).toHaveLength(1);
+    expect(dynamicTable.subjects[0].value).toBe(521);
+    expect(dynamicTable.subjects[0].label).toBe('Pendidikan');
+
+    expect(dynamicTable.variables).toHaveLength(1);
+    expect(dynamicTable.variables[0].value).toBe(33);
+    expect(dynamicTable.variables[0].label).toBe('Rata-Rata Lama Sekolah');
+
+    expect(dynamicTable.verticalVariables).toHaveLength(1);
+    expect(dynamicTable.verticalVariables[0].value).toBe(7200);
+
+    expect(dynamicTable.verticalVariableLabel).toBe('Kabupaten/Kota');
+
+    expect(dynamicTable.periods).toHaveLength(1);
+    expect(dynamicTable.periods[0].value).toBe(104);
+
+    expect(dynamicTable.derivedVariables).toHaveLength(1);
+    expect(dynamicTable.derivedVariables[0].value).toBe('0');
+
+    expect(dynamicTable.derivedPeriods).toHaveLength(1);
+    expect(dynamicTable.derivedPeriods[0].value).toBe(0);
+
+    expect(dynamicTable.dataContent).toEqual({ '72003301040': 7.46 });
+
+    expect(dynamicTable.related).toHaveLength(1);
+    expect(dynamicTable.related[0].id).toBe('MTMwIzI=');
+
+    expect(dynamicTable.lastUpdate).toBeNull();
   });
 
-  it('should handle missing optional fields in JSON', () => {
+  it('should handle missing optional arrays in JSON', () => {
     const json = {
-      var: 123,
-      label: 'Population Growth Rate',
-      subj: 45,
-      subj_label: 'Demographics',
-      notes: 'Population growth rate by region',
-      unit: 'Percent',
-      vervar: 67,
-      table: '7200',
+      labelvervar: 'Test Label',
+      datacontent: {},
     };
 
     const dynamicTable = DynamicTable.fromJson(json);
 
-    expect(dynamicTable.csaSubjectId).toBeUndefined();
-    expect(dynamicTable.csaSubjectName).toBeUndefined();
-    expect(dynamicTable.graphId).toBeUndefined();
-    expect(dynamicTable.graphName).toBeUndefined();
+    expect(dynamicTable.subjects).toEqual([]);
+    expect(dynamicTable.variables).toEqual([]);
+    expect(dynamicTable.verticalVariables).toEqual([]);
+    expect(dynamicTable.periods).toEqual([]);
+    expect(dynamicTable.derivedVariables).toEqual([]);
+    expect(dynamicTable.derivedPeriods).toEqual([]);
+    expect(dynamicTable.related).toEqual([]);
+    expect(dynamicTable.dataContent).toEqual({});
   });
 
-  it('should handle string var by converting to number', () => {
+  it('should get data value using composite key', () => {
+    const dataContent = {
+      '72003301040': 7.46,
+      '72013301050': 6.8,
+    };
+
+    const dynamicTable = new DynamicTable(
+      [],
+      [],
+      [],
+      '',
+      [],
+      [],
+      [],
+      dataContent,
+      [],
+      null
+    );
+
+    expect(dynamicTable.getDataValue(7200, 33, 0, 104, 0)).toBe(7.46);
+    expect(dynamicTable.getDataValue(7201, 33, 0, 105, 0)).toBe(6.8);
+    expect(dynamicTable.getDataValue(9999, 99, 0, 999, 0)).toBeUndefined();
+  });
+
+  it('should handle related tables with null last_update', () => {
     const json = {
-      var: '123',
-      label: 'Population Growth Rate',
-      subj: '45',
-      subj_label: 'Demographics',
-      notes: 'Population growth rate by region',
-      unit: 'Percent',
-      vervar: 67,
-      table: '7200',
+      related: [
+        {
+          id: 'test',
+          title: 'Test Table',
+          tablesource: 1,
+          last_update: null,
+          link: '/test',
+        },
+      ],
+      datacontent: {},
     };
 
     const dynamicTable = DynamicTable.fromJson(json);
 
-    expect(dynamicTable.variableId).toBe(123);
-    expect(dynamicTable.subjectId).toBe(45);
+    expect(dynamicTable.related).toHaveLength(1);
+    expect(dynamicTable.related[0].lastUpdate).toBeNull();
+  });
+});
+
+describe('VariableInfo Entity', () => {
+  it('should create and convert to JSON', () => {
+    const variable = new VariableInfo(33, 'Test Variable', 'Tahun', 'Subject', 'Definition', 'Notes', 2);
+
+    expect(variable.value).toBe(33);
+    expect(variable.label).toBe('Test Variable');
+    expect(variable.decimal).toBe(2);
+
+    const json = variable.toJson();
+    expect(json.val).toBe(33);
+    expect(json.label).toBe('Test Variable');
+    expect(json.decimal).toBe(2);
   });
 
-  it('should handle missing required fields by defaulting to empty values', () => {
-    const json = {};
+  it('should handle optional decimal field', () => {
+    const variable = new VariableInfo(33, 'Test Variable', 'Tahun', 'Subject', '', '');
 
-    const dynamicTable = DynamicTable.fromJson(json);
+    expect(variable.decimal).toBeUndefined();
 
-    expect(dynamicTable.variableId).toBe(0);
-    expect(dynamicTable.title).toBe('');
-    expect(dynamicTable.subjectId).toBe(0);
-    expect(dynamicTable.subjectName).toBe('');
-    expect(dynamicTable.notes).toBe('');
-    expect(dynamicTable.unit).toBe('');
-    expect(dynamicTable.verticalVariableId).toBe(0);
-    expect(dynamicTable.domain).toBe('');
+    const json = variable.toJson();
+    expect(json.decimal).toBeUndefined();
+  });
+});
+
+describe('RelatedTable Entity', () => {
+  it('should create and convert to JSON', () => {
+    const related = new RelatedTable('id123', 'Table Title', 2, '2025-11-06', '/link/path');
+
+    expect(related.id).toBe('id123');
+    expect(related.title).toBe('Table Title');
+    expect(related.tableSource).toBe(2);
+    expect(related.lastUpdate).toBe('2025-11-06');
+    expect(related.link).toBe('/link/path');
+
+    const json = related.toJson();
+    expect(json.id).toBe('id123');
+    expect(json.tablesource).toBe(2);
+    expect(json.last_update).toBe('2025-11-06');
   });
 
-  it('should handle partial JSON data', () => {
-    const json = {
-      var: 123,
-      label: 'Population Growth Rate',
-      subj: 45,
-    };
+  it('should handle null last_update', () => {
+    const related = new RelatedTable('id123', 'Table Title', 2, null, '/link/path');
 
-    const dynamicTable = DynamicTable.fromJson(json);
+    expect(related.lastUpdate).toBeNull();
 
-    expect(dynamicTable.variableId).toBe(123);
-    expect(dynamicTable.title).toBe('Population Growth Rate');
-    expect(dynamicTable.subjectId).toBe(45);
-    expect(dynamicTable.subjectName).toBe('');
-    expect(dynamicTable.notes).toBe('');
-    expect(dynamicTable.unit).toBe('');
+    const json = related.toJson();
+    expect(json.last_update).toBeNull();
   });
 });
