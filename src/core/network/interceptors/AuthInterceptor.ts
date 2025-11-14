@@ -1,4 +1,4 @@
-import { BaseNetworkInterceptor } from './BaseNetworkInterceptor';
+import { BaseNetworkInterceptor, InterceptedRequest } from './BaseNetworkInterceptor';
 
 /**
  * Interceptor that injects API key into requests
@@ -8,15 +8,14 @@ export class AuthInterceptor extends BaseNetworkInterceptor {
     super();
   }
 
-  onRequest(url: string, init: RequestInit): RequestInit {
+  onRequest(url: string, init: RequestInit): InterceptedRequest {
     // Add API key to URL query parameters
     const urlObj = new URL(url);
     urlObj.searchParams.set('key', this.apiKey);
 
     return {
-      ...init,
-      // Update the URL with the API key
-      // Note: We'll handle this in the NetworkClient
+      url: urlObj.toString(),
+      init,
     };
   }
 

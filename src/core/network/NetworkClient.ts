@@ -118,7 +118,7 @@ export class NetworkClient {
   ): Promise<Result<T, ApiFailure>> {
     try {
       // Build full URL
-      const fullUrl = this.buildUrl(url);
+      let fullUrl = this.buildUrl(url);
 
       // Build headers - omit Content-Type for GET requests to avoid CORS preflight
       const headers: Record<string, string> = {};
@@ -153,7 +153,9 @@ export class NetworkClient {
       // Apply request interceptors
       for (const interceptor of this.interceptors) {
         if (interceptor.onRequest) {
-          init = await interceptor.onRequest(fullUrl, init);
+          const intercepted = await interceptor.onRequest(fullUrl, init);
+          fullUrl = intercepted.url;
+          init = intercepted.init;
         }
       }
 
