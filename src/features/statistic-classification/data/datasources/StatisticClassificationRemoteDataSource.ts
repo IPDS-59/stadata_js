@@ -55,6 +55,7 @@ export class StatisticClassificationRemoteDataSource {
     params: ViewParams & { type?: ClassificationType }
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
     const queryParams: Record<string, string> = {
+      id: params.id.toString(),
       domain: params.domain,
     };
 
@@ -64,7 +65,7 @@ export class StatisticClassificationRemoteDataSource {
 
     const queryString = new URLSearchParams(queryParams).toString();
     const classificationType = params.type || ClassificationType.KBLI_2020;
-    const url = `${ApiEndpoint.statisticClassification(classificationType)}/${params.id}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.statisticClassification(classificationType)}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<ResponseData<Record<string, unknown>>>(url, {
       cancelToken: params.cancelToken,

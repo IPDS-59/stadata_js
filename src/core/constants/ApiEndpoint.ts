@@ -75,8 +75,8 @@ export const ApiEndpoint = {
     `/view/model/${type}`,
 
   // Census endpoints
-  CENSUS_LIST: '/list/model/sensus',
-  CENSUS_VIEW: '/view/model/sensus',
+  CENSUS_LIST: '/list/model/census',
+  CENSUS_VIEW: '/view/model/census',
 
   // Trade endpoints
   TRADE: '/dataexim',

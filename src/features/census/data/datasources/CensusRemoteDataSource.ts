@@ -17,7 +17,9 @@ export class CensusRemoteDataSource {
   async getAll(
     params?: CensusListParams
   ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
-    const queryParams: Record<string, string> = {};
+    const queryParams: Record<string, string> = {
+      id: '37', // Census events require id=37
+    };
 
     if (params?.domain) {
       queryParams['domain'] = params.domain;
@@ -46,6 +48,7 @@ export class CensusRemoteDataSource {
    */
   async getById(params: ViewParams): Promise<Result<Record<string, unknown>, ApiFailure>> {
     const queryParams: Record<string, string> = {
+      id: params.id.toString(),
       domain: params.domain,
     };
 
@@ -54,7 +57,7 @@ export class CensusRemoteDataSource {
     }
 
     const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.CENSUS_VIEW}/${params.id}${queryString ? `?${queryString}` : ''}`;
+    const url = `${ApiEndpoint.CENSUS_VIEW}${queryString ? `?${queryString}` : ''}`;
 
     return this.client.get<Record<string, unknown>>(url, {
       cancelToken: params.cancelToken,

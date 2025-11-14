@@ -257,6 +257,11 @@
           <button class="btn-secondary" onclick="testListCensuses()">🏘️ List Censuses</button>
         </div>
 
+        <h3 style="margin-top: 20px; margin-bottom: 15px; color: #555; font-size: 16px;">Trade Data</h3>
+        <div class="grid">
+          <button class="btn-secondary" onclick="testGetTrade()">📦 Get Trade Data</button>
+        </div>
+
         <!-- Results -->
         <div id="results" class="results hidden">
           <pre id="resultsContent"></pre>
@@ -795,6 +800,29 @@
         result.match(
           (data) => {
             showStatus(`✅ Success! Found ${data.totalItems} censuses`, 'success');
+            showResults(data);
+          },
+          (error) => {
+            showStatus(`❌ Error: ${error.message}`, 'error');
+            showResults({ error: error.message });
+          }
+        );
+      };
+
+      window.testGetTrade = async function () {
+        if (!sdkInitialized) return;
+        showStatus('🔄 Fetching trade data...', 'info');
+
+        const result = await SDK.instance.getTrade({
+          domain: '0000',
+          year: 2023,
+          month: 1,
+          lang: DataLanguage.ID,
+        });
+
+        result.match(
+          (data) => {
+            showStatus(`✅ Success! Got trade data`, 'success');
             showResults(data);
           },
           (error) => {
