@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Upload PR bundle info
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pr-bundle-size
           path: pr-size.json
