@@ -25,7 +25,7 @@ export class PressReleaseRepositoryImpl implements PressReleaseRepository {
           throw new ParseFailure('Invalid response structure: missing or invalid data array');
         }
 
-        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const paginationInfo = response.data[0];
         const pressReleasesData = response.data[1] as unknown as Record<string, unknown>[];
 
         if (!paginationInfo || !pressReleasesData) {

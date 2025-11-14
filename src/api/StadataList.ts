@@ -168,7 +168,9 @@ export interface StadataList {
   /**
    * Gets census areas for a specific census
    */
-  censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<CensusArea>, ApiFailure>>;
+  censusEventAreas(params: {
+    censusId: string;
+  }): Promise<Result<ListResult<CensusArea>, ApiFailure>>;
 
   /**
    * Gets census datasets for a specific census and topic

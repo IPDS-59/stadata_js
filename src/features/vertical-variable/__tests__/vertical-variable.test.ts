@@ -2,13 +2,7 @@ import { VerticalVariable } from '../domain/entities/VerticalVariable';
 
 describe('VerticalVariable Entity', () => {
   it('should create a vertical variable with all fields', () => {
-    const verticalVariable = new VerticalVariable(
-      7211,
-      'Banggai Laut',
-      249,
-      1,
-      'Province'
-    );
+    const verticalVariable = new VerticalVariable(7211, 'Banggai Laut', 249, 1, 'Province');
 
     expect(verticalVariable.id).toBe(7211);
     expect(verticalVariable.label).toBe('Banggai Laut');
@@ -18,13 +12,7 @@ describe('VerticalVariable Entity', () => {
   });
 
   it('should convert to JSON correctly', () => {
-    const verticalVariable = new VerticalVariable(
-      7211,
-      'Banggai Laut',
-      249,
-      1,
-      'Province'
-    );
+    const verticalVariable = new VerticalVariable(7211, 'Banggai Laut', 249, 1, 'Province');
 
     const json = verticalVariable.toJson();
 

@@ -2,12 +2,7 @@ import { DerivedVariable } from '../domain/entities/DerivedVariable';
 
 describe('DerivedVariable Entity', () => {
   it('should create a derived variable with all fields', () => {
-    const derivedVariable = new DerivedVariable(
-      3200,
-      'DKI Jakarta',
-      1,
-      'Wilayah Provinsi'
-    );
+    const derivedVariable = new DerivedVariable(3200, 'DKI Jakarta', 1, 'Wilayah Provinsi');
 
     expect(derivedVariable.id).toBe(3200);
     expect(derivedVariable.name).toBe('DKI Jakarta');
@@ -16,12 +11,7 @@ describe('DerivedVariable Entity', () => {
   });
 
   it('should convert to JSON correctly', () => {
-    const derivedVariable = new DerivedVariable(
-      3200,
-      'DKI Jakarta',
-      1,
-      'Wilayah Provinsi'
-    );
+    const derivedVariable = new DerivedVariable(3200, 'DKI Jakarta', 1, 'Wilayah Provinsi');
 
     const json = derivedVariable.toJson();
 

@@ -14,6 +14,9 @@ export class DomainRepositoryImpl implements DomainRepository {
   constructor(private remoteDataSource: DomainRemoteDataSource) {}
 
   async getAll(params?: DomainListParams): Promise<Result<ListResult<Domain>, ApiFailure>> {
+    if (!params) {
+      throw new ParseFailure('Domain list params are required');
+    }
     const result = await this.remoteDataSource.getAll(params);
 
     return result.map((response) => {
@@ -24,7 +27,7 @@ export class DomainRepositoryImpl implements DomainRepository {
           throw new ParseFailure('Invalid response structure: missing or invalid data array');
         }
 
-        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const paginationInfo = response.data[0];
         const domainsData = response.data[1] as unknown as Record<string, unknown>[];
 
         if (!paginationInfo || !domainsData) {

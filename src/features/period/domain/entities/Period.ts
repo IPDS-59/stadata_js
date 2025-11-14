@@ -25,9 +25,6 @@ export class Period extends BaseEntity {
    * Creates an entity from JSON
    */
   static fromJson(json: Record<string, unknown>): Period {
-    return new Period(
-      Number(json.th_id || json.id || 0),
-      Number(json.th || json.period || 0)
-    );
+    return new Period(Number(json.th_id || json.id || 0), Number(json.th || json.period || 0));
   }
 }

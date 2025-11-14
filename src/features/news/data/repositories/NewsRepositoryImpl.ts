@@ -23,7 +23,7 @@ export class NewsRepositoryImpl implements NewsRepository {
           throw new ParseFailure('Invalid response structure: missing or invalid data array');
         }
 
-        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const paginationInfo = response.data[0];
         const newsData = response.data[1] as unknown as Record<string, unknown>[];
 
         if (!paginationInfo || !newsData) {

@@ -54,4 +54,3 @@ export enum KBKILevel {
  * Union type for classification levels
  */
 export type ClassificationLevel = KBLILevel | KBKILevel;
-

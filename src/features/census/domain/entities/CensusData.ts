@@ -73,9 +73,7 @@ export class CensusData extends BaseEntity {
         continue;
       }
 
-      categories.push(
-        new CensusCategory(categoryId, categoryName, itemId, itemCode, itemName)
-      );
+      categories.push(new CensusCategory(categoryId, categoryName, itemId, itemCode, itemName));
     }
 
     return new CensusData(

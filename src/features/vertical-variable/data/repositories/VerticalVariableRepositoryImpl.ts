@@ -25,14 +25,16 @@ export class VerticalVariableRepositoryImpl implements VerticalVariableRepositor
           throw new ParseFailure('Invalid response structure: missing or invalid data array');
         }
 
-        const paginationInfo = response.data[0] as Record<string, unknown>;
+        const paginationInfo = response.data[0];
         const verticalVariablesData = response.data[1] as unknown as Record<string, unknown>[];
 
         if (!paginationInfo || !verticalVariablesData) {
           throw new ParseFailure('Invalid response structure');
         }
 
-        const verticalVariables = verticalVariablesData.map((item) => VerticalVariable.fromJson(item));
+        const verticalVariables = verticalVariablesData.map((item) =>
+          VerticalVariable.fromJson(item)
+        );
 
         // Calculate fallback values for missing pagination fields
         const count = Number(paginationInfo.count) || verticalVariablesData.length;

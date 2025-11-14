@@ -173,14 +173,22 @@ export class StadataListImpl implements StadataList {
     return useCase.execute() as Promise<Result<ListResult<CensusEvent>, ApiFailure>>;
   }
 
-  async censusTopics(params: { censusId: string }): Promise<Result<ListResult<CensusTopic>, ApiFailure>> {
+  async censusTopics(params: {
+    censusId: string;
+  }): Promise<Result<ListResult<CensusTopic>, ApiFailure>> {
     const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
-    return useCase.execute({ censusId: params.censusId, type: 'topics' }) as Promise<Result<ListResult<CensusTopic>, ApiFailure>>;
+    return useCase.execute({ censusId: params.censusId, type: 'topics' }) as Promise<
+      Result<ListResult<CensusTopic>, ApiFailure>
+    >;
   }
 
-  async censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<CensusArea>, ApiFailure>> {
+  async censusEventAreas(params: {
+    censusId: string;
+  }): Promise<Result<ListResult<CensusArea>, ApiFailure>> {
     const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
-    return useCase.execute({ censusId: params.censusId, type: 'areas' }) as Promise<Result<ListResult<CensusArea>, ApiFailure>>;
+    return useCase.execute({ censusId: params.censusId, type: 'areas' }) as Promise<
+      Result<ListResult<CensusArea>, ApiFailure>
+    >;
   }
 
   async censusEventDatasets(params: {
@@ -188,7 +196,11 @@ export class StadataListImpl implements StadataList {
     topicId: number;
   }): Promise<Result<ListResult<CensusDataset>, ApiFailure>> {
     const useCase = CensusInjector.getAllCensusesUseCase(this.injector);
-    return useCase.execute({ censusId: params.censusId, topicId: params.topicId, type: 'datasets' }) as Promise<Result<ListResult<CensusDataset>, ApiFailure>>;
+    return useCase.execute({
+      censusId: params.censusId,
+      topicId: params.topicId,
+      type: 'datasets',
+    }) as Promise<Result<ListResult<CensusDataset>, ApiFailure>>;
   }
 
   async censusData(params: {

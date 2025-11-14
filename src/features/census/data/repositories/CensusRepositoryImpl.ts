@@ -25,7 +25,12 @@ export class CensusRepositoryImpl implements CensusRepository {
    */
   async getAll(
     params?: CensusListParams
-  ): Promise<Result<ListResult<CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData>, ApiFailure>> {
+  ): Promise<
+    Result<
+      ListResult<CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData>,
+      ApiFailure
+    >
+  > {
     const result = await this.remoteDataSource.getAll(params);
 
     return result.map((response) => {
@@ -41,13 +46,15 @@ export class CensusRepositoryImpl implements CensusRepository {
           return this.createEmptyListResult(params);
         }
 
-        const paginationInfo = response.data[0] as Record<string, unknown>;
-        let censusesData = response.data[1] as unknown as Record<string, unknown>[] | Record<string, unknown>;
+        const paginationInfo = response.data[0];
+        let censusesData = response.data[1] as unknown as
+          | Record<string, unknown>[]
+          | Record<string, unknown>;
 
         // Handle census data (id=41) which wraps the array in an object with 'data' property
         if (censusesData && !Array.isArray(censusesData) && typeof censusesData === 'object') {
           // Census data endpoint returns: { timestamp, status, data_count, data: [...] }
-          const wrapper = censusesData as Record<string, unknown>;
+          const wrapper = censusesData;
           if (wrapper.data && Array.isArray(wrapper.data)) {
             censusesData = wrapper.data as Record<string, unknown>[];
           }

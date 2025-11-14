@@ -3,13 +3,7 @@ import { UseCase } from '../../../../core/base';
 import { ApiFailure } from '../../../../core/failures';
 import { ListResult } from '../../../../shared';
 import { CensusListParams } from '../../../../types';
-import {
-  CensusEvent,
-  CensusTopic,
-  CensusArea,
-  CensusDataset,
-  CensusData,
-} from '../entities';
+import { CensusEvent, CensusTopic, CensusArea, CensusDataset, CensusData } from '../entities';
 import { CensusRepository } from '../repositories';
 
 type CensusEntity = CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData;
@@ -17,7 +11,9 @@ type CensusEntity = CensusEvent | CensusTopic | CensusArea | CensusDataset | Cen
 /**
  * Use case for getting all census data
  */
-export class GetAllCensuses implements UseCase<CensusListParams | undefined, ListResult<CensusEntity>> {
+export class GetAllCensuses
+  implements UseCase<CensusListParams | undefined, ListResult<CensusEntity>>
+{
   constructor(private repository: CensusRepository) {}
 
   /**
