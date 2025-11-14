@@ -1,5 +1,5 @@
 {
-  "name": "@stadata/stadata-js",
+  "name": "stadata-js",
   "version": "0.1.0",
   "description": "JavaScript/TypeScript SDK for Indonesia's Central Statistics Agency (BPS) API",
   "main": "dist/index.js",
@@ -46,12 +46,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ryanaidilp/stadata-js.git"
+    "url": "https://github.com/IPDS-59/stadata_js.git"
   },
   "bugs": {
-    "url": "https://github.com/ryanaidilp/stadata-js/issues"
+    "url": "https://github.com/IPDS-59/stadata_js/issues"
   },
-  "homepage": "https://github.com/ryanaidilp/stadata-js#readme",
+  "homepage": "https://github.com/IPDS-59/stadata_js#readme",
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
     "@types/jest": "^30.0.0",

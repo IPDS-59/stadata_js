@@ -1,6 +1,6 @@
 # STADATA JS SDK
 
-[![npm version](https://img.shields.io/npm/v/@stadata/stadata-js.svg)](https://www.npmjs.com/package/@stadata/stadata-js)
+[![npm version](https://img.shields.io/npm/v/stadata-js.svg)](https://www.npmjs.com/package/stadata-js)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Official TypeScript/JavaScript SDK for BPS (Badan Pusat Statistik) WebAPI - Seamlessly access Indonesia's Central Bureau of Statistics data through a comprehensive, type-safe client library.
@@ -32,25 +32,25 @@ This toolkit facilitates seamless integration with BPS data sources, eliminating
 ## Installation
 
 ```bash
-npm install @stadata/stadata-js
+npm install stadata-js
 ```
 
 or using yarn:
 
 ```bash
-yarn add @stadata/stadata-js
+yarn add stadata-js
 ```
 
 or using pnpm:
 
 ```bash
-pnpm add @stadata/stadata-js
+pnpm add stadata-js
 ```
 
 ## Quick Start
 
 ```typescript
-import { StadataJS, DataLanguage } from '@stadata/stadata-js';
+import { StadataJS, DataLanguage } from 'stadata-js';
 
 // Initialize the SDK with your API key
 await StadataJS.init({
@@ -304,9 +304,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Links
 
-- [npm Package](https://www.npmjs.com/package/@stadata/stadata-js)
-- [GitHub Repository](https://github.com/ryanaidilp/stadata-js)
-- [Issue Tracker](https://github.com/ryanaidilp/stadata-js/issues)
+- [npm Package](https://www.npmjs.com/package/stadata-js)
+- [GitHub Repository](https://github.com/IPDS-59/stadata_js)
+- [Issue Tracker](https://github.com/IPDS-59/stadata_js/issues)
 - [BPS Website](https://www.bps.go.id)
 
 ## Acknowledgments
