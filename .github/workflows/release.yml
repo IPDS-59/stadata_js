@@ -39,7 +39,7 @@ jobs:
           elif [[ $BRANCH_NAME == hotfix/* ]]; then
             VERSION=$(echo $BRANCH_NAME | sed 's/hotfix\///')
             TYPE="hotfix"
-            BASE_BRANCH="main"
+            BASE_BRANCH="develop"
           fi
 
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -94,18 +94,63 @@ jobs:
           git fetch origin "$BASE_BRANCH"
           git checkout -b "$BACKMERGE_BRANCH" "origin/$BASE_BRANCH"
 
-          # Merge main into back-merge branch
-          git merge main --no-edit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}"
+          # Try to merge main into back-merge branch
+          if git merge main --no-edit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}"; then
+            echo "✅ Merge successful, no conflicts"
+            HAS_CONFLICTS=false
+          else
+            echo "⚠️ Merge conflicts detected"
+            HAS_CONFLICTS=true
+            # Stage all files including conflicts
+            git add -A
+            # Commit with conflict markers
+            git commit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH} (with conflicts)" || true
+          fi
 
           # Push back-merge branch
           git push origin "$BACKMERGE_BRANCH"
 
-          # Create PR
-          gh pr create \
-            --base "$BASE_BRANCH" \
-            --head "$BACKMERGE_BRANCH" \
-            --title "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}" \
-            --body "## Back-merge ${TYPE} ${VERSION}
+          # Create PR with appropriate message
+          if [ "$HAS_CONFLICTS" = "true" ]; then
+            PR_BODY="## Back-merge ${TYPE} ${VERSION}
+
+          This PR merges the changes from the ${TYPE} ${VERSION} back to the ${BASE_BRANCH} branch.
+
+          ### ⚠️ Conflicts Detected
+
+          This merge has conflicts that need to be resolved manually.
+
+          ### Changes
+          - ${TYPE} ${VERSION} has been merged to main
+          - Tag ${VERSION} has been created
+          - This PR syncs ${BASE_BRANCH} with the released changes
+
+          ### Steps to resolve:
+          1. Check out this branch locally
+          2. Resolve merge conflicts
+          3. Commit the resolved changes
+          4. Push to this branch
+          5. Merge this PR
+
+          ### Commands:
+          \`\`\`bash
+          git fetch origin ${BACKMERGE_BRANCH}
+          git checkout ${BACKMERGE_BRANCH}
+          # Resolve conflicts in your editor
+          git add .
+          git commit -m 'chore: resolve merge conflicts'
+          git push origin ${BACKMERGE_BRANCH}
+          \`\`\`"
+            gh pr create \
+              --base "$BASE_BRANCH" \
+              --head "$BACKMERGE_BRANCH" \
+              --title "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}" \
+              --body "$PR_BODY" \
+              --label "automated" \
+              --label "back-merge" \
+              --label "needs-review"
+          else
+            PR_BODY="## Back-merge ${TYPE} ${VERSION}
 
           This PR merges the changes from the ${TYPE} ${VERSION} back to the ${BASE_BRANCH} branch.
 
@@ -115,9 +160,15 @@ jobs:
           - This PR syncs ${BASE_BRANCH} with the released changes
 
           ### Auto-merge
-          This PR should be merged automatically if there are no conflicts." \
-            --label "automated" \
-            --label "back-merge"
+          No conflicts detected. This PR can be merged automatically."
+            gh pr create \
+              --base "$BASE_BRANCH" \
+              --head "$BACKMERGE_BRANCH" \
+              --title "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}" \
+              --body "$PR_BODY" \
+              --label "automated" \
+              --label "back-merge"
+          fi
 
           echo "✅ Created back-merge PR from main to $BASE_BRANCH"
 
