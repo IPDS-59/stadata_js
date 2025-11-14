@@ -25,7 +25,7 @@ export class CensusRemoteDataSource {
         // id=38 for census topics
         queryParams['id'] = '38';
         if (params.censusId) {
-          queryParams['event'] = params.censusId;
+          queryParams['kegiatan'] = params.censusId;
         }
         break;
 
@@ -33,7 +33,7 @@ export class CensusRemoteDataSource {
         // id=39 for census areas
         queryParams['id'] = '39';
         if (params.censusId) {
-          queryParams['event'] = params.censusId;
+          queryParams['kegiatan'] = params.censusId;
         }
         break;
 
@@ -41,10 +41,10 @@ export class CensusRemoteDataSource {
         // id=40 for census datasets
         queryParams['id'] = '40';
         if (params.censusId) {
-          queryParams['event'] = params.censusId;
+          queryParams['kegiatan'] = params.censusId;
         }
         if (params.topicId) {
-          queryParams['topic'] = params.topicId.toString();
+          queryParams['topik'] = params.topicId.toString();
         }
         break;
 
@@ -52,10 +52,10 @@ export class CensusRemoteDataSource {
         // id=41 for census data
         queryParams['id'] = '41';
         if (params.censusId) {
-          queryParams['event'] = params.censusId;
+          queryParams['kegiatan'] = params.censusId;
         }
         if (params.censusAreaId) {
-          queryParams['censusarea'] = params.censusAreaId;
+          queryParams['wilayah_sensus'] = params.censusAreaId;
         }
         if (params.datasetId) {
           queryParams['dataset'] = params.datasetId;
