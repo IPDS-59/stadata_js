@@ -59,7 +59,16 @@ export class CensusRepositoryImpl implements CensusRepository {
         }
 
         const paginationInfo = response.data[0] as Record<string, unknown>;
-        const censusesData = response.data[1] as unknown as Record<string, unknown>[];
+        let censusesData = response.data[1] as unknown as Record<string, unknown>[] | Record<string, unknown>;
+
+        // Handle census data (id=41) which wraps the array in an object with 'data' property
+        if (censusesData && !Array.isArray(censusesData) && typeof censusesData === 'object') {
+          // Census data endpoint returns: { timestamp, status, data_count, data: [...] }
+          const wrapper = censusesData as Record<string, unknown>;
+          if (wrapper.data && Array.isArray(wrapper.data)) {
+            censusesData = wrapper.data as Record<string, unknown>[];
+          }
+        }
 
         // Handle null or non-array census data
         if (!censusesData || !Array.isArray(censusesData)) {
