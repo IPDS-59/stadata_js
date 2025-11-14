@@ -1,34 +1,45 @@
 import { Result } from 'neverthrow';
 import { ApiEndpoint, NetworkClient } from '../../../../core';
 import { ApiFailure } from '../../../../core/failures';
-import { DynamicTableParams, ResponseData } from '../../../../types';
+import { DynamicTableParams } from '../../../../types';
+
+/**
+ * Response type for dynamic table detail endpoint
+ */
+export interface DynamicTableResponse {
+  status: string;
+  'data-availability': string;
+  last_update?: string | null;
+  subject?: Array<Record<string, unknown>>;
+  var?: Array<Record<string, unknown>>;
+  turvar?: Array<Record<string, unknown>>;
+  labelvervar?: string;
+  vervar?: Array<Record<string, unknown>>;
+  tahun?: Array<Record<string, unknown>>;
+  turtahun?: Array<Record<string, unknown>>;
+  datacontent?: Record<string, unknown>;
+  related?: unknown[];
+}
 
 /**
  * Remote data source for DynamicTable operations
  *
- * Note: The list of dynamic tables is handled by the Variable endpoint.
- * This datasource fetches variables which represent available tables.
+ * Fetches dynamic table data from the /list/model/data endpoint
  */
 export class DynamicTableRemoteDataSource {
   constructor(private client: NetworkClient) {}
 
   /**
-   * Gets all dynamic tables from the API
-   * Uses the Variable endpoint since there's no dedicated dynamic table list endpoint
+   * Gets dynamic table data from the API
    * @param params - Dynamic table parameters
-   * @returns Result containing response data or failure
+   * @returns Result containing dynamic table response or failure
    */
-  async getAll(
-    params: DynamicTableParams
-  ): Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>> {
-    const queryParams: Record<string, string> = {};
-
-    // For list operation, use domain from BaseListParams or fallback to tableId
-    if (params.domain) {
-      queryParams['domain'] = params.domain;
-    } else {
-      queryParams['domain'] = params.tableId;
-    }
+  async getAll(params: DynamicTableParams): Promise<Result<DynamicTableResponse, ApiFailure>> {
+    const queryParams: Record<string, string> = {
+      domain: params.domain || '',
+      var: params.variableId.toString(),
+      th: params.periodId.toString(),
+    };
 
     if (params.lang) {
       queryParams['lang'] = params.lang;
@@ -38,10 +49,22 @@ export class DynamicTableRemoteDataSource {
       queryParams['page'] = params.page.toString();
     }
 
-    const queryString = new URLSearchParams(queryParams).toString();
-    const url = `${ApiEndpoint.VARIABLE_LIST}${queryString ? `?${queryString}` : ''}`;
+    if (params.verticalVariableId !== undefined) {
+      queryParams['vervar'] = params.verticalVariableId.toString();
+    }
 
-    return this.client.get<ResponseData<Record<string, unknown>>>(url, {
+    if (params.derivedVariableId !== undefined) {
+      queryParams['turvar'] = params.derivedVariableId.toString();
+    }
+
+    if (params.derivedPeriodId !== undefined) {
+      queryParams['turth'] = params.derivedPeriodId.toString();
+    }
+
+    const queryString = new URLSearchParams(queryParams).toString();
+    const url = `${ApiEndpoint.DYNAMIC_TABLE_LIST}${queryString ? `?${queryString}` : ''}`;
+
+    return this.client.get<DynamicTableResponse>(url, {
       cancelToken: params.cancelToken,
     });
   }

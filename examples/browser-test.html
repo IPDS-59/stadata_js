@@ -616,19 +616,46 @@
 
       window.testListDynamicTables = async function () {
         if (!sdkInitialized) return;
-        showStatus('🔄 Fetching dynamic tables...', 'info');
+        showStatus('🔄 Fetching dynamic table data...', 'info');
 
         const result = await SDK.instance.list.dynamicTables({
           lang: DataLanguage.ID,
-          domain: '7200',
-          page: 1,
-          perPage: 5,
+          domain: '1404',
+          variableId: 33,
+          periodId: '117;123',
         });
 
         result.match(
-          (data) => {
-            showStatus(`✅ Success! Found ${data.totalItems} dynamic tables`, 'success');
-            showResults(data);
+          (table) => {
+            showStatus(`✅ Success! Dynamic table loaded`, 'success');
+
+            // Display the dynamic table data
+            const output = {
+              subjects: table.subjects.map(s => ({ value: s.value, label: s.label })),
+              variables: table.variables.map(v => ({
+                value: v.value,
+                label: v.label,
+                unit: v.unit,
+                subject: v.subject
+              })),
+              verticalVariableLabel: table.verticalVariableLabel,
+              verticalVariables: table.verticalVariables.map(v => ({ value: v.value, label: v.label })),
+              periods: table.periods.map(p => ({ value: p.value, label: p.label })),
+              derivedVariables: table.derivedVariables.map(d => ({ value: d.value, label: d.label })),
+              derivedPeriods: table.derivedPeriods.map(d => ({ value: d.value, label: d.label })),
+              dataContentSample: Object.entries(table.dataContent).slice(0, 5),
+              totalDataPoints: Object.keys(table.dataContent).length,
+              relatedTables: table.related.map(r => ({
+                id: r.id,
+                title: r.title,
+                tableSource: r.tableSource,
+                lastUpdate: r.lastUpdate,
+                link: r.link
+              })),
+              lastUpdate: table.lastUpdate
+            };
+
+            showResults(output);
           },
           (error) => {
             showStatus(`❌ Error: ${error.message}`, 'error');
