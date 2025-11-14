@@ -105,6 +105,13 @@ export class Census extends BaseEntity {
   }
 
   /**
+   * Custom JSON serialization for JSON.stringify()
+   */
+  toJSON(): Record<string, unknown> {
+    return this.toJson();
+  }
+
+  /**
    * Creates an entity from JSON
    */
   static fromJson(json: Record<string, unknown>): Census {
