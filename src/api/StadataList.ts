@@ -40,7 +40,13 @@ import { Period } from '../features/period';
 import { DerivedPeriod } from '../features/derived-period';
 import { DerivedVariable } from '../features/derived-variable';
 import { StatisticClassification } from '../features/statistic-classification';
-import { Census } from '../features/census';
+import {
+  CensusEvent,
+  CensusTopic,
+  CensusArea,
+  CensusDataset,
+  CensusData,
+} from '../features/census';
 import { DynamicTable } from '../features/dynamic-table';
 
 /**
@@ -152,17 +158,17 @@ export interface StadataList {
   /**
    * Gets all census events
    */
-  censusEvents(): Promise<Result<ListResult<Census>, ApiFailure>>;
+  censusEvents(): Promise<Result<ListResult<CensusEvent>, ApiFailure>>;
 
   /**
    * Gets census topics for a specific census
    */
-  censusTopics(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>>;
+  censusTopics(params: { censusId: string }): Promise<Result<ListResult<CensusTopic>, ApiFailure>>;
 
   /**
    * Gets census areas for a specific census
    */
-  censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<Census>, ApiFailure>>;
+  censusEventAreas(params: { censusId: string }): Promise<Result<ListResult<CensusArea>, ApiFailure>>;
 
   /**
    * Gets census datasets for a specific census and topic
@@ -170,7 +176,7 @@ export interface StadataList {
   censusEventDatasets(params: {
     censusId: string;
     topicId: number;
-  }): Promise<Result<ListResult<Census>, ApiFailure>>;
+  }): Promise<Result<ListResult<CensusDataset>, ApiFailure>>;
 
   /**
    * Gets census data for a specific census, area, and dataset
@@ -179,7 +185,7 @@ export interface StadataList {
     censusId: string;
     censusAreaId: string;
     datasetId: string;
-  }): Promise<Result<ListResult<Census>, ApiFailure>>;
+  }): Promise<Result<ListResult<CensusData>, ApiFailure>>;
 
   /**
    * Gets all dynamic tables

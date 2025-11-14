@@ -2,7 +2,13 @@ import { Result } from 'neverthrow';
 import { ApiFailure, ParseFailure } from '../../../../core/failures';
 import { ListResult } from '../../../../shared';
 import { CensusListParams, ViewParams } from '../../../../types';
-import { Census } from '../../domain/entities';
+import {
+  CensusEvent,
+  CensusTopic,
+  CensusArea,
+  CensusDataset,
+  CensusData,
+} from '../../domain/entities';
 import { CensusRepository } from '../../domain/repositories';
 import { CensusRemoteDataSource } from '../datasources';
 
@@ -13,49 +19,26 @@ export class CensusRepositoryImpl implements CensusRepository {
   constructor(private remoteDataSource: CensusRemoteDataSource) {}
 
   /**
-   * Gets all census events
+   * Gets all census data based on type
    * @param params - List parameters
-   * @returns Result containing list of census events or failure
+   * @returns Result containing list of census data or failure
    */
-  async getAll(params?: CensusListParams): Promise<Result<ListResult<Census>, ApiFailure>> {
+  async getAll(
+    params?: CensusListParams
+  ): Promise<Result<ListResult<CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData>, ApiFailure>> {
     const result = await this.remoteDataSource.getAll(params);
 
     return result.map((response) => {
       try {
         // Handle null or missing data gracefully - return empty list
         if (!response.data || response.data === null) {
-          return ListResult.fromJson(
-            {
-              data: [],
-              pagination: {
-                page: 1,
-                per_page: 10,
-                total: 0,
-                pages: 0,
-                count: 0,
-              },
-            },
-            (json: Record<string, unknown>) => Census.fromJson(json)
-          );
+          return this.createEmptyListResult(params);
         }
 
         // BPS API returns data in format: data[0] = pagination info, data[1] = array of items
         // Validate that response.data is an array with at least 2 elements
         if (!Array.isArray(response.data) || response.data.length < 2) {
-          // Return empty list for invalid structure
-          return ListResult.fromJson(
-            {
-              data: [],
-              pagination: {
-                page: 1,
-                per_page: 10,
-                total: 0,
-                pages: 0,
-                count: 0,
-              },
-            },
-            (json: Record<string, unknown>) => Census.fromJson(json)
-          );
+          return this.createEmptyListResult(params);
         }
 
         const paginationInfo = response.data[0] as Record<string, unknown>;
@@ -72,22 +55,11 @@ export class CensusRepositoryImpl implements CensusRepository {
 
         // Handle null or non-array census data
         if (!censusesData || !Array.isArray(censusesData)) {
-          return ListResult.fromJson(
-            {
-              data: [],
-              pagination: {
-                page: Number(paginationInfo?.page || 1),
-                per_page: Number(paginationInfo?.per_page || 10),
-                total: Number(paginationInfo?.total || 0),
-                pages: Number(paginationInfo?.pages || 0),
-                count: 0,
-              },
-            },
-            (json: Record<string, unknown>) => Census.fromJson(json)
-          );
+          return this.createEmptyListResult(params, paginationInfo);
         }
 
-        const censuses = censusesData.map((item) => Census.fromJson(item));
+        // Parse data based on type
+        const censuses = censusesData.map((item) => this.parseEntity(item, params?.type));
 
         // Calculate fallback values for missing pagination fields
         const count = Number(paginationInfo.count) || censusesData.length;
@@ -104,7 +76,7 @@ export class CensusRepositoryImpl implements CensusRepository {
               count: count,
             },
           },
-          (json: Record<string, unknown>) => Census.fromJson(json)
+          (json: Record<string, unknown>) => this.parseEntity(json, params?.type)
         );
       } catch (error) {
         throw new ParseFailure(
@@ -119,17 +91,61 @@ export class CensusRepositoryImpl implements CensusRepository {
    * @param params - View parameters
    * @returns Result containing census event or failure
    */
-  async getById(params: ViewParams): Promise<Result<Census, ApiFailure>> {
+  async getById(params: ViewParams): Promise<Result<CensusEvent, ApiFailure>> {
     const result = await this.remoteDataSource.getById(params);
 
     return result.map((response) => {
       try {
-        return Census.fromJson(response);
+        return CensusEvent.fromJson(response);
       } catch (error) {
         throw new ParseFailure(
-          `Failed to parse census: ${error instanceof Error ? error.message : 'Unknown error'}`
+          `Failed to parse census event: ${error instanceof Error ? error.message : 'Unknown error'}`
         );
       }
     });
+  }
+
+  /**
+   * Parses entity based on census type
+   */
+  private parseEntity(
+    json: Record<string, unknown>,
+    type?: 'events' | 'topics' | 'areas' | 'datasets' | 'data'
+  ): CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData {
+    switch (type) {
+      case 'topics':
+        return CensusTopic.fromJson(json);
+      case 'areas':
+        return CensusArea.fromJson(json);
+      case 'datasets':
+        return CensusDataset.fromJson(json);
+      case 'data':
+        return CensusData.fromJson(json);
+      case 'events':
+      default:
+        return CensusEvent.fromJson(json);
+    }
+  }
+
+  /**
+   * Creates an empty list result with proper pagination
+   */
+  private createEmptyListResult(
+    params?: CensusListParams,
+    paginationInfo?: Record<string, unknown>
+  ): ListResult<CensusEvent | CensusTopic | CensusArea | CensusDataset | CensusData> {
+    return ListResult.fromJson(
+      {
+        data: [],
+        pagination: {
+          page: Number(paginationInfo?.page || 1),
+          per_page: Number(paginationInfo?.per_page || 10),
+          total: Number(paginationInfo?.total || 0),
+          pages: Number(paginationInfo?.pages || 0),
+          count: 0,
+        },
+      },
+      (json: Record<string, unknown>) => this.parseEntity(json, params?.type)
+    );
   }
 }

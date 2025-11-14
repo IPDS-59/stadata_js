@@ -171,7 +171,17 @@ export {
   GetAllStatisticClassifications,
   GetStatisticClassificationById,
 } from './features/statistic-classification';
-export { Census, CensusRepository, GetAllCensuses, GetCensusById } from './features/census';
+export {
+  CensusEvent,
+  CensusTopic,
+  CensusArea,
+  CensusDataset,
+  CensusData,
+  CensusCategory,
+  CensusRepository,
+  GetAllCensuses,
+  GetCensusById,
+} from './features/census';
 export {
   DynamicTable,
   DynamicTableRepository,
