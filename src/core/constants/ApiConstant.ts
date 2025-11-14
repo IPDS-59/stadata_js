@@ -5,7 +5,7 @@ export const ApiConstant = {
   /**
    * Base URL for the BPS Stadata API
    */
-  BASE_URL: 'https://webapi.bps.go.id/v1/api/interoperabilitas',
+  BASE_URL: 'https://webapi.bps.go.id/v1/api',
 
   /**
    * Default timeout for API requests (in milliseconds)

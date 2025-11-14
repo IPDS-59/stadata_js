@@ -74,8 +74,8 @@ export const ApiEndpoint = {
   statisticClassification: (type: ClassificationType = ClassificationType.KBLI_2020) =>
     `/view/model/${type}`,
 
-  // Census endpoint (uses datasource, not model)
-  CENSUS: '/datasource/sensus',
+  // Census endpoint (uses interoperabilitas path, not model)
+  CENSUS: '/interoperabilitas/datasource/sensus',
 
   // Trade endpoints
   TRADE: '/dataexim',
