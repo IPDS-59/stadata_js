@@ -84,6 +84,15 @@ jobs:
           # Create back-merge branch
           BACKMERGE_BRANCH="backmerge/${TYPE}-${VERSION}-to-${BASE_BRANCH}"
 
+          # Check if PR already exists
+          EXISTING_PR=$(gh pr list --base "$BASE_BRANCH" --head "$BACKMERGE_BRANCH" --state open --json number --jq '.[0].number' || echo "")
+
+          if [ -n "$EXISTING_PR" ]; then
+            echo "⚠️ PR already exists: #$EXISTING_PR"
+            echo "Skipping PR creation"
+            exit 0
+          fi
+
           # Check if branch already exists
           if git ls-remote --heads origin "$BACKMERGE_BRANCH" | grep -q "$BACKMERGE_BRANCH"; then
             echo "⚠️ Back-merge branch already exists, skipping"
