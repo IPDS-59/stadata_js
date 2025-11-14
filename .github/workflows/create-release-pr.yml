@@ -94,73 +94,73 @@ jobs:
               --head "$BRANCH_NAME" \
               --title "$PR_TITLE" \
               --body "$(cat <<EOF
-## Release ${VERSION}
-
-This PR merges the release branch for version **${VERSION}** to the main branch.
-
-### Release Details
-- **Version**: ${VERSION}
-- **Type**: Release
-- **Branch**: \`${BRANCH_NAME}\`
-
-### What's included
-- All features and bug fixes for version ${VERSION}
-- Updated changelog (if merged)
-- Version bump in package.json
-
-### Checklist
-- [ ] Changelog has been reviewed and merged
-- [ ] All tests are passing
-- [ ] Version is correct in package.json
-- [ ] Ready to release
-
-### Post-merge Actions
-After merging this PR:
-1. A git tag \`v${VERSION}\` will be created automatically
-2. A GitHub release will be generated
-3. A back-merge PR to develop will be created
-
-**⚠️ Do not merge until ready to release to production**
-EOF
-)" \
-              --label "release" \
-              --label "release-candidate"
-          else
-            gh pr create \
-              --base main \
-              --head "$BRANCH_NAME" \
-              --title "$PR_TITLE" \
-              --body "$(cat <<EOF
-## Hotfix ${VERSION}
-
-This PR merges the hotfix branch for version **${VERSION}** to the main branch.
-
-### Hotfix Details
-- **Version**: ${VERSION}
-- **Type**: Hotfix
-- **Branch**: \`${BRANCH_NAME}\`
-
-### What's included
-- Critical bug fixes
-- Updated changelog (if merged)
-- Version bump in package.json
-
-### Checklist
-- [ ] Changelog has been reviewed and merged
-- [ ] All tests are passing
-- [ ] Version is correct in package.json
-- [ ] Hotfix has been tested
-- [ ] Ready to deploy
-
-### Post-merge Actions
-After merging this PR:
-1. A git tag \`v${VERSION}\` will be created automatically
-2. A GitHub release will be generated
-3. A back-merge PR to develop will be created
-
-**⚠️ Do not merge until ready to deploy hotfix**
-EOF
-)" \
+          ## Release ${VERSION}
+                  
+          This PR merges the release branch for version **${VERSION}** to the main branch.
+                  
+          ### Release Details
+          - **Version**: ${VERSION}
+          - **Type**: Release
+          - **Branch**: \`${BRANCH_NAME}\`
+                  
+          ### What's included
+          - All features and bug fixes for version ${VERSION}
+          - Updated changelog (if merged)
+          - Version bump in package.json
+                  
+          ### Checklist
+          - [ ] Changelog has been reviewed and merged
+          - [ ] All tests are passing
+          - [ ] Version is correct in package.json
+          - [ ] Ready to release
+                  
+          ### Post-merge Actions
+          After merging this PR:
+          1. A git tag \`v${VERSION}\` will be created automatically
+          2. A GitHub release will be generated
+          3. A back-merge PR to develop will be created
+          
+          **⚠️ Do not merge until ready to release to production**
+          EOF
+          )" \
+                        --label "release" \
+                        --label "release-candidate"
+                    else
+                      gh pr create \
+                        --base main \
+                        --head "$BRANCH_NAME" \
+                        --title "$PR_TITLE" \
+                        --body "$(cat <<EOF
+          ## Hotfix ${VERSION}
+          
+          This PR merges the hotfix branch for version **${VERSION}** to the main branch.
+          
+          ### Hotfix Details
+          - **Version**: ${VERSION}
+          - **Type**: Hotfix
+          - **Branch**: \`${BRANCH_NAME}\`
+          
+          ### What's included
+          - Critical bug fixes
+          - Updated changelog (if merged)
+          - Version bump in package.json
+          
+          ### Checklist
+          - [ ] Changelog has been reviewed and merged
+          - [ ] All tests are passing
+          - [ ] Version is correct in package.json
+          - [ ] Hotfix has been tested
+          - [ ] Ready to deploy
+          
+          ### Post-merge Actions
+          After merging this PR:
+          1. A git tag \`v${VERSION}\` will be created automatically
+          2. A GitHub release will be generated
+          3. A back-merge PR to develop will be created
+          
+          **⚠️ Do not merge until ready to deploy hotfix**
+          EOF
+          )" \
               --label "hotfix" \
               --label "release-candidate"
           fi
