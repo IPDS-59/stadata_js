@@ -1,0 +1,16 @@
+# Temporary files generated during workflow runs
+*.json
+*.md
+!package.json
+!tsconfig.json
+
+# Node modules
+node_modules/
+
+# Coverage reports
+coverage/
+
+# Build outputs
+dist/
+lib/
+build/

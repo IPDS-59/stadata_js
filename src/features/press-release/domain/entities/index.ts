@@ -1,0 +1,1 @@
+export { PressRelease } from './PressRelease';

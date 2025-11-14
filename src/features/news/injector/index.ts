@@ -1,0 +1,1 @@
+export { NewsInjector } from './NewsInjector';

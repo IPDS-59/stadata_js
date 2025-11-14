@@ -1,0 +1,197 @@
+name: Bump Version
+
+on:
+  create:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-version:
+    name: Bump Package Version
+    runs-on: ubuntu-latest
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'release/')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Extract version from branch
+        id: extract_version
+        run: |
+          BRANCH_NAME="${{ github.event.ref }}"
+          VERSION="${BRANCH_NAME#release/}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "Extracted version: ${VERSION}"
+
+      - name: Validate version format
+        run: |
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Expected format: X.Y.Z or X.Y.Z-prerelease"
+            exit 1
+          fi
+          echo "Version format is valid"
+
+      - name: Check current version in package.json
+        id: current_version
+        run: |
+          if [ -f "package.json" ]; then
+            CURRENT_VERSION=$(node -p "require('./package.json').version")
+            echo "current=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+            echo "Current version in package.json: ${CURRENT_VERSION}"
+          else
+            echo "package.json not found"
+            exit 1
+          fi
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT="${{ steps.current_version.outputs.current }}"
+          NEW="${{ steps.extract_version.outputs.version }}"
+
+          if [ "$CURRENT" = "$NEW" ]; then
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "Version is already up to date: $CURRENT"
+          else
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "Version needs update: $CURRENT -> $NEW"
+          fi
+
+      - name: Update package.json version
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          VERSION="${{ steps.extract_version.outputs.version }}"
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Update package-lock.json
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm install --package-lock-only
+          fi
+
+      - name: Commit version bump
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          VERSION="${{ steps.extract_version.outputs.version }}"
+
+          git add package.json
+          if [ -f "package-lock.json" ]; then
+            git add package-lock.json
+          fi
+
+          git commit -m "chore: bump version to ${VERSION}"
+          git push origin ${{ github.ref_name }}
+
+      - name: Summary
+        run: |
+          echo "## Version Bump Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Previous Version**: ${{ steps.current_version.outputs.current }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **New Version**: ${{ steps.extract_version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Updated**: ${{ steps.compare.outputs.needs_update }}" >> $GITHUB_STEP_SUMMARY
+
+  prepare-next-develop:
+    name: Prepare Next Development Version
+    runs-on: ubuntu-latest
+    needs: bump-version
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          token: ${{ secrets.PAT_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Extract and calculate next version
+        id: next_version
+        run: |
+          BRANCH_NAME="${{ github.ref_name }}"
+          RELEASE_VERSION="${BRANCH_NAME#release/}"
+
+          # Remove 'v' prefix if present
+          RELEASE_VERSION="${RELEASE_VERSION#v}"
+
+          # Parse version (e.g., 0.1.0 -> major=0, minor=1, patch=0)
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$RELEASE_VERSION"
+
+          # Increment minor version for next development cycle
+          NEXT_MINOR=$((MINOR + 1))
+          NEXT_VERSION="${MAJOR}.${NEXT_MINOR}.0"
+
+          echo "release_version=${RELEASE_VERSION}" >> $GITHUB_OUTPUT
+          echo "next_version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
+          echo "Next development version: ${NEXT_VERSION}"
+
+      - name: Update package.json to next dev version
+        run: |
+          NEXT_VERSION="${{ steps.next_version.outputs.next_version }}"
+          npm version "$NEXT_VERSION" --no-git-tag-version --allow-same-version
+
+      - name: Update package-lock.json
+        run: |
+          if [ -f "package-lock.json" ]; then
+            npm install --package-lock-only
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: "chore: bump version to ${{ steps.next_version.outputs.next_version }} for next development cycle"
+          branch: chore/bump-next-dev-version-${{ steps.next_version.outputs.next_version }}
+          base: develop
+          title: "chore: prepare version ${{ steps.next_version.outputs.next_version }} for next development cycle"
+          body: |
+            ## Next Development Version Bump
+
+            This PR prepares the `develop` branch for the next development cycle after release `${{ steps.next_version.outputs.release_version }}`.
+
+            ### Changes:
+            - Bump version from `${{ steps.next_version.outputs.release_version }}` to `${{ steps.next_version.outputs.next_version }}`
+            - Updated `package.json`
+            - Updated `package-lock.json` (if exists)
+
+            ### Context:
+            - **Release Version**: `${{ steps.next_version.outputs.release_version }}`
+            - **Next Dev Version**: `${{ steps.next_version.outputs.next_version }}`
+            - **Release Branch**: `${{ github.ref_name }}`
+
+            This ensures that new features merged to `develop` will have the correct version number.
+
+            🤖 This PR was created automatically by the bump version workflow.
+          labels: |
+            chore
+            version
+            automated
+          delete-branch: true
+
+      - name: Summary
+        run: |
+          echo "## Next Development Version Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release Version**: ${{ steps.next_version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Next Dev Version**: ${{ steps.next_version.outputs.next_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Target Branch**: develop" >> $GITHUB_STEP_SUMMARY

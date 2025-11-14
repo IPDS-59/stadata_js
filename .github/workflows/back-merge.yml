@@ -1,0 +1,143 @@
+name: Back Merge to Develop
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  back-merge:
+    name: Merge main to develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: |
+          git fetch origin main
+          git fetch origin develop
+
+      - name: Check if develop branch exists
+        id: check_develop
+        run: |
+          if git ls-remote --heads origin develop | grep -q develop; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Develop branch exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Develop branch does not exist"
+          fi
+
+      - name: Attempt automatic merge
+        if: steps.check_develop.outputs.exists == 'true'
+        id: auto_merge
+        run: |
+          git checkout develop
+          git pull origin develop
+
+          # Try to merge main into develop
+          if git merge origin/main --no-edit -m "chore: merge main back to develop after release"; then
+            echo "success=true" >> $GITHUB_OUTPUT
+            echo "Merge successful"
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+            echo "Merge conflicts detected"
+            git merge --abort
+          fi
+
+      - name: Push merged changes
+        if: steps.check_develop.outputs.exists == 'true' && steps.auto_merge.outputs.success == 'true'
+        run: |
+          git push origin develop
+
+      - name: Create PR for manual merge
+        if: steps.check_develop.outputs.exists == 'true' && steps.auto_merge.outputs.success == 'false'
+        run: |
+          # Create a new branch for the merge
+          BRANCH_NAME="back-merge/main-to-develop-$(date +%s)"
+          git checkout -b "${BRANCH_NAME}"
+
+          # Create a merge commit (will have conflicts)
+          git merge origin/main --no-commit || true
+
+          # Stage all files (including conflicts)
+          git add -A
+
+          # Commit with conflict markers
+          git commit -m "chore: merge main back to develop after release" || true
+
+          # Push the branch
+          git push origin "${BRANCH_NAME}"
+
+          # Create PR
+          gh pr create \
+            --base develop \
+            --head "${BRANCH_NAME}" \
+            --title "chore: merge main back to develop after release" \
+            --body "## Back Merge Required
+
+          This PR merges changes from \`main\` back to \`develop\` after a release.
+
+          ### Conflicts Detected
+          This merge has conflicts that need to be resolved manually.
+
+          **Please review and resolve the conflicts before merging.**
+
+          ### Steps to resolve:
+          1. Check out this branch locally
+          2. Resolve merge conflicts
+          3. Commit the resolved changes
+          4. Push to this branch
+          5. Merge this PR
+
+          ### Commands:
+          \`\`\`bash
+          git fetch origin ${BRANCH_NAME}
+          git checkout ${BRANCH_NAME}
+          # Resolve conflicts in your editor
+          git add .
+          git commit -m 'chore: resolve merge conflicts'
+          git push origin ${BRANCH_NAME}
+          \`\`\`
+          " \
+            --label "back-merge" \
+            --label "needs-review"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create develop branch if missing
+        if: steps.check_develop.outputs.exists == 'false'
+        run: |
+          echo "Creating develop branch from main"
+          git checkout -b develop
+          git push origin develop
+
+          echo "## Develop Branch Created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The develop branch was created from main." >> $GITHUB_STEP_SUMMARY
+
+      - name: Summary
+        if: steps.check_develop.outputs.exists == 'true'
+        run: |
+          echo "## Back Merge Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.auto_merge.outputs.success }}" = "true" ]; then
+            echo "- **Status**: Successfully merged" >> $GITHUB_STEP_SUMMARY
+            echo "- **Action**: Changes automatically pushed to develop" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- **Status**: Conflicts detected" >> $GITHUB_STEP_SUMMARY
+            echo "- **Action**: PR created for manual conflict resolution" >> $GITHUB_STEP_SUMMARY
+          fi

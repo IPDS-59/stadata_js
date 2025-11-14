@@ -1,0 +1,1 @@
+export { StaticTableRemoteDataSource } from './StaticTableRemoteDataSource';
