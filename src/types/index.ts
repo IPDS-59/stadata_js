@@ -292,6 +292,65 @@ export interface ViewParams {
 }
 
 /**
+ * Trade source enum
+ */
+export enum TradeSource {
+  Export = 1,
+  Import = 2,
+}
+
+/**
+ * Trade period enum
+ */
+export enum TradePeriod {
+  Monthly = 1,
+  Annually = 2,
+}
+
+/**
+ * HS Code type enum
+ */
+export enum HSCodeType {
+  TwoDigit = 1,
+  Full = 2,
+}
+
+/**
+ * Parameters for trade data
+ */
+export interface TradeParams {
+  /**
+   * Source of the data (1: Export, 2: Import)
+   */
+  source: TradeSource;
+
+  /**
+   * Period of the data (1: Monthly, 2: Annually)
+   */
+  period: TradePeriod;
+
+  /**
+   * HS Code of the data (use ; for multiple HS Code)
+   */
+  hsCode: string;
+
+  /**
+   * Type of HS Code (1: Two digit, 2: Full HS Code)
+   */
+  hsType: HSCodeType;
+
+  /**
+   * Year of data
+   */
+  year: string;
+
+  /**
+   * Cancel token for request cancellation
+   */
+  cancelToken?: CancelToken;
+}
+
+/**
  * Request data type
  */
 export type RequestData = Record<string, string | number | boolean | undefined>;

@@ -76,6 +76,9 @@ export const ApiEndpoint = {
   // Census endpoints
   CENSUS_LIST: '/list/sensus',
   CENSUS_VIEW: '/view/sensus',
+
+  // Trade endpoints
+  TRADE: '/dataexim',
 } as const;
 
 /**
