@@ -8,10 +8,16 @@ export class Variable extends BaseEntity {
     public readonly id: number,
     public readonly title: string,
     public readonly subjectId: number,
+    public readonly subjectName: string,
+    public readonly statisticClassificationId: number,
+    public readonly statisticClassificationName: string,
+    public readonly definition: string,
+    public readonly notes: string,
     public readonly unit: string,
     public readonly verticalVariableCount: number,
     public readonly derivedVariableCount: number,
-    public readonly graph: string[]
+    public readonly graphId: number,
+    public readonly graphName: string
   ) {
     super();
   }
@@ -23,11 +29,16 @@ export class Variable extends BaseEntity {
     return {
       var_id: this.id,
       title: this.title,
-      subject_id: this.subjectId,
+      sub_id: this.subjectId,
+      sub_name: this.subjectName,
+      subcsa_id: this.statisticClassificationId,
+      subcsa_name: this.statisticClassificationName,
+      def: this.definition,
+      notes: this.notes,
+      vertical: this.verticalVariableCount,
       unit: this.unit,
-      vertical_variable: this.verticalVariableCount,
-      derived_variable: this.derivedVariableCount,
-      graph: this.graph,
+      graph_id: this.graphId,
+      graph_name: this.graphName,
     };
   }
 
@@ -35,23 +46,20 @@ export class Variable extends BaseEntity {
    * Creates an entity from JSON
    */
   static fromJson(json: Record<string, unknown>): Variable {
-    const graphData = json.graph || json.graphs;
-    let graphs: string[] = [];
-
-    if (Array.isArray(graphData)) {
-      graphs = graphData.map((item) => String(item));
-    } else if (typeof graphData === 'string') {
-      graphs = [graphData];
-    }
-
     return new Variable(
       Number(json.var_id || json.id || 0),
       String(json.title || json.name || ''),
-      Number(json.subject_id || json.subjectId || 0),
+      Number(json.sub_id || json.subject_id || json.subjectId || 0),
+      String(json.sub_name || json.subject_name || json.subjectName || ''),
+      Number(json.subcsa_id || json.statisticClassificationId || 0),
+      String(json.subcsa_name || json.statisticClassificationName || ''),
+      String(json.def || json.definition || ''),
+      String(json.notes || ''),
       String(json.unit || ''),
-      Number(json.vertical_variable || json.verticalVariableCount || 0),
+      Number(json.vertical || json.vertical_variable || json.verticalVariableCount || 0),
       Number(json.derived_variable || json.derivedVariableCount || 0),
-      graphs
+      Number(json.graph_id || json.graphId || 0),
+      String(json.graph_name || json.graphName || '')
     );
   }
 }
