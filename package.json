@@ -1,6 +1,6 @@
 {
   "name": "stadata-js",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "JavaScript/TypeScript SDK for Indonesia's Central Statistics Agency (BPS) API",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
