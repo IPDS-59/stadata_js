@@ -2,28 +2,31 @@ import { Subject } from '../domain/entities/Subject';
 
 describe('Subject Entity', () => {
   it('should create a subject with all fields', () => {
-    const subject = new Subject(1, 'Economy', 10);
+    const subject = new Subject(1, 'Economy', 10, 'Economy Category');
 
     expect(subject.id).toBe(1);
     expect(subject.name).toBe('Economy');
     expect(subject.categoryId).toBe(10);
+    expect(subject.category).toBe('Economy Category');
   });
 
   it('should convert to JSON correctly', () => {
-    const subject = new Subject(1, 'Economy', 10);
+    const subject = new Subject(1, 'Economy', 10, 'Economy Category');
 
     const json = subject.toJson();
 
     expect(json.subj_id).toBe(1);
     expect(json.title).toBe('Economy');
     expect(json.subcatid).toBe(10);
+    expect(json.category).toBe('Economy Category');
   });
 
   it('should create from JSON correctly', () => {
     const json = {
-      subj_id: 1,
+      sub_id: 1,
       title: 'Economy',
-      subcatid: 10,
+      subcat_id: 10,
+      category: 'Economy Category',
     };
 
     const subject = Subject.fromJson(json);
@@ -31,6 +34,7 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(1);
     expect(subject.name).toBe('Economy');
     expect(subject.categoryId).toBe(10);
+    expect(subject.category).toBe('Economy Category');
   });
 
   it('should handle alternative JSON field names', () => {
@@ -38,6 +42,7 @@ describe('Subject Entity', () => {
       id: 1,
       name: 'Economy',
       categoryId: 10,
+      subcat: 'Economy Category',
     };
 
     const subject = Subject.fromJson(json);
@@ -45,6 +50,7 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(1);
     expect(subject.name).toBe('Economy');
     expect(subject.categoryId).toBe(10);
+    expect(subject.category).toBe('Economy Category');
   });
 
   it('should handle missing fields by defaulting to 0 for numbers and empty string for text', () => {
@@ -55,11 +61,12 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(0);
     expect(subject.name).toBe('');
     expect(subject.categoryId).toBe(0);
+    expect(subject.category).toBe('');
   });
 
   it('should handle partial JSON data', () => {
     const json = {
-      subj_id: 1,
+      sub_id: 1,
       title: 'Economy',
     };
 
@@ -68,13 +75,15 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(1);
     expect(subject.name).toBe('Economy');
     expect(subject.categoryId).toBe(0);
+    expect(subject.category).toBe('');
   });
 
   it('should handle string IDs by converting to number', () => {
     const json = {
-      subj_id: '1',
+      sub_id: '1',
       title: 'Economy',
-      subcatid: '10',
+      subcat_id: '10',
+      category: 'Economy Category',
     };
 
     const subject = Subject.fromJson(json);
@@ -82,13 +91,15 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(1);
     expect(subject.name).toBe('Economy');
     expect(subject.categoryId).toBe(10);
+    expect(subject.category).toBe('Economy Category');
   });
 
   it('should handle zero values correctly', () => {
     const json = {
-      subj_id: 0,
+      sub_id: 0,
       title: '',
-      subcatid: 0,
+      subcat_id: 0,
+      category: '',
     };
 
     const subject = Subject.fromJson(json);
@@ -96,5 +107,6 @@ describe('Subject Entity', () => {
     expect(subject.id).toBe(0);
     expect(subject.name).toBe('');
     expect(subject.categoryId).toBe(0);
+    expect(subject.category).toBe('');
   });
 });
