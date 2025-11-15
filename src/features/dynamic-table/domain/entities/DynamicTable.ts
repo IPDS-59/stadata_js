@@ -95,4 +95,110 @@ export class DynamicTable extends BaseEntity {
     const key = `${vervarValue}${varValue}${turvarValue}${tahunValue}${turtahunValue}`;
     return this.dataContent[key];
   }
+
+  /**
+   * Transforms the flat datacontent into a structured array for table rendering
+   * @returns Array of rows with columns
+   */
+  toTableData(): Array<{ label: string; values: Record<string, unknown> }> {
+    const varValue = this.variables[0]?.value || 0;
+    const hasDerivedVars =
+      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+    const turtahunValue = this.derivedPeriods[0]?.value || 0;
+
+    return this.verticalVariables.map((vervar) => {
+      const row: { label: string; values: Record<string, unknown> } = {
+        label: vervar.label,
+        values: {},
+      };
+
+      if (hasDerivedVars) {
+        this.derivedVariables.forEach((turvar) => {
+          this.periods.forEach((period) => {
+            const key = `${turvar.label}_${period.label}`;
+            const value = this.getDataValue(
+              vervar.value,
+              varValue,
+              turvar.value,
+              period.value,
+              turtahunValue
+            );
+            row.values[key] = value ?? null;
+          });
+        });
+      } else {
+        this.periods.forEach((period) => {
+          row.values[period.label] =
+            this.getDataValue(vervar.value, varValue, 0, period.value, turtahunValue) ?? null;
+        });
+      }
+
+      return row;
+    });
+  }
+
+  /**
+   * Transforms the data into a format suitable for chart libraries
+   * @returns Array of data points with labels and values
+   */
+  toChartData(): Array<{ category: string; period: string; value: unknown }> {
+    const varValue = this.variables[0]?.value || 0;
+    const hasDerivedVars =
+      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+    const turtahunValue = this.derivedPeriods[0]?.value || 0;
+    const dataPoints: Array<{ category: string; period: string; value: unknown }> = [];
+
+    this.verticalVariables.forEach((vervar) => {
+      if (hasDerivedVars) {
+        this.derivedVariables.forEach((turvar) => {
+          this.periods.forEach((period) => {
+            const value = this.getDataValue(
+              vervar.value,
+              varValue,
+              turvar.value,
+              period.value,
+              turtahunValue
+            );
+            dataPoints.push({
+              category: `${vervar.label} - ${turvar.label}`,
+              period: period.label,
+              value: value ?? null,
+            });
+          });
+        });
+      } else {
+        this.periods.forEach((period) => {
+          const value = this.getDataValue(vervar.value, varValue, 0, period.value, turtahunValue);
+          dataPoints.push({
+            category: vervar.label,
+            period: period.label,
+            value: value ?? null,
+          });
+        });
+      }
+    });
+
+    return dataPoints;
+  }
+
+  /**
+   * Gets column headers for table rendering
+   * @returns Array of column header labels
+   */
+  getColumnHeaders(): string[] {
+    const hasDerivedVars =
+      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+
+    if (hasDerivedVars) {
+      const headers: string[] = [];
+      this.derivedVariables.forEach((turvar) => {
+        this.periods.forEach((period) => {
+          headers.push(`${turvar.label} - ${period.label}`);
+        });
+      });
+      return headers;
+    }
+
+    return this.periods.map((p) => p.label);
+  }
 }
