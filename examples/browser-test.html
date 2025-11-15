@@ -652,12 +652,7 @@
                 dataContentSample: Object.entries(table.dataContent).slice(0, 5),
                 totalDataPoints: Object.keys(table.dataContent).length
               },
-              transformedData: {
-                tableData: table.toTableData(),
-                chartData: table.toChartData().slice(0, 10), // First 10 data points
-                columnHeaders: table.getColumnHeaders(),
-                structuredData: table.toStructuredData() // Universal structured format
-              },
+              structuredData: table.toStructuredData(), // Universal structured format for tables, charts, exports
               relatedTables: table.related.map(r => ({
                 id: r.id,
                 title: r.title,
