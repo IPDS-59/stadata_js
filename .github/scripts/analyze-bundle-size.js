@@ -23,12 +23,15 @@ function getDirectorySize(dirPath) {
       if (stats.isDirectory()) {
         traverse(itemPath);
       } else {
-        const size = stats.size;
-        totalSize += size;
-        files.push({
-          path: path.relative(process.cwd(), itemPath),
-          size,
-        });
+        // Skip .map files
+        if (!item.endsWith('.map')) {
+          const size = stats.size;
+          totalSize += size;
+          files.push({
+            path: path.relative(process.cwd(), itemPath),
+            size,
+          });
+        }
       }
     });
   }
