@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2025-11-15
+
+### 🐛 Bug Fixes
+
+- add missing properties to Variable entity ([e9e1d5d])
+
+### 📚 Documentation
+
+- update browser test to show new Variable properties ([5f62e08])
+
+### 🔧 Chores
+
+- bump version to 0.4.0 for next development cycle ([4498f9a])
+
+
 ## [0.3.0] - 2025-11-15
 
 ### ✨ Features
