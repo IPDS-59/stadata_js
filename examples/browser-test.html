@@ -685,7 +685,30 @@
         result.match(
           (data) => {
             showStatus(`✅ Success! Found ${data.totalItems} variables`, 'success');
-            showResults(data);
+
+            // Map variables to show all properties including new ones
+            const formattedData = {
+              totalItems: data.totalItems,
+              page: data.page,
+              perPage: data.perPage,
+              variables: data.items.map(v => ({
+                id: v.id,
+                title: v.title,
+                subjectId: v.subjectId,
+                subjectName: v.subjectName, // NEW - shows subject category
+                statisticClassificationId: v.statisticClassificationId, // NEW
+                statisticClassificationName: v.statisticClassificationName, // NEW
+                definition: v.definition, // NEW
+                notes: v.notes, // NEW
+                unit: v.unit,
+                verticalVariableCount: v.verticalVariableCount,
+                derivedVariableCount: v.derivedVariableCount,
+                graphId: v.graphId, // NEW - graph type ID
+                graphName: v.graphName // NEW - for determining chart type (bar, line, pie, etc)
+              }))
+            };
+
+            showResults(formattedData);
           },
           (error) => {
             showStatus(`❌ Error: ${error.message}`, 'error');
