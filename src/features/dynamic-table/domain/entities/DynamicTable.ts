@@ -103,7 +103,8 @@ export class DynamicTable extends BaseEntity {
   toTableData(): Array<{ label: string; values: Record<string, unknown> }> {
     const varValue = this.variables[0]?.value || 0;
     const hasDerivedVars =
-      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+      this.derivedVariables.length > 1 ||
+      (this.derivedVariables[0]?.value !== 0 && this.derivedVariables[0]?.value !== '0');
     const turtahunValue = this.derivedPeriods[0]?.value || 0;
 
     return this.verticalVariables.map((vervar) => {
@@ -144,7 +145,8 @@ export class DynamicTable extends BaseEntity {
   toChartData(): Array<{ category: string; period: string; value: unknown }> {
     const varValue = this.variables[0]?.value || 0;
     const hasDerivedVars =
-      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+      this.derivedVariables.length > 1 ||
+      (this.derivedVariables[0]?.value !== 0 && this.derivedVariables[0]?.value !== '0');
     const turtahunValue = this.derivedPeriods[0]?.value || 0;
     const dataPoints: Array<{ category: string; period: string; value: unknown }> = [];
 
@@ -187,7 +189,8 @@ export class DynamicTable extends BaseEntity {
    */
   getColumnHeaders(): string[] {
     const hasDerivedVars =
-      this.derivedVariables.length > 1 || this.derivedVariables[0]?.value !== 0;
+      this.derivedVariables.length > 1 ||
+      (this.derivedVariables[0]?.value !== 0 && this.derivedVariables[0]?.value !== '0');
 
     if (hasDerivedVars) {
       const headers: string[] = [];
@@ -200,5 +203,152 @@ export class DynamicTable extends BaseEntity {
     }
 
     return this.periods.map((p) => p.label);
+  }
+
+  /**
+   * Transforms the data into a universal structured format
+   * suitable for tables, charts, exports (CSV, Excel), and other consumers
+   *
+   * Structure adapts based on what dimensions exist:
+   * - L1: Vertical variables (always)
+   * - L2: Derived variables (if exist) OR Periods (if no derived variables)
+   * - L3: Periods (if derived variables exist) OR Derived periods (if exist and no derived variables)
+   * - L4: Derived periods (if both derived variables and derived periods exist)
+   *
+   * @returns Structured data with nested hierarchy
+   */
+  toStructuredData(): {
+    subject_id: number;
+    subject_label: string;
+    variable_id: number;
+    variable_label: string;
+    variable_unit: string;
+    vertical_variable_label: string;
+    last_update: string | null | undefined;
+    data: Array<{
+      id: number | string;
+      label: string;
+      data: Array<{
+        id: number | string;
+        label: string;
+        data: Array<{
+          id: number | string;
+          label: string;
+          value?: unknown;
+          data?: Array<{
+            id: number | string;
+            label: string;
+            value: unknown;
+          }>;
+        }>;
+      }>;
+    }>;
+  } {
+    const subject = this.subjects[0];
+    const variable = this.variables[0];
+    const varValue = variable?.value || 0;
+
+    const hasDerivedVars =
+      this.derivedVariables.length > 1 ||
+      (this.derivedVariables[0]?.value !== 0 && this.derivedVariables[0]?.value !== '0');
+    const hasDerivedPeriods =
+      this.derivedPeriods.length > 1 ||
+      (this.derivedPeriods[0]?.value !== 0 && this.derivedPeriods[0]?.value !== '0');
+
+    // L1: Vertical variables (always present)
+    const data = this.verticalVariables.map((vervar) => {
+      if (hasDerivedVars) {
+        // L2: Derived variables
+        return {
+          id: vervar.value,
+          label: vervar.label,
+          data: this.derivedVariables.map((turvar) => ({
+            id: turvar.value,
+            label: turvar.label,
+            // L3: Periods
+            data: this.periods.map((period) => {
+              if (hasDerivedPeriods) {
+                // L4: Derived periods
+                return {
+                  id: period.value,
+                  label: period.label,
+                  data: this.derivedPeriods.map((turtahun) => ({
+                    id: turtahun.value,
+                    label: turtahun.label,
+                    value:
+                      this.getDataValue(
+                        vervar.value,
+                        varValue,
+                        turvar.value,
+                        period.value,
+                        turtahun.value
+                      ) ?? null,
+                  })),
+                };
+              } else {
+                // No derived periods - value at period level
+                return {
+                  id: period.value,
+                  label: period.label,
+                  value:
+                    this.getDataValue(
+                      vervar.value,
+                      varValue,
+                      turvar.value,
+                      period.value,
+                      this.derivedPeriods[0]?.value || 0
+                    ) ?? null,
+                };
+              }
+            }),
+          })),
+        };
+      } else {
+        // No derived variables
+        // L2: Periods
+        return {
+          id: vervar.value,
+          label: vervar.label,
+          data: this.periods.map((period) => ({
+            id: period.value,
+            label: period.label,
+            // L3: Derived periods (if exist) or value
+            data: hasDerivedPeriods
+              ? this.derivedPeriods.map((turtahun) => ({
+                  id: turtahun.value,
+                  label: turtahun.label,
+                  value:
+                    this.getDataValue(vervar.value, varValue, 0, period.value, turtahun.value) ??
+                    null,
+                }))
+              : [
+                  {
+                    id: period.value,
+                    label: period.label,
+                    value:
+                      this.getDataValue(
+                        vervar.value,
+                        varValue,
+                        0,
+                        period.value,
+                        this.derivedPeriods[0]?.value || 0
+                      ) ?? null,
+                  },
+                ],
+          })),
+        };
+      }
+    });
+
+    return {
+      subject_id: subject?.value || 0,
+      subject_label: subject?.label || '',
+      variable_id: variable?.value || 0,
+      variable_label: variable?.label || '',
+      variable_unit: variable?.unit || '',
+      vertical_variable_label: this.verticalVariableLabel,
+      last_update: this.lastUpdate,
+      data,
+    };
   }
 }

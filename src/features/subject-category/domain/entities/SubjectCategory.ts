@@ -27,7 +27,7 @@ export class SubjectCategory extends BaseEntity {
   static fromJson(json: Record<string, unknown>): SubjectCategory {
     return new SubjectCategory(
       Number(json.subcat_id || json.id || 0),
-      String(json.subcat_name || json.name || '')
+      String(json.subcat_name || json.title || json.name || '')
     );
   }
 }

@@ -655,7 +655,8 @@
               transformedData: {
                 tableData: table.toTableData(),
                 chartData: table.toChartData().slice(0, 10), // First 10 data points
-                columnHeaders: table.getColumnHeaders()
+                columnHeaders: table.getColumnHeaders(),
+                structuredData: table.toStructuredData() // Universal structured format
               },
               relatedTables: table.related.map(r => ({
                 id: r.id,
