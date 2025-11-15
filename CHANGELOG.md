@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-11-15
+
+### ✨ Features
+
+- add universal structured data transformation for DynamicTable ([4b0281d])
+- add data transformation utilities to DynamicTable ([cd26f34])
+
+### 🐛 Bug Fixes
+
+- exclude .map files from bundle size analysis ([8e74348])
+
+### ♻️ Code Refactoring
+
+- remove toTableData, toChartData, getColumnHeaders methods ([8e467ca])
+
+### ✅ Tests
+
+- update Subject entity tests for 4-parameter constructor ([477ed51])
+
+### 🔧 Chores
+
+- bump version to 0.3.0 for next development cycle ([a317eda])
+
+
 ## [0.2.0] - 2025-11-14
 
 ### ✨ Features

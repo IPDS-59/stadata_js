@@ -222,6 +222,128 @@ describe('DynamicTable Entity', () => {
     expect(dynamicTable.related).toHaveLength(1);
     expect(dynamicTable.related[0].lastUpdate).toBeNull();
   });
+
+  it('should transform to structured data format without derived variables or periods', () => {
+    const subjects = [new SubjectInfo(521, 'Pendidikan')];
+    const variables = [new VariableInfo(33, 'Rata-Rata Lama Sekolah', 'Tahun', 'IPM', '', '', 2)];
+    const verticalVariables = [
+      new VerticalVariableInfo(7200, 'Sulawesi Tengah'),
+      new VerticalVariableInfo(7201, 'Banggai Kepulauan'),
+    ];
+    const periods = [new PeriodInfo(117, '2017'), new PeriodInfo(123, '2023')];
+    const derivedVariables = [new VerticalVariableInfo('0', 'Tidak ada')];
+    const derivedPeriods = [new VerticalVariableInfo(0, 'Tahun')];
+    const dataContent = {
+      '72003301170': 7.46,
+      '72003301230': 7.89,
+      '72013301170': 6.8,
+      '72013301230': 7.2,
+    };
+
+    const dynamicTable = new DynamicTable(
+      subjects,
+      variables,
+      verticalVariables,
+      'Kabupaten/Kota',
+      periods,
+      derivedVariables,
+      derivedPeriods,
+      dataContent,
+      [],
+      '2024-07-22 03:33:13'
+    );
+
+    const structured = dynamicTable.toStructuredData();
+
+    expect(structured.subject_id).toBe(521);
+    expect(structured.subject_label).toBe('Pendidikan');
+    expect(structured.variable_id).toBe(33);
+    expect(structured.variable_label).toBe('Rata-Rata Lama Sekolah');
+    expect(structured.variable_unit).toBe('Tahun');
+    expect(structured.vertical_variable_label).toBe('Kabupaten/Kota');
+    expect(structured.last_update).toBe('2024-07-22 03:33:13');
+    expect(structured.data).toHaveLength(2);
+
+    // Check first vertical variable
+    expect(structured.data[0].id).toBe(7200);
+    expect(structured.data[0].label).toBe('Sulawesi Tengah');
+    expect(structured.data[0].data).toHaveLength(2);
+
+    // Check periods for first vertical variable
+    expect(structured.data[0].data[0].id).toBe(117);
+    expect(structured.data[0].data[0].label).toBe('2017');
+    expect(structured.data[0].data[0].data[0].value).toBe(7.46);
+
+    expect(structured.data[0].data[1].id).toBe(123);
+    expect(structured.data[0].data[1].label).toBe('2023');
+    expect(structured.data[0].data[1].data[0].value).toBe(7.89);
+  });
+
+  it('should transform to structured data format with derived variables', () => {
+    const subjects = [new SubjectInfo(519, 'Kependudukan dan Migrasi')];
+    const variables = [
+      new VariableInfo(33, 'Penduduk Menurut Jenis Kelamin', 'Jiwa', 'Kependudukan', '', '', 0),
+    ];
+    const verticalVariables = [
+      new VerticalVariableInfo(1, 'Langgam'),
+      new VerticalVariableInfo(2, 'Pangkalan Kerinci'),
+    ];
+    const periods = [new PeriodInfo(117, '2017'), new PeriodInfo(123, '2023')];
+    const derivedVariables = [
+      new VerticalVariableInfo(34, 'Laki-Laki'),
+      new VerticalVariableInfo(35, 'Perempuan'),
+    ];
+    const derivedPeriods = [new VerticalVariableInfo(0, 'Tahun')];
+    const dataContent = {
+      '133341170': 16495,
+      '133341230': 18571,
+      '133351170': 15800,
+      '133351230': 17200,
+      '233341170': 14500,
+      '233341230': 16000,
+      '233351170': 14000,
+      '233351230': 15500,
+    };
+
+    const dynamicTable = new DynamicTable(
+      subjects,
+      variables,
+      verticalVariables,
+      'Kecamatan',
+      periods,
+      derivedVariables,
+      derivedPeriods,
+      dataContent,
+      [],
+      '2024-07-22 03:33:13'
+    );
+
+    const structured = dynamicTable.toStructuredData();
+
+    expect(structured.subject_id).toBe(519);
+    expect(structured.variable_label).toBe('Penduduk Menurut Jenis Kelamin');
+    expect(structured.vertical_variable_label).toBe('Kecamatan');
+    expect(structured.data).toHaveLength(2);
+
+    // Check first vertical variable (Langgam)
+    expect(structured.data[0].id).toBe(1);
+    expect(structured.data[0].label).toBe('Langgam');
+    expect(structured.data[0].data).toHaveLength(2); // 2 derived variables
+
+    // Check first derived variable (Laki-Laki)
+    expect(structured.data[0].data[0].id).toBe(34);
+    expect(structured.data[0].data[0].label).toBe('Laki-Laki');
+    expect(structured.data[0].data[0].data).toHaveLength(2); // 2 periods
+
+    // Check first period of first derived variable
+    expect(structured.data[0].data[0].data[0].id).toBe(117);
+    expect(structured.data[0].data[0].data[0].label).toBe('2017');
+    expect(structured.data[0].data[0].data[0].value).toBe(16495);
+
+    // Check second period of first derived variable
+    expect(structured.data[0].data[0].data[1].id).toBe(123);
+    expect(structured.data[0].data[0].data[1].value).toBe(18571);
+  });
 });
 
 describe('VariableInfo Entity', () => {

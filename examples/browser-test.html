@@ -629,30 +629,37 @@
           (table) => {
             showStatus(`✅ Success! Dynamic table loaded`, 'success');
 
-            // Display the dynamic table data
+            // Display the dynamic table data with transformation utilities
             const output = {
-              subjects: table.subjects.map(s => ({ value: s.value, label: s.label })),
-              variables: table.variables.map(v => ({
-                value: v.value,
-                label: v.label,
-                unit: v.unit,
-                subject: v.subject
-              })),
-              verticalVariableLabel: table.verticalVariableLabel,
-              verticalVariables: table.verticalVariables.map(v => ({ value: v.value, label: v.label })),
-              periods: table.periods.map(p => ({ value: p.value, label: p.label })),
-              derivedVariables: table.derivedVariables.map(d => ({ value: d.value, label: d.label })),
-              derivedPeriods: table.derivedPeriods.map(d => ({ value: d.value, label: d.label })),
-              dataContentSample: Object.entries(table.dataContent).slice(0, 5),
-              totalDataPoints: Object.keys(table.dataContent).length,
+              metadata: {
+                subjects: table.subjects.map(s => ({ value: s.value, label: s.label })),
+                variables: table.variables.map(v => ({
+                  value: v.value,
+                  label: v.label,
+                  unit: v.unit,
+                  subject: v.subject
+                })),
+                verticalVariableLabel: table.verticalVariableLabel,
+                lastUpdate: table.lastUpdate
+              },
+              dimensions: {
+                verticalVariables: table.verticalVariables.map(v => ({ value: v.value, label: v.label })),
+                periods: table.periods.map(p => ({ value: p.value, label: p.label })),
+                derivedVariables: table.derivedVariables.map(d => ({ value: d.value, label: d.label })),
+                derivedPeriods: table.derivedPeriods.map(d => ({ value: d.value, label: d.label }))
+              },
+              rawData: {
+                dataContentSample: Object.entries(table.dataContent).slice(0, 5),
+                totalDataPoints: Object.keys(table.dataContent).length
+              },
+              structuredData: table.toStructuredData(), // Universal structured format for tables, charts, exports
               relatedTables: table.related.map(r => ({
                 id: r.id,
                 title: r.title,
                 tableSource: r.tableSource,
                 lastUpdate: r.lastUpdate,
                 link: r.link
-              })),
-              lastUpdate: table.lastUpdate
+              }))
             };
 
             showResults(output);
