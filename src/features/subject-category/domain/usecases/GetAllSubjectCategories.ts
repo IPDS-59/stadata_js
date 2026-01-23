@@ -9,9 +9,10 @@ import { SubjectCategoryRepository } from '../repositories';
 /**
  * Use case for getting all subject categories
  */
-export class GetAllSubjectCategories
-  implements UseCase<SubjectCategoryListParams | undefined, ListResult<SubjectCategory>>
-{
+export class GetAllSubjectCategories implements UseCase<
+  SubjectCategoryListParams | undefined,
+  ListResult<SubjectCategory>
+> {
   constructor(private readonly repository: SubjectCategoryRepository) {}
 
   async execute(

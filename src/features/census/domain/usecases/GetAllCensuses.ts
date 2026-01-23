@@ -11,9 +11,10 @@ type CensusEntity = CensusEvent | CensusTopic | CensusArea | CensusDataset | Cen
 /**
  * Use case for getting all census data
  */
-export class GetAllCensuses
-  implements UseCase<CensusListParams | undefined, ListResult<CensusEntity>>
-{
+export class GetAllCensuses implements UseCase<
+  CensusListParams | undefined,
+  ListResult<CensusEntity>
+> {
   constructor(private repository: CensusRepository) {}
 
   /**
