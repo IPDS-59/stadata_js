@@ -9,9 +9,10 @@ import { StrategicIndicatorRepository } from '../repositories';
 /**
  * Use case for getting all strategic indicators
  */
-export class GetAllStrategicIndicators
-  implements UseCase<StrategicIndicatorListParams | undefined, ListResult<StrategicIndicator>>
-{
+export class GetAllStrategicIndicators implements UseCase<
+  StrategicIndicatorListParams | undefined,
+  ListResult<StrategicIndicator>
+> {
   constructor(private readonly repository: StrategicIndicatorRepository) {}
 
   async execute(

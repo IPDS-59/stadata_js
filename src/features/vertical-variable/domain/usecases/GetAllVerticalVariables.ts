@@ -9,9 +9,10 @@ import { VerticalVariableRepository } from '../repositories';
 /**
  * Use case for getting all vertical variables
  */
-export class GetAllVerticalVariables
-  implements UseCase<VerticalVariableListParams, ListResult<VerticalVariable>>
-{
+export class GetAllVerticalVariables implements UseCase<
+  VerticalVariableListParams,
+  ListResult<VerticalVariable>
+> {
   constructor(private readonly repository: VerticalVariableRepository) {}
 
   async execute(

@@ -9,9 +9,10 @@ import { NewsCategoryRepository } from '../repositories';
 /**
  * Use case for getting all news categories
  */
-export class GetAllNewsCategories
-  implements UseCase<NewsCategoryListParams | undefined, ListResult<NewsCategory>>
-{
+export class GetAllNewsCategories implements UseCase<
+  NewsCategoryListParams | undefined,
+  ListResult<NewsCategory>
+> {
   constructor(private readonly repository: NewsCategoryRepository) {}
 
   async execute(

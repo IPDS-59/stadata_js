@@ -9,9 +9,10 @@ import { VariableRepository } from '../repositories';
 /**
  * Use case for getting all variables
  */
-export class GetAllVariables
-  implements UseCase<VariableListParams | undefined, ListResult<Variable>>
-{
+export class GetAllVariables implements UseCase<
+  VariableListParams | undefined,
+  ListResult<Variable>
+> {
   constructor(private readonly repository: VariableRepository) {}
 
   async execute(params?: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>> {
