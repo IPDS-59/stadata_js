@@ -18,10 +18,12 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      branches: 4,
-      functions: 4,
-      lines: 4,
-      statements: 4,
+      // Current baseline (Mar 2026): branches ~24%, functions ~15%, lines/statements ~17%
+      // These thresholds prevent regression; target is ≥70% as test coverage improves.
+      branches: 20,
+      functions: 12,
+      lines: 15,
+      statements: 15,
     },
   },
   coverageReporters: ['text', 'lcov', 'json', 'json-summary', 'html'],
