@@ -42,7 +42,7 @@ jobs:
           fi
 
       - name: Upload PR bundle info
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: pr-bundle-size
           path: pr-size.json
@@ -96,7 +96,7 @@ jobs:
           cat size-diff.md
 
       - name: Post size analysis comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: bundle-size
           path: size-diff.md
