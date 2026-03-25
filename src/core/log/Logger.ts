@@ -46,20 +46,16 @@ export class ConsoleLogPrinter implements LogPrinter {
 
     switch (entry.level) {
       case LogLevel.DEBUG:
-        // eslint-disable-next-line no-console
         console.debug(message, entry.data);
         break;
       case LogLevel.INFO:
-        // eslint-disable-next-line no-console
         console.info(message, entry.data);
         break;
       case LogLevel.WARN:
-        // eslint-disable-next-line no-console
         console.warn(message, entry.data);
         break;
       case LogLevel.ERROR:
       case LogLevel.FATAL:
-        // eslint-disable-next-line no-console
         console.error(message, entry.error || entry.data);
         break;
     }
