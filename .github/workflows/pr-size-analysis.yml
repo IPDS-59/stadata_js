@@ -96,7 +96,7 @@ jobs:
           cat size-diff.md
 
       - name: Post size analysis comment
-        uses: marocchino/sticky-pull-request-comment@v2
+        uses: marocchino/sticky-pull-request-comment@v3
         with:
           header: bundle-size
           path: size-diff.md
