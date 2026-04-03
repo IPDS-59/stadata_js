@@ -2,6 +2,63 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-04-03
+
+### ✨ Features
+
+- **playground**: add interactive BPS API playground ([f0b4cca])
+- **docs**: add VitePress documentation site with GitHub Pages deployment ([60dbe51])
+
+### 🐛 Bug Fixes
+
+- **lint**: include tsconfig.test.json in eslint parserOptions.project ([056bb8e])
+- update package-lock.json with vitepress dependencies ([a714111])
+- **ci**: use correct npm package name in deployment url ([a165acd])
+
+### 💎 Styles
+
+- fix formatting for prettier 3.8.0 compatibility ([89d849e])
+
+### 👷 Continuous Integration
+
+- trigger CI after base branch change to develop ([6bc05e5])
+- **deps**: bump dorny/paths-filter from 3 to 4 ([85bed7d])
+- **deps**: bump marocchino/sticky-pull-request-comment from 2 to 3 ([c9b2958])
+- **deps**: bump geekyeggo/delete-artifact from 5 to 6 ([a7a39d3])
+- **deps**: bump actions/upload-artifact from 6 to 7 ([430b305])
+- **deps**: bump peter-evans/create-pull-request from 7 to 8 ([e1bf4e5])
+- **deps**: bump actions/upload-artifact from 5 to 6 ([f57a405])
+- **deps**: bump actions/checkout from 4 to 6 ([1a92989])
+
+### 🔧 Chores
+
+- upgrade dependencies and fix TypeScript 6 compatibility ([c7fb7d9])
+- bump version to 0.5.0 for next development cycle ([d1ca9ff])
+- **deps**: refresh package lockfile ([54360d5])
+- **logger**: remove unused eslint-disable comments ([a5ea389])
+- **eslint**: migrate to flat config ([dbbf61c])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin ([a4c714e])
+- **deps-dev**: bump @typescript-eslint/parser from 8.54.0 to 8.57.1 ([b6fcf9e])
+- **deps-dev**: bump rollup-plugin-visualizer from 6.0.5 to 7.0.1 ([2f081a0])
+- **deps-dev**: bump eslint from 9.39.2 to 10.1.0 ([3a3061b])
+- **deps-dev**: bump @types/node from 25.2.0 to 25.5.0 ([c527fd5])
+- **deps-dev**: bump jest from 30.2.0 to 30.3.0 ([9d7366c])
+- **deps-dev**: bump @rollup/plugin-terser from 0.4.4 to 1.0.0 ([6521aa6])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin ([3fde28d])
+- **deps-dev**: bump @typescript-eslint/parser from 8.53.1 to 8.54.0 ([e4f53ba])
+- **deps-dev**: bump @types/node from 25.0.10 to 25.2.0 ([788bddd])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin ([195b051])
+- **deps-dev**: bump @types/node from 24.10.1 to 25.0.9 ([57dc12c])
+- **deps-dev**: bump @typescript-eslint/parser from 8.47.0 to 8.53.0 ([283485b])
+- **deps-dev**: bump prettier from 3.6.2 to 3.8.0 ([9828533])
+- **deps-dev**: bump eslint-plugin-prettier from 5.5.4 to 5.5.5 ([5392155])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin ([9592ad6])
+- **deps-dev**: bump eslint from 9.39.1 to 9.39.2 ([b5dbbb1])
+- **deps-dev**: bump ts-jest from 29.4.5 to 29.4.6 ([cba5aa1])
+- **deps-dev**: bump @typescript-eslint/parser from 8.46.4 to 8.47.0 ([00a9f0b])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin ([4603324])
+
+
 ## [0.4.0] - 2025-11-15
 
 ### 🐛 Bug Fixes
