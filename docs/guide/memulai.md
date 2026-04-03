@@ -9,12 +9,12 @@
 
 ::: code-group
 
-```bash [npm]
-npm install stadata-js
-```
-
 ```bash [pnpm]
 pnpm add stadata-js
+```
+
+```bash [npm]
+npm install stadata-js
 ```
 
 ```bash [yarn]
@@ -25,85 +25,78 @@ yarn add stadata-js
 
 ## Inisialisasi
 
-Sebelum menggunakan SDK, inisialisasi dengan API key kamu:
+Buat client **sekali** di entry point aplikasi kamu:
 
 ```typescript
-import { StadataJS } from 'stadata-js';
+import { createStadataClient } from 'stadata-js'
 
-await StadataJS.init({
+const stadata = createStadataClient({
   apiKey: 'your-api-key-here',
   debug: false, // aktifkan untuk logging detail
-});
-
-// Akses instance singleton
-const stadata = StadataJS.instance;
+})
 ```
 
-::: warning
-`StadataJS.init()` harus dipanggil sekali sebelum menggunakan `StadataJS.instance`. Biasanya di entry point aplikasi kamu.
-:::
+Client yang dibuat akan menyimpan konfigurasi dan menyediakan semua composables.
 
-## Contoh Pertama: Ambil Daftar Domain
+## Cara Penggunaan
+
+Setelah membuat client, gunakan composables via `stadata.use*()`:
 
 ```typescript
-import { StadataJS, DataLanguage } from 'stadata-js';
+import { createStadataClient, DataLanguage } from 'stadata-js'
 
-await StadataJS.init({ apiKey: 'your-api-key' });
-const stadata = StadataJS.instance;
+const stadata = createStadataClient({ apiKey: 'your-api-key' })
 
-const result = await stadata.list.domains({
+// Destructure fungsi yang dibutuhkan dari composable
+const { fetchPublicationList, fetchPublicationDetail } = stadata.usePublications()
+const { fetchDomainList } = stadata.useDomains()
+const { fetchNewsList } = stadata.useNews()
+
+// Panggil fungsinya
+const result = await fetchPublicationList({
+  domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-});
+})
 
 result.match(
   ({ data, pagination }) => {
-    console.log(`Total domain: ${pagination.total}`);
-    data.forEach(domain => {
-      console.log(`${domain.id} - ${domain.name}`);
-    });
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(pub => console.log(pub.title))
   },
-  (error) => console.error('Error:', error.message)
-);
+  (err) => console.error('Error:', err.message)
+)
 ```
 
-## Dua Tipe Operasi
+::: tip
+Client dibuat **sekali**, lalu semua composable bisa dipakai tanpa harus pass client lagi.
+:::
 
-SDK menyediakan dua kategori operasi utama:
+## Composables yang Tersedia
 
-| Operasi | Akses | Keterangan |
-|---------|-------|------------|
-| `stadata.list.*` | List banyak item | Mendukung pagination & filter |
-| `stadata.view.*` | Detail satu item | Berdasarkan ID |
-
-```typescript
-// List — banyak item dengan pagination
-const listResult = await stadata.list.publications({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  page: 1,
-  perPage: 5,
-});
-
-// View — detail satu item
-const viewResult = await stadata.view.publication({
-  id: 'pub-id-here',
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
-```
-
-## Language / Bahasa
-
-Gunakan enum `DataLanguage` untuk memilih bahasa respons:
-
-```typescript
-import { DataLanguage } from 'stadata-js';
-
-DataLanguage.ID  // Bahasa Indonesia
-DataLanguage.EN  // English
-```
+| Composable | Fungsi |
+|-----------|--------|
+| `stadata.useDomains()` | `fetchDomainList` |
+| `stadata.usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
+| `stadata.usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
+| `stadata.useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
+| `stadata.useDynamicTables()` | `fetchDynamicTableList` |
+| `stadata.useInfographics()` | `fetchInfographicList` |
+| `stadata.useNews()` | `fetchNewsList`, `fetchNewsDetail` |
+| `stadata.useNewsCategories()` | `fetchNewsCategoryList` |
+| `stadata.useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
+| `stadata.useVerticalVariables()` | `fetchVerticalVariableList` |
+| `stadata.useDerivedVariables()` | `fetchDerivedVariableList` |
+| `stadata.useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
+| `stadata.useSubjectCategories()` | `fetchSubjectCategoryList` |
+| `stadata.useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
+| `stadata.usePeriods()` | `fetchPeriodList` |
+| `stadata.useDerivedPeriods()` | `fetchDerivedPeriodList` |
+| `stadata.useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
+| `stadata.useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
+| `stadata.useCensus()` | `fetchCensusList` |
+| `stadata.useTrade()` | `fetchTradeData` |
 
 ## Langkah Selanjutnya
 

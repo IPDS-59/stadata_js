@@ -25,7 +25,7 @@
 // v2 API — createStadataClient + composables (recommended)
 // ============================================================
 export { createStadataClient } from './client';
-export type { StadataClient, StadataClientConfig } from './client';
+export type { StadataClient, StadataClientConfig, StadataClientInstance } from './client';
 
 export * from './composables';
 
