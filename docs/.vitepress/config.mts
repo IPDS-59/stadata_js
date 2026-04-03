@@ -17,6 +17,7 @@ export default defineConfig({
         nav: [
           { text: 'Panduan', link: '/guide/memulai' },
           { text: 'API Reference', link: '/api/domains' },
+          { text: '▶ Playground', link: '/playground' },
           { text: 'npm', link: 'https://www.npmjs.com/package/stadata-js' },
         ],
         sidebar: {
