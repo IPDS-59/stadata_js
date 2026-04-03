@@ -6,7 +6,7 @@ export default defineConfig({
   base: '/stadata_js/',
 
   head: [
-    ['link', { rel: 'icon', href: '/stadata_js/favicon.ico' }],
+    ['link', { rel: 'icon', href: '/stadata_js/logo.svg', type: 'image/svg+xml' }],
   ],
 
   locales: {
