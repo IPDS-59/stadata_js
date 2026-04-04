@@ -1,0 +1,30 @@
+import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
+import { PressReleaseRemoteDataSource } from '../features/press-release/data/datasources';
+import { PressReleaseRepositoryImpl } from '../features/press-release/data/repositories';
+import { PressRelease } from '../features/press-release/domain/entities';
+import { ListResult } from '../shared/domain/entities';
+import { PressReleaseListParams, ViewParams } from '../types';
+import { Result } from 'neverthrow';
+import { ApiFailure } from '../core/failures';
+
+export interface UsePressReleases {
+  fetchPressReleaseList: (
+    params: PressReleaseListParams
+  ) => Promise<Result<ListResult<PressRelease>, ApiFailure>>;
+  fetchPressReleaseDetail: (params: ViewParams) => Promise<Result<PressRelease, ApiFailure>>;
+}
+
+export function usePressReleases(client?: StadataClient): UsePressReleases {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new PressReleaseRemoteDataSource(_client.networkClient);
+  const repository = new PressReleaseRepositoryImpl(dataSource);
+
+  return {
+    fetchPressReleaseList: (
+      params: PressReleaseListParams
+    ): Promise<Result<ListResult<PressRelease>, ApiFailure>> => repository.getAll(params),
+    fetchPressReleaseDetail: (params: ViewParams): Promise<Result<PressRelease, ApiFailure>> =>
+      repository.getById(params),
+  };
+}

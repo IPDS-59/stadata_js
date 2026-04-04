@@ -9,12 +9,12 @@
 
 ::: code-group
 
-```bash [npm]
-npm install stadata-js
-```
-
 ```bash [pnpm]
 pnpm add stadata-js
+```
+
+```bash [npm]
+npm install stadata-js
 ```
 
 ```bash [yarn]
@@ -25,85 +25,91 @@ yarn add stadata-js
 
 ## Inisialisasi
 
-Sebelum menggunakan SDK, inisialisasi dengan API key kamu:
+Panggil `initStadata()` **sekali** di entry point aplikasi kamu:
 
 ```typescript
-import { StadataJS } from 'stadata-js';
+// main.ts / app.ts / index.ts
+import { initStadata } from 'stadata-js'
 
-await StadataJS.init({
+initStadata({
   apiKey: 'your-api-key-here',
-  debug: false, // aktifkan untuk logging detail
-});
-
-// Akses instance singleton
-const stadata = StadataJS.instance;
+  debug: false, // optional
+})
 ```
 
-::: warning
-`StadataJS.init()` harus dipanggil sekali sebelum menggunakan `StadataJS.instance`. Biasanya di entry point aplikasi kamu.
-:::
+## Cara Penggunaan
 
-## Contoh Pertama: Ambil Daftar Domain
+Setelah `initStadata()` dipanggil, gunakan composables **di mana saja** tanpa perlu meneruskan client:
 
 ```typescript
-import { StadataJS, DataLanguage } from 'stadata-js';
+import { usePublications, useDomains, useNews, DataLanguage } from 'stadata-js'
 
-await StadataJS.init({ apiKey: 'your-api-key' });
-const stadata = StadataJS.instance;
+// Langsung pakai — tidak perlu import client atau instance apapun
+const { fetchPublicationList, fetchPublicationDetail } = usePublications()
+const { fetchDomainList } = useDomains()
+const { fetchNewsList } = useNews()
 
-const result = await stadata.list.domains({
+// Fetch data
+const result = await fetchPublicationList({
+  domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-});
+})
 
 result.match(
   ({ data, pagination }) => {
-    console.log(`Total domain: ${pagination.total}`);
-    data.forEach(domain => {
-      console.log(`${domain.id} - ${domain.name}`);
-    });
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(pub => console.log(pub.title))
   },
-  (error) => console.error('Error:', error.message)
-);
+  (err) => console.error('Error:', err.message)
+)
 ```
 
-## Dua Tipe Operasi
+::: tip
+Cukup panggil `initStadata()` **sekali** di entry point. Setelah itu semua composable bisa dipakai di file manapun tanpa import client.
+:::
 
-SDK menyediakan dua kategori operasi utama:
+::: warning
+Jika menggunakan composable sebelum `initStadata()` dipanggil, akan muncul error:
+`[stadata-js] Client not initialized. Call initStadata({ apiKey: "..." }) first.`
+:::
 
-| Operasi | Akses | Keterangan |
-|---------|-------|------------|
-| `stadata.list.*` | List banyak item | Mendukung pagination & filter |
-| `stadata.view.*` | Detail satu item | Berdasarkan ID |
+## Multiple Client (Advanced)
+
+Jika perlu multiple client dengan API key berbeda, pass client secara explicit:
 
 ```typescript
-// List — banyak item dengan pagination
-const listResult = await stadata.list.publications({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  page: 1,
-  perPage: 5,
-});
+import { createStadataClient, usePublications } from 'stadata-js'
 
-// View — detail satu item
-const viewResult = await stadata.view.publication({
-  id: 'pub-id-here',
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
+const otherClient = createStadataClient({ apiKey: 'other-key' })
+const { fetchPublicationList } = usePublications(otherClient) // explicit
 ```
 
-## Language / Bahasa
+## Composables yang Tersedia
 
-Gunakan enum `DataLanguage` untuk memilih bahasa respons:
-
-```typescript
-import { DataLanguage } from 'stadata-js';
-
-DataLanguage.ID  // Bahasa Indonesia
-DataLanguage.EN  // English
-```
+| Composable | Fungsi |
+|-----------|--------|
+| `usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
+| `useDomains()` | `fetchDomainList` |
+| `usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
+| `useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
+| `useDynamicTables()` | `fetchDynamicTableList` |
+| `useInfographics()` | `fetchInfographicList` |
+| `useNews()` | `fetchNewsList`, `fetchNewsDetail` |
+| `useNewsCategories()` | `fetchNewsCategoryList` |
+| `useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
+| `useVerticalVariables()` | `fetchVerticalVariableList` |
+| `useDerivedVariables()` | `fetchDerivedVariableList` |
+| `useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
+| `useSubjectCategories()` | `fetchSubjectCategoryList` |
+| `useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
+| `usePeriods()` | `fetchPeriodList` |
+| `useDerivedPeriods()` | `fetchDerivedPeriodList` |
+| `useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
+| `useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
+| `useCensus()` | `fetchCensusList` |
+| `useTrade()` | `fetchTradeData` |
 
 ## Langkah Selanjutnya
 

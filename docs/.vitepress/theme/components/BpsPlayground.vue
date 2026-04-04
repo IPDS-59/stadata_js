@@ -114,8 +114,8 @@ const endpoints: Endpoint[] = [
     label: 'List Domains',
     path: '/list/model/domain/type/all',
     params: [
-      { name: 'page', type: 'number', placeholder: '1', default: '1', description: 'Nomor halaman' },
-      { name: 'perpage', type: 'number', placeholder: '10', default: '10', description: 'Data per halaman' },
+      { name: 'page', type: 'number', placeholder: '1', default: '1', description: 'Page number' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10', description: 'Items per page' },
     ],
   },
   {
@@ -123,20 +123,19 @@ const endpoints: Endpoint[] = [
     label: 'List Publications',
     path: '/list/model/publication/lang/ind',
     params: [
-      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true, description: 'Kode domain BPS' },
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true, description: 'BPS domain code' },
       { name: 'page', type: 'number', placeholder: '1', default: '1' },
       { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
-      { name: 'keyword', type: 'string', placeholder: 'inflasi', description: 'Kata kunci' },
+      { name: 'keyword', type: 'string', placeholder: 'inflasi', description: 'Search keyword' },
     ],
   },
   {
-    id: 'list-news',
-    label: 'List News',
-    path: '/list/model/news/lang/ind',
+    id: 'view-publication',
+    label: 'View Publication',
+    path: '/view/model/publication/lang/ind',
     params: [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
-      { name: 'page', type: 'number', placeholder: '1', default: '1' },
-      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'id', type: 'string', placeholder: 'pub-id', required: true, description: 'Publication ID' },
     ],
   },
   {
@@ -147,7 +146,17 @@ const endpoints: Endpoint[] = [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
       { name: 'page', type: 'number', placeholder: '1', default: '1' },
       { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
-      { name: 'year', type: 'number', placeholder: '2023', description: 'Filter tahun' },
+      { name: 'year', type: 'number', placeholder: '2023', description: 'Filter by year' },
+      { name: 'bulan', type: 'number', placeholder: '1', description: 'Filter by month (1-12)' },
+    ],
+  },
+  {
+    id: 'view-pressrelease',
+    label: 'View Press Release',
+    path: '/view/model/pressrelease/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'id', type: 'string', placeholder: 'release-id', required: true },
     ],
   },
   {
@@ -158,12 +167,84 @@ const endpoints: Endpoint[] = [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
       { name: 'page', type: 'number', placeholder: '1', default: '1' },
       { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'keyword', type: 'string', placeholder: 'kemiskinan', description: 'Search keyword' },
+    ],
+  },
+  {
+    id: 'view-statictable',
+    label: 'View Static Table',
+    path: '/view/model/statictable/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'id', type: 'string', placeholder: 'table-id', required: true },
+    ],
+  },
+  {
+    id: 'list-dynamictable',
+    label: 'List Dynamic Tables',
+    path: '/list/model/turuntabel/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'keyword', type: 'string', placeholder: 'PDRB', description: 'Search keyword' },
+    ],
+  },
+  {
+    id: 'list-infographic',
+    label: 'List Infographics',
+    path: '/list/model/infographic/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'keyword', type: 'string', placeholder: 'inflasi', description: 'Search keyword' },
+    ],
+  },
+  {
+    id: 'list-news',
+    label: 'List News',
+    path: '/list/model/news/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'keyword', type: 'string', placeholder: 'sensus', description: 'Search keyword' },
+    ],
+  },
+  {
+    id: 'list-newscategory',
+    label: 'List News Categories',
+    path: '/list/model/newscategory/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
     ],
   },
   {
     id: 'list-variable',
     label: 'List Variables',
     path: '/list/model/var/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'subject', type: 'number', placeholder: '1', description: 'Filter by subject ID' },
+    ],
+  },
+  {
+    id: 'list-vervar',
+    label: 'List Vertical Variables',
+    path: '/list/model/vervar/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+    ],
+  },
+  {
+    id: 'list-turvar',
+    label: 'List Derived Variables',
+    path: '/list/model/turvar/lang/ind',
     params: [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
       { name: 'page', type: 'number', placeholder: '1', default: '1' },
@@ -177,15 +258,73 @@ const endpoints: Endpoint[] = [
     params: [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
       { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
     ],
   },
   {
-    id: 'view-publication',
-    label: 'View Publication',
-    path: '/view/model/publication/lang/ind',
+    id: 'list-subjectcategory',
+    label: 'List Subject Categories',
+    path: '/list/model/subjectcategory/lang/ind',
     params: [
       { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
-      { name: 'id', type: 'string', placeholder: 'pub-id', required: true, description: 'ID publikasi' },
+    ],
+  },
+  {
+    id: 'list-unit',
+    label: 'List Units',
+    path: '/list/model/unit/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+    ],
+  },
+  {
+    id: 'list-period',
+    label: 'List Periods',
+    path: '/list/model/period/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'var', type: 'number', placeholder: '100', description: 'Variable ID' },
+    ],
+  },
+  {
+    id: 'list-turperiod',
+    label: 'List Derived Periods',
+    path: '/list/model/turperiod/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'turvar', type: 'number', placeholder: '100', description: 'Derived variable ID' },
+    ],
+  },
+  {
+    id: 'list-strategicindicator',
+    label: 'List Strategic Indicators',
+    path: '/list/model/strategicindicator/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+    ],
+  },
+  {
+    id: 'list-kbli2020',
+    label: 'Statistic Classifications (KBLI 2020)',
+    path: '/list/model/kbli2020/lang/ind',
+    params: [
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
+      { name: 'keyword', type: 'string', placeholder: 'pertanian', description: 'Search keyword' },
+    ],
+  },
+  {
+    id: 'list-census',
+    label: 'List Census',
+    path: '/list/model/census/lang/ind',
+    params: [
+      { name: 'domain', type: 'string', placeholder: '7200', default: '7200', required: true },
+      { name: 'page', type: 'number', placeholder: '1', default: '1' },
+      { name: 'perpage', type: 'number', placeholder: '10', default: '10' },
     ],
   },
 ]
