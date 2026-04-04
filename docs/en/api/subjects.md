@@ -1,13 +1,13 @@
 # Subjects
 
-BPS statistical subjects.
+BPS statistical subjects — main data collection categories.
 
-## Usage
+## List Subjects
 
 ```typescript
 import { useSubjects, DataLanguage } from 'stadata-js'
 
-const { fetchSubjectList, fetchSubjectDetail } = useSubjects()
+const { fetchSubjectList } = useSubjects()
 
 const result = await fetchSubjectList({
   domain: '7200',
@@ -15,23 +15,45 @@ const result = await fetchSubjectList({
   page: 1,
   perPage: 10,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** subjectCategoryId — optional
 
-## fetchSubjectDetail
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | ❌ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+| `page` | `number` | ❌ | Page number |
+| `perPage` | `number` | ❌ | Items per page |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+## View Subject
 
 ```typescript
+const { fetchSubjectDetail } = useSubjects()
+
 const result = await fetchSubjectDetail({
-  id: 'item-id',
+  id: 1,
   domain: '7200',
   lang: DataLanguage.EN,
 })
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | `string \| number` | ✅ | Subject ID |
+| `domain` | `string` | ✅ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+
+## Data Type
+
+```typescript
+class Subject {
+  id: number;
+  name: string;
+  nTable: number;       // Number of related tables
+  subjectCategoryId: number;
+}
 ```

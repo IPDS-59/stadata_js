@@ -1,6 +1,8 @@
 # Derived Variables
 
-## Penggunaan
+Variabel turunan BPS — variabel yang diturunkan dari variabel lain.
+
+## List Derived Variables
 
 ```typescript
 import { useDerivedVariables, DataLanguage } from 'stadata-js'
@@ -12,20 +14,20 @@ const result = await fetchDerivedVariableList({
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
+  variableId: 529,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `subjectId?: number`
-- `variableId?: number`
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `variableId` | `number` | ❌ | Filter berdasarkan ID variabel induk |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 
@@ -34,6 +36,10 @@ class DerivedVariable {
   id: number;
   name: string;
   subjectId: number;
+  subjectName: string;
   unit: string | null;
+  notes: string | null;
+  csa: string | null;
+  graphName: string | null;
 }
 ```

@@ -1,6 +1,8 @@
 # Infographics
 
-## Penggunaan
+Infografis BPS — visualisasi data statistik dalam format gambar.
+
+## List Infographics
 
 ```typescript
 import { useInfographics, DataLanguage } from 'stadata-js'
@@ -12,19 +14,25 @@ const result = await fetchInfographicList({
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
+  keyword: 'inflasi',
 })
 
 result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
+  ({ data }) => data.forEach(i => console.log(i.title, i.image)),
   (err) => console.error(err.message)
 )
 ```
 
-**Parameter tambahan:**
-- `keyword?: string`
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `keyword` | `string` | ❌ | Kata kunci pencarian |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 
@@ -32,6 +40,6 @@ result.match(
 class Infographic {
   id: string;
   title: string;
-  image: string;
+  image: string;   // URL gambar
 }
 ```

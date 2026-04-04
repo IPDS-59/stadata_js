@@ -1,11 +1,13 @@
 # Subjects
 
-## Penggunaan
+Subjek statistik BPS — kategori utama pengumpulan data BPS.
+
+## List Subjects
 
 ```typescript
 import { useSubjects, DataLanguage } from 'stadata-js'
 
-const { fetchSubjectList, fetchSubjectDetail } = useSubjects()
+const { fetchSubjectList } = useSubjects()
 
 const result = await fetchSubjectList({
   domain: '7200',
@@ -13,33 +15,37 @@ const result = await fetchSubjectList({
   page: 1,
   perPage: 10,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `subjectCategoryId?: number`
+### Parameter
 
-## Detail — SubjectDetail
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+## View Subject
 
 ```typescript
+const { fetchSubjectDetail } = useSubjects()
+
 const result = await fetchSubjectDetail({
-  id: 'item-id',
+  id: 1,
   domain: '7200',
   lang: DataLanguage.ID,
 })
-
-result.match(
-  (item) => console.log(item),
-  (err) => console.error(err.message)
-)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID subjek |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
@@ -47,6 +53,7 @@ result.match(
 class Subject {
   id: number;
   name: string;
-  nTable: number;
+  nTable: number;       // Jumlah tabel terkait
+  subjectCategoryId: number;
 }
 ```

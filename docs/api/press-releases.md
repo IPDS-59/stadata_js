@@ -1,47 +1,57 @@
 # Press Releases
 
-## Penggunaan
+Siaran pers resmi BPS — pengumuman data ekonomi, demografi, dan statistik terbaru.
+
+## List Press Releases
 
 ```typescript
 import { usePressReleases, DataLanguage } from 'stadata-js'
 
-const { fetchPressReleaseList, fetchPressReleaseDetail } = usePressReleases()
+const { fetchPressReleaseList } = usePressReleases()
 
 const result = await fetchPressReleaseList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
+  keyword: 'inflasi',
+  year: 2024,
+  month: 1,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `keyword?: string`
-- `month?: number`
-- `year?: number`
+### Parameter
 
-## Detail — PressReleaseDetail
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `keyword` | `string` | ❌ | Kata kunci pencarian |
+| `month` | `number` | ❌ | Filter bulan (1-12) |
+| `year` | `number` | ❌ | Filter tahun |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+## View Press Release
 
 ```typescript
+const { fetchPressReleaseDetail } = usePressReleases()
+
 const result = await fetchPressReleaseDetail({
-  id: 'item-id',
+  id: 'release-id',
   domain: '7200',
   lang: DataLanguage.ID,
 })
-
-result.match(
-  (item) => console.log(item),
-  (err) => console.error(err.message)
-)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID siaran pers |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
@@ -52,7 +62,9 @@ class PressRelease {
   cover: string;
   pdf: string;
   size: string;
-  releaseDate: Date | null;
   abstract: string | null;
+  releaseDate: Date | null;
+  updateDate: Date | null;
+  category: string | null;
 }
 ```

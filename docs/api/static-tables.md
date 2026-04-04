@@ -1,46 +1,56 @@
 # Static Tables
 
-## Penggunaan
+Tabel statis BPS — data tabular yang sudah dipublikasikan.
+
+## List Static Tables
 
 ```typescript
 import { useStaticTables, DataLanguage } from 'stadata-js'
 
-const { fetchStaticTableList, fetchStaticTableDetail } = useStaticTables()
+const { fetchStaticTableList } = useStaticTables()
 
 const result = await fetchStaticTableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
+  keyword: 'kemiskinan',
+  year: 2023,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `keyword?: string`
-- `year?: number`
+### Parameter
 
-## Detail — StaticTableDetail
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `keyword` | `string` | ❌ | Kata kunci pencarian |
+| `month` | `number` | ❌ | Filter bulan (1-12) |
+| `year` | `number` | ❌ | Filter tahun |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+## View Static Table
 
 ```typescript
+const { fetchStaticTableDetail } = useStaticTables()
+
 const result = await fetchStaticTableDetail({
-  id: 'item-id',
+  id: 1234,
   domain: '7200',
   lang: DataLanguage.ID,
 })
-
-result.match(
-  (item) => console.log(item),
-  (err) => console.error(err.message)
-)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID tabel |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
@@ -51,6 +61,6 @@ class StaticTable {
   subjectId: number;
   size: string;
   updatedAt: Date | null;
-  excel: string; // URL Excel
+  excel: string;   // URL file Excel
 }
 ```
