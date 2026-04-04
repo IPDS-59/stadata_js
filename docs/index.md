@@ -69,32 +69,28 @@ yarn add stadata-js
 ## Contoh Penggunaan
 
 ```typescript
-import { StadataJS, DataLanguage } from 'stadata-js';
+import { initStadata, usePublications, useDomains, DataLanguage, DomainType } from 'stadata-js'
 
-// Inisialisasi SDK
-await StadataJS.init({
-  apiKey: 'your-api-key-here',
-  debug: false,
-});
+// 1. Inisialisasi sekali di entry point
+initStadata({ apiKey: 'your-api-key-here' })
 
-const stadata = StadataJS.instance;
+// 2. Gunakan composables di mana saja — tidak perlu import client
+const { fetchDomainList } = useDomains()
+const { fetchPublicationList } = usePublications()
 
-// Ambil daftar domain (wilayah BPS)
-const result = await stadata.list.domains({
+// 3. Fetch data
+const result = await fetchDomainList({
+  type: DomainType.ALL,
   lang: DataLanguage.ID,
-  page: 1,
-  perPage: 10,
-});
+})
 
 result.match(
-  (listResult) => {
-    console.log('Domains:', listResult.data);
-    console.log('Total:', listResult.pagination.total);
+  ({ data, pagination }) => {
+    console.log('Domains:', data)
+    console.log('Total:', pagination.total)
   },
-  (error) => {
-    console.error('Error:', error.message);
-  }
-);
+  (error) => console.error('Error:', error.message)
+)
 ```
 
 > **API Key**: Dapatkan API key kamu di [BPS WebAPI Platform](https://webapi.bps.go.id/).

@@ -13,26 +13,28 @@ Daftar dan dapatkan API key gratis di **[webapi.bps.go.id](https://webapi.bps.go
 Setelah menemukan endpoint yang sesuai, integrasikan ke aplikasi kamu:
 
 ```typescript
-import { StadataJS, DataLanguage } from 'stadata-js';
+import { initStadata, usePublications, DataLanguage } from 'stadata-js'
 
-await StadataJS.init({ apiKey: 'your-api-key' });
-const stadata = StadataJS.instance;
+// Init sekali di entry point
+initStadata({ apiKey: 'your-api-key' })
 
-// Contoh: List publications domain Sulawesi Tengah
-const result = await stadata.list.publications({
+// Pakai composable di mana saja
+const { fetchPublicationList } = usePublications()
+
+const result = await fetchPublicationList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-});
+})
 
 result.match(
   ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`);
-    data.forEach(p => console.log(p.title));
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(p => console.log(p.title))
   },
   (err) => console.error(err.message)
-);
+)
 ```
 
 ## Endpoint yang Tersedia di Playground
