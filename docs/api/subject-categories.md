@@ -1,6 +1,8 @@
 # Subject Categories
 
-## Penggunaan
+Kategori subjek statistik BPS.
+
+## List Subject Categories
 
 ```typescript
 import { useSubjectCategories, DataLanguage } from 'stadata-js'
@@ -13,15 +15,17 @@ const result = await fetchSubjectCategoryList({
   page: 1,
   perPage: 10,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 
