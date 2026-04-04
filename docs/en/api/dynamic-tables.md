@@ -1,8 +1,8 @@
 # Dynamic Tables
 
-BPS dynamic tables.
+BPS dynamic tables — customizable data based on variables and periods.
 
-## Usage
+## Fetch Dynamic Table
 
 ```typescript
 import { useDynamicTables, DataLanguage } from 'stadata-js'
@@ -12,16 +12,38 @@ const { fetchDynamicTableList } = useDynamicTables()
 const result = await fetchDynamicTableList({
   domain: '7200',
   lang: DataLanguage.EN,
-  page: 1,
-  perPage: 10,
+  variableId: 529,
+  periodId: '117',
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** keyword — optional filter
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | ❌ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+| `variableId` | `number` | ✅ | Variable ID |
+| `periodId` | `string` | ✅ | Period ID. Single (`"117"`), range (`"117:123"`), or multiple (`"117;123"`) |
+| `derivedVariableId` | `number` | ❌ | Derived variable ID |
+| `verticalVariableId` | `number` | ❌ | Vertical variable ID |
+| `derivedPeriodId` | `string` | ❌ | Derived period ID. Same format as `periodId` |
+| `page` | `number` | ❌ | Page number |
+| `perPage` | `number` | ❌ | Items per page |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+::: tip
+Use `usePeriods()` and `useVariables()` to get valid IDs for querying dynamic tables.
+:::
+
+## Data Type
+
+```typescript
+class DynamicTable {
+  id: string;
+  title: string;
+  subjectId: number;
+  size: string;
+  updatedAt: Date | null;
+}
+```

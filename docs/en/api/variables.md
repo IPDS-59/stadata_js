@@ -1,37 +1,65 @@
 # Variables
 
-BPS statistical variables.
+BPS statistical variables — indicators used in data collection.
 
-## Usage
+## List Variables
 
 ```typescript
 import { useVariables, DataLanguage } from 'stadata-js'
 
-const { fetchVariableList, fetchVariableDetail } = useVariables()
+const { fetchVariableList } = useVariables()
 
 const result = await fetchVariableList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
+  subjectId: 3,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** subjectId — optional filter
 
-## fetchVariableDetail
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | ❌ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+| `page` | `number` | ❌ | Page number (default: 1) |
+| `perPage` | `number` | ❌ | Items per page |
+| `subjectId` | `number` | ❌ | Filter by subject ID |
+| `showDeleted` | `boolean` | ❌ | Include deleted items |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+## View Variable
 
 ```typescript
+const { fetchVariableDetail } = useVariables()
+
 const result = await fetchVariableDetail({
-  id: 'item-id',
+  id: 1234,
   domain: '7200',
   lang: DataLanguage.EN,
 })
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | `string \| number` | ✅ | Variable ID |
+| `domain` | `string` | ✅ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+
+## Data Type
+
+```typescript
+class Variable {
+  id: number;
+  name: string;
+  subjectId: number;
+  subjectName: string;
+  verticalVariableId: number;
+  unit: string | null;
+  notes: string | null;
+}
 ```
