@@ -1,16 +1,26 @@
 # Vertical Variables
 
-Variabel vertikal BPS — klasifikasi vertikal dari variabel statistik.
-
-## List Vertical Variables
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.verticalVariables({
+import { useVerticalVariables, DataLanguage } from 'stadata-js'
+
+const { fetchVerticalVariableList } = useVerticalVariables()
+
+const result = await fetchVerticalVariableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -19,14 +29,7 @@ const result = await stadata.list.verticalVariables({
 class VerticalVariable {
   id: number;
   title: string;
-  itemId: number | null;
-  groupId: number | null;
-  name: string | null;
-  notes: string | null;
-  type: string | null;
   unit: string | null;
-  graphIndicator: boolean;
   subjectId: number;
-  subjectName: string;
 }
 ```

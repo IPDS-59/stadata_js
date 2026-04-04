@@ -1,34 +1,29 @@
 # Domains
 
-Domains represent BPS regions (provinces, regencies, or national).
+Domains represent BPS regions.
 
-## List Domains
+## Usage
 
 ```typescript
-const result = await stadata.list.domains({
+import { useDomains, DataLanguage } from 'stadata-js'
+
+const { fetchDomainList } = useDomains()
+
+const result = await fetchDomainList({
+  domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  type: DomainType.ALL,    // optional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
-
-## Domain Type
-
-```typescript
-enum DomainType {
-  ALL = 'all',
-  PROVINCE = 'prov',
-  REGENCY = 'kab',
-}
-```
-
-## Data Type
-
-```typescript
-class Domain {
-  id: string;    // BPS domain code (e.g. '7200' for Central Sulawesi)
-  name: string;  // Region name
-  url: string;   // BPS regional portal URL
-}
-```
+**Parameters:** DomainType.ALL — all
+DomainType.PROVINCE — provinces
+DomainType.REGENCY — regencies

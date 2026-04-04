@@ -1,27 +1,27 @@
 # Census
 
-BPS census data — population, agriculture, and economic census results.
+BPS census data.
 
-## List Census
+## Usage
 
 ```typescript
-const result = await stadata.list.census({
+import { useCensus, DataLanguage } from 'stadata-js'
+
+const { fetchCensusList } = useCensus()
+
+const result = await fetchCensusList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'population census',
-});
-```
+})
 
-## Data Type
-
-```typescript
-class Census {
-  id: string;
-  title: string;
-  subjectId: number;
-  size: string;
-  updatedAt: Date | null;
-}
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
+**Parameters:** keyword — optional

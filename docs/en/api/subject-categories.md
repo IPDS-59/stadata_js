@@ -1,23 +1,27 @@
 # Subject Categories
 
-BPS statistical subject categories.
+BPS subject categories.
 
-## List Subject Categories
+## Usage
 
 ```typescript
-const result = await stadata.list.subjectCategories({
+import { useSubjectCategories, DataLanguage } from 'stadata-js'
+
+const { fetchSubjectCategoryList } = useSubjectCategories()
+
+const result = await fetchSubjectCategoryList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## Data Type
-
-```typescript
-class SubjectCategory {
-  id: number;
-  name: string;
-}
-```

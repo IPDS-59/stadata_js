@@ -1,39 +1,45 @@
 # Statistic Classifications
 
-Klasifikasi statistik BPS — sistem klasifikasi yang digunakan dalam sensus dan survei.
-
-## List Statistic Classifications
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.statisticClassifications({
+import { useStatisticClassifications, DataLanguage } from 'stadata-js'
+
+const { fetchStatisticClassificationList, fetchStatisticClassificationDetail } = useStatisticClassifications()
+
+const result = await fetchStatisticClassificationList({
+  domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  type: ClassificationType.KBLI2020,  // opsional
-  keyword: 'pertanian',               // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View Statistic Classification
+**Parameter tambahan:**
+- `type?: ClassificationType`
+- `keyword?: string`
+
+## Detail — StatisticClassificationDetail
 
 ```typescript
-const result = await stadata.view.statisticClassification({
-  id: 'class-id',
+const result = await fetchStatisticClassificationDetail({
+  id: 'item-id',
+  domain: '7200',
   lang: DataLanguage.ID,
-  type: ClassificationType.KBLI2020,
-});
-```
+})
 
-### ClassificationType
-
-```typescript
-enum ClassificationType {
-  KBLI2009 = 'kbli2009',
-  KBLI2015 = 'kbli2015',
-  KBLI2017 = 'kbli2017',
-  KBLI2020 = 'kbli2020',
-  KBKI2015 = 'kbki2015',
-}
+result.match(
+  (item) => console.log(item),
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -43,8 +49,6 @@ class StatisticClassification {
   id: string;
   title: string;
   description: string | null;
-  previous: string | null;
-  flag: string | null;
   type: ClassificationType;
 }
 ```

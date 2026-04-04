@@ -1,27 +1,27 @@
 # Infographics
 
-BPS infographics — statistical data visualizations in image format.
+BPS infographics.
 
-## List Infographics
+## Usage
 
 ```typescript
-const result = await stadata.list.infographics({
+import { useInfographics, DataLanguage } from 'stadata-js'
+
+const { fetchInfographicList } = useInfographics()
+
+const result = await fetchInfographicList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'inflation',
-});
-```
+})
 
-## Data Type
-
-```typescript
-class Infographic {
-  id: string;
-  title: string;
-  image: string;
-  description: string | null;
-  category: string | null;
-}
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
+**Parameters:** keyword — optional filter
