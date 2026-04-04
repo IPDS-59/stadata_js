@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-04-04
+
+### ✨ Features
+
+- implement global init pattern (Option C) ([d57e594])
+- update client API to bound composables pattern + restore pnpm + update docs ([ecf79fb])
+- **docs**: expand English API docs and playground to all 20+ endpoints ([05b4d62])
+
+### 🐛 Bug Fixes
+
+- **lint**: add explicit return types and fix prettier formatting on all composables ([2490313])
+- resolve merge conflict — keep version 1.2.0 from develop ([9c899fc])
+- **ci**: use npm ci for docs deployment on main branch ([83adc27])
+- normalize repository.url format for npm publish ([b62c70c])
+
+### 🔧 Chores
+
+- back-merge release 1.1.0 to develop (with conflicts) ([810947c])
+- bump version to 1.2.0 for next development cycle ([ee79faf])
+
+
 ## [1.1.0] - 2026-04-03
 
 ### ✨ Features
