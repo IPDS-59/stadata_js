@@ -1,11 +1,13 @@
 # Strategic Indicators
 
-## Penggunaan
+Indikator strategis BPS — indikator kunci pembangunan nasional.
+
+## List Strategic Indicators
 
 ```typescript
 import { useStrategicIndicators, DataLanguage } from 'stadata-js'
 
-const { fetchStrategicIndicatorList, fetchStrategicIndicatorDetail } = useStrategicIndicators()
+const { fetchStrategicIndicatorList } = useStrategicIndicators()
 
 const result = await fetchStrategicIndicatorList({
   domain: '7200',
@@ -13,34 +15,37 @@ const result = await fetchStrategicIndicatorList({
   page: 1,
   perPage: 10,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `keyword?: string`
-- `year?: number`
+### Parameter
 
-## Detail — StrategicIndicatorDetail
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+## View Strategic Indicator
 
 ```typescript
+const { fetchStrategicIndicatorDetail } = useStrategicIndicators()
+
 const result = await fetchStrategicIndicatorDetail({
-  id: 'item-id',
+  id: 'indicator-id',
   domain: '7200',
   lang: DataLanguage.ID,
 })
-
-result.match(
-  (item) => console.log(item),
-  (err) => console.error(err.message)
-)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID indikator |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
@@ -52,5 +57,6 @@ class StrategicIndicator {
   periode: string;
   value: number | null;
   unit: string | null;
+  category: string | null;
 }
 ```

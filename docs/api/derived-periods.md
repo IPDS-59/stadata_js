@@ -1,6 +1,8 @@
 # Derived Periods
 
-## Penggunaan
+Periode turunan BPS — periode untuk variabel turunan.
+
+## List Derived Periods
 
 ```typescript
 import { useDerivedPeriods, DataLanguage } from 'stadata-js'
@@ -10,21 +12,20 @@ const { fetchDerivedPeriodList } = useDerivedPeriods()
 const result = await fetchDerivedPeriodList({
   domain: '7200',
   lang: DataLanguage.ID,
-  page: 1,
-  perPage: 10,
+  variableId: 529,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `variableId?: number`
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `variableId` | `number` | ❌ | Filter berdasarkan ID variabel turunan |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 

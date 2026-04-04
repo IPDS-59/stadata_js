@@ -2,26 +2,60 @@
 
 BPS export/import trade data.
 
-## Usage
+## Fetch Trade Data
 
 ```typescript
-import { useTrade, DataLanguage } from 'stadata-js'
+import { useTrade, TradeSource, TradePeriod, HSCodeType } from 'stadata-js'
 
 const { fetchTradeData } = useTrade()
 
 const result = await fetchTradeData({
-  domain: '7200',
-  lang: DataLanguage.EN,
-  page: 1,
-  perPage: 10,
+  source: TradeSource.Export,
+  period: TradePeriod.Monthly,
+  hsCode: '01',
+  hsType: HSCodeType.TwoDigit,
+  year: '2023',
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** type: 'export'|'import', year — required; month, hs2 — optional
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `source` | `TradeSource` | ✅ | Data source |
+| `period` | `TradePeriod` | ✅ | Data period |
+| `hsCode` | `string` | ✅ | HS Code. Use `;` for multiple codes |
+| `hsType` | `HSCodeType` | ✅ | HS Code type |
+| `year` | `string` | ✅ | Data year |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+### Enums
+
+```typescript
+enum TradeSource {
+  Export = 1,
+  Import = 2,
+}
+
+enum TradePeriod {
+  Monthly = 1,
+  Annually = 2,
+}
+
+enum HSCodeType {
+  TwoDigit = 1,  // 2-digit HS code
+  Full = 2,      // Full HS code
+}
+```
+
+### Multiple HS Codes
+
+```typescript
+const result = await fetchTradeData({
+  source: TradeSource.Import,
+  period: TradePeriod.Annually,
+  hsCode: '01;02;03',        // Semicolon-separated
+  hsType: HSCodeType.TwoDigit,
+  year: '2023',
+})
+```

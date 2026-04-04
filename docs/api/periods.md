@@ -1,6 +1,8 @@
 # Periods
 
-## Penggunaan
+Periode data statistik BPS — tahunan, triwulan, bulanan, dll.
+
+## List Periods
 
 ```typescript
 import { usePeriods, DataLanguage } from 'stadata-js'
@@ -10,21 +12,24 @@ const { fetchPeriodList } = usePeriods()
 const result = await fetchPeriodList({
   domain: '7200',
   lang: DataLanguage.ID,
-  page: 1,
-  perPage: 10,
+  variableId: 529,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
 
-**Parameter tambahan:**
-- `variableId?: number`
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ❌ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `variableId` | `number` | ❌ | Filter berdasarkan ID variabel |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+::: tip
+`variableId` diperlukan saat menggunakan hasil period untuk query `useDynamicTables()`.
+:::
 
 ## Tipe Data
 
