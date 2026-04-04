@@ -1,30 +1,47 @@
 # News
 
-Berita terbaru dari BPS — pengumuman, rilis data, dan informasi statistik.
-
-## List News
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.news({
+import { useNews, DataLanguage } from 'stadata-js'
+
+const { fetchNewsList, fetchNewsDetail } = useNews()
+
+const result = await fetchNewsList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'sensus',     // opsional
-  newsCategoryId: '1',   // opsional — filter kategori
-  month: 1,              // opsional
-  year: 2024,            // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View News
+**Parameter tambahan:**
+- `keyword?: string`
+- `newsCategoryId?: string`
+- `month?: number`
+- `year?: number`
+
+## Detail — NewsDetail
 
 ```typescript
-const result = await stadata.view.news({
-  id: 'news-id',
+const result = await fetchNewsDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
+
+result.match(
+  (item) => console.log(item),
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -34,25 +51,7 @@ class News {
   id: string;
   title: string;
   content: string;
-  category: string | null;
-  categoryId: string | null;
-  picture: string | null;    // URL gambar
+  picture: string | null;
   releaseDate: Date | null;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.news({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  year: 2024,
-  month: 1,
-});
-
-result.match(
-  ({ data }) => data.forEach(n => console.log(n.title, n.releaseDate)),
-  (err) => console.error(err.message)
-);
 ```

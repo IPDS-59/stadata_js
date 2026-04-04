@@ -2,26 +2,26 @@
 
 BPS export/import trade data.
 
-## Get Trade Data
+## Usage
 
 ```typescript
-const result = await stadata.view.trade({
-  domain: '0000',
+import { useTrade, DataLanguage } from 'stadata-js'
+
+const { fetchTradeData } = useTrade()
+
+const result = await fetchTradeData({
+  domain: '7200',
   lang: DataLanguage.EN,
-  type: 'export',
-  year: 2023,
-  month: 6,
-  hs2: '01',
-});
+  page: 1,
+  perPage: 10,
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
-
-## Parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `domain` | `string` | ✅ | BPS domain code |
-| `lang` | `DataLanguage` | ✅ | Response language |
-| `type` | `string` | ✅ | `'export'` or `'import'` |
-| `year` | `number` | ✅ | Data year |
-| `month` | `number` | ❌ | Data month (1-12) |
-| `hs2` | `string` | ❌ | HS 2-digit code |
+**Parameters:** type: 'export'|'import', year — required; month, hs2 — optional

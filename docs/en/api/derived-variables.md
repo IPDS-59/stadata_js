@@ -1,28 +1,27 @@
 # Derived Variables
 
-BPS derived variables — variables calculated from other variables.
+BPS derived variables.
 
-## List Derived Variables
+## Usage
 
 ```typescript
-const result = await stadata.list.derivedVariables({
+import { useDerivedVariables, DataLanguage } from 'stadata-js'
+
+const { fetchDerivedVariableList } = useDerivedVariables()
+
+const result = await fetchDerivedVariableList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  subjectId: 1,
-  variableId: 100,
-});
-```
+})
 
-## Data Type
-
-```typescript
-class DerivedVariable {
-  id: number;
-  name: string;
-  subjectId: number;
-  subjectName: string;
-  unit: string | null;
-}
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
+**Parameters:** subjectId, variableId — optional

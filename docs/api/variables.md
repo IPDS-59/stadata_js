@@ -1,27 +1,44 @@
 # Variables
 
-Variabel statistik BPS — indikator dan variabel yang digunakan dalam pengumpulan data.
-
-## List Variables
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.variables({
+import { useVariables, DataLanguage } from 'stadata-js'
+
+const { fetchVariableList, fetchVariableDetail } = useVariables()
+
+const result = await fetchVariableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  subjectId: 1,          // opsional — filter berdasarkan subjek
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View Variable
+**Parameter tambahan:**
+- `subjectId?: number`
+
+## Detail — VariableDetail
 
 ```typescript
-const result = await stadata.view.variable({
-  id: 1234,
+const result = await fetchVariableDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
+
+result.match(
+  (item) => console.log(item),
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -32,25 +49,6 @@ class Variable {
   name: string;
   subjectId: number;
   subjectName: string;
-  verticalVariableId: number;
-  csa: string | null;
-  graphName: string | null;
-  notes: string | null;
   unit: string | null;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.variables({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  subjectId: 3,          // subjek: kependudukan
-});
-
-result.match(
-  ({ data }) => data.forEach(v => console.log(v.name, v.unit)),
-  (err) => console.error(err.message)
-);
 ```

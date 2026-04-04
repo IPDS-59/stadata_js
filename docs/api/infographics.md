@@ -1,18 +1,30 @@
 # Infographics
 
-Infografis BPS — visualisasi data statistik dalam format gambar.
-
-## List Infographics
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.infographics({
+import { useInfographics, DataLanguage } from 'stadata-js'
+
+const { fetchInfographicList } = useInfographics()
+
+const result = await fetchInfographicList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'inflasi',    // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
+
+**Parameter tambahan:**
+- `keyword?: string`
 
 ## Tipe Data
 
@@ -20,22 +32,6 @@ const result = await stadata.list.infographics({
 class Infographic {
   id: string;
   title: string;
-  image: string;         // URL gambar infografis
-  description: string | null;
-  category: string | null;
+  image: string;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.infographics({
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
-
-result.match(
-  ({ data }) => data.forEach(i => console.log(i.title, i.image)),
-  (err) => console.error(err.message)
-);
 ```

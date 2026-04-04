@@ -1,39 +1,37 @@
 # Static Tables
 
-BPS static tables — published tabular data in table format.
+BPS static tables.
 
-## List Static Tables
+## Usage
 
 ```typescript
-const result = await stadata.list.staticTables({
+import { useStaticTables, DataLanguage } from 'stadata-js'
+
+const { fetchStaticTableList, fetchStaticTableDetail } = useStaticTables()
+
+const result = await fetchStaticTableList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'population',
-  year: 2023,
-});
-```
+})
 
-## View Static Table
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
+```
+**Parameters:** keyword, year — optional filters
+
+## fetchStaticTableDetail
 
 ```typescript
-const result = await stadata.view.staticTable({
-  id: 'table-id',
+const result = await fetchStaticTableDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.EN,
-});
-```
-
-## Data Type
-
-```typescript
-class StaticTable {
-  id: number;
-  title: string;
-  subjectId: number;
-  size: string;
-  updatedAt: Date | null;
-  excel: string;   // Excel file URL
-}
+})
 ```

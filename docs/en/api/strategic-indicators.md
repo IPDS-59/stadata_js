@@ -1,39 +1,37 @@
 # Strategic Indicators
 
-BPS strategic indicators — key national development indicators.
+BPS strategic indicators.
 
-## List Strategic Indicators
+## Usage
 
 ```typescript
-const result = await stadata.list.strategicIndicators({
+import { useStrategicIndicators, DataLanguage } from 'stadata-js'
+
+const { fetchStrategicIndicatorList, fetchStrategicIndicatorDetail } = useStrategicIndicators()
+
+const result = await fetchStrategicIndicatorList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'poverty',
-  year: 2023,
-});
-```
+})
 
-## View Strategic Indicator
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
+```
+**Parameters:** keyword, year — optional
+
+## fetchStrategicIndicatorDetail
 
 ```typescript
-const result = await stadata.view.strategicIndicator({
-  id: 'indicator-id',
+const result = await fetchStrategicIndicatorDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.EN,
-});
-```
-
-## Data Type
-
-```typescript
-class StrategicIndicator {
-  id: string;
-  name: string;
-  variableId: number;
-  periode: string;
-  value: number | null;
-  unit: string | null;
-}
+})
 ```

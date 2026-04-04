@@ -1,37 +1,27 @@
 # Dynamic Tables
 
-BPS dynamic tables — data that can be customized and queried dynamically.
+BPS dynamic tables.
 
-## List Dynamic Tables
+## Usage
 
 ```typescript
-const result = await stadata.list.dynamicTables({
+import { useDynamicTables, DataLanguage } from 'stadata-js'
+
+const { fetchDynamicTableList } = useDynamicTables()
+
+const result = await fetchDynamicTableList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'GDP',
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
-
-## View Dynamic Table
-
-```typescript
-const result = await stadata.view.dynamicTable({
-  id: 'table-id',
-  domain: '7200',
-  lang: DataLanguage.EN,
-});
-```
-
-## Data Type
-
-```typescript
-class DynamicTable {
-  id: string;
-  title: string;
-  subjectId: number;
-  size: string;
-  updatedAt: Date | null;
-}
-```
+**Parameters:** keyword — optional filter

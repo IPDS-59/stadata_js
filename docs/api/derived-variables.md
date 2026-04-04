@@ -1,19 +1,31 @@
 # Derived Variables
 
-Variabel turunan BPS — variabel yang diturunkan atau dikalkulasi dari variabel lain.
-
-## List Derived Variables
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.derivedVariables({
+import { useDerivedVariables, DataLanguage } from 'stadata-js'
+
+const { fetchDerivedVariableList } = useDerivedVariables()
+
+const result = await fetchDerivedVariableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  subjectId: 1,      // opsional
-  variableId: 100,   // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
+
+**Parameter tambahan:**
+- `subjectId?: number`
+- `variableId?: number`
 
 ## Tipe Data
 
@@ -22,10 +34,6 @@ class DerivedVariable {
   id: number;
   name: string;
   subjectId: number;
-  subjectName: string;
-  csa: string | null;
-  graphName: string | null;
-  notes: string | null;
   unit: string | null;
 }
 ```
