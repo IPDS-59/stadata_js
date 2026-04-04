@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { DomainRemoteDataSource } from '../features/domain/data/datasources';
 import { DomainRepositoryImpl } from '../features/domain/data/repositories';
 import { Domain } from '../features/domain/domain/entities';
@@ -26,8 +27,9 @@ export interface UseDomains {
  * )
  * ```
  */
-export function useDomains(client: StadataClient): UseDomains {
-  const dataSource = new DomainRemoteDataSource(client.networkClient);
+export function useDomains(client?: StadataClient): UseDomains {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new DomainRemoteDataSource(_client.networkClient);
   const repository = new DomainRepositoryImpl(dataSource);
 
   return {

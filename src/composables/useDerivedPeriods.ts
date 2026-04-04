@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { DerivedPeriodRemoteDataSource } from '../features/derived-period/data/datasources';
 import { DerivedPeriodRepositoryImpl } from '../features/derived-period/data/repositories';
 import { DerivedPeriod } from '../features/derived-period/domain/entities';
@@ -13,8 +14,9 @@ export interface UseDerivedPeriods {
   ) => Promise<Result<ListResult<DerivedPeriod>, ApiFailure>>;
 }
 
-export function useDerivedPeriods(client: StadataClient): UseDerivedPeriods {
-  const dataSource = new DerivedPeriodRemoteDataSource(client.networkClient);
+export function useDerivedPeriods(client?: StadataClient): UseDerivedPeriods {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new DerivedPeriodRemoteDataSource(_client.networkClient);
   const repository = new DerivedPeriodRepositoryImpl(dataSource);
 
   return {

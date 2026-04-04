@@ -69,16 +69,16 @@ yarn add stadata-js
 ## Contoh Penggunaan
 
 ```typescript
-import { createStadataClient, DataLanguage } from 'stadata-js'
+import { initStadata, usePublications, useDomains, DataLanguage, DomainType } from 'stadata-js'
 
-// Buat client sekali
-const stadata = createStadataClient({ apiKey: 'your-api-key-here' })
+// 1. Inisialisasi sekali di entry point
+initStadata({ apiKey: 'your-api-key-here' })
 
-// Gunakan composables — tidak perlu pass client lagi
-const { fetchDomainList } = stadata.useDomains()
-const { fetchPublicationList } = stadata.usePublications()
+// 2. Gunakan composables di mana saja — tidak perlu import client
+const { fetchDomainList } = useDomains()
+const { fetchPublicationList } = usePublications()
 
-// Ambil daftar domain (wilayah BPS)
+// 3. Fetch data
 const result = await fetchDomainList({
   type: DomainType.ALL,
   lang: DataLanguage.ID,

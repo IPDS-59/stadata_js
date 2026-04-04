@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { VariableRemoteDataSource } from '../features/variable/data/datasources';
 import { VariableRepositoryImpl } from '../features/variable/data/repositories';
 import { Variable } from '../features/variable/domain/entities';
@@ -14,8 +15,9 @@ export interface UseVariables {
   fetchVariableDetail: (params: ViewParams) => Promise<Result<Variable, ApiFailure>>;
 }
 
-export function useVariables(client: StadataClient): UseVariables {
-  const dataSource = new VariableRemoteDataSource(client.networkClient);
+export function useVariables(client?: StadataClient): UseVariables {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new VariableRemoteDataSource(_client.networkClient);
   const repository = new VariableRepositoryImpl(dataSource);
 
   return {

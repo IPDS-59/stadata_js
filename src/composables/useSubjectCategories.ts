@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { SubjectCategoryRemoteDataSource } from '../features/subject-category/data/datasources';
 import { SubjectCategoryRepositoryImpl } from '../features/subject-category/data/repositories';
 import { SubjectCategory } from '../features/subject-category/domain/entities';
@@ -13,8 +14,9 @@ export interface UseSubjectCategories {
   ) => Promise<Result<ListResult<SubjectCategory>, ApiFailure>>;
 }
 
-export function useSubjectCategories(client: StadataClient): UseSubjectCategories {
-  const dataSource = new SubjectCategoryRemoteDataSource(client.networkClient);
+export function useSubjectCategories(client?: StadataClient): UseSubjectCategories {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new SubjectCategoryRemoteDataSource(_client.networkClient);
   const repository = new SubjectCategoryRepositoryImpl(dataSource);
 
   return {

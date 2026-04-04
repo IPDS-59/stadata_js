@@ -41,20 +41,16 @@ yarn add stadata-js
 ## Quick Start
 
 ```typescript
-import { createStadataClient, DataLanguage, DomainType } from 'stadata-js'
+import { initStadata, usePublications, useDomains, DataLanguage, DomainType } from 'stadata-js'
 
-// Create client once
-const stadata = createStadataClient({
-  apiKey: 'your-api-key-here',
-  debug: false, // optional
-})
+// 1. Initialize once at app entry point
+initStadata({ apiKey: 'your-api-key-here' })
 
-// Use composables — no need to pass client manually
-const { fetchPublicationList, fetchPublicationDetail } = stadata.usePublications()
-const { fetchDomainList } = stadata.useDomains()
-const { fetchNewsList } = stadata.useNews()
+// 2. Use composables anywhere — no client reference needed
+const { fetchPublicationList, fetchPublicationDetail } = usePublications()
+const { fetchDomainList } = useDomains()
 
-// Fetch publications
+// 3. Fetch data
 const result = await fetchPublicationList({
   domain: '7200',
   lang: DataLanguage.ID,
@@ -145,12 +141,26 @@ const result = await stadata.list.publications({ domain: '7200', lang: DataLangu
 
 **v2:**
 ```typescript
-const stadata = createStadataClient({ apiKey: 'key' })
-const { fetchPublicationList } = stadata.usePublications()
+// Entry point
+initStadata({ apiKey: 'key' })
+
+// Anywhere in app
+const { fetchPublicationList } = usePublications()
 const result = await fetchPublicationList({ domain: '7200', lang: DataLanguage.ID })
 ```
 
 > `StadataJS` class is kept as `@deprecated` in v2 and will be removed in v3.
+
+## Advanced: Multiple Clients
+
+If you need multiple clients (e.g. different API keys), use `createStadataClient` directly:
+
+```typescript
+import { createStadataClient, usePublications } from 'stadata-js'
+
+const client = createStadataClient({ apiKey: 'other-key' })
+const { fetchPublicationList } = usePublications(client) // explicit client
+```
 
 ## License
 

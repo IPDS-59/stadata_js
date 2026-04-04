@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { SubjectRemoteDataSource } from '../features/subject/data/datasources';
 import { SubjectRepositoryImpl } from '../features/subject/data/repositories';
 import { Subject } from '../features/subject/domain/entities';
@@ -12,8 +13,9 @@ export interface UseSubjects {
   fetchSubjectDetail: (params: ViewParams) => Promise<Result<Subject, ApiFailure>>;
 }
 
-export function useSubjects(client: StadataClient): UseSubjects {
-  const dataSource = new SubjectRemoteDataSource(client.networkClient);
+export function useSubjects(client?: StadataClient): UseSubjects {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new SubjectRemoteDataSource(_client.networkClient);
   const repository = new SubjectRepositoryImpl(dataSource);
 
   return {

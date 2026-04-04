@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { CensusRemoteDataSource } from '../features/census/data/datasources';
 import { CensusRepositoryImpl } from '../features/census/data/repositories';
 import {
@@ -27,8 +28,9 @@ export interface UseCensus {
 /**
  * Composable for BPS Census API
  */
-export function useCensus(client: StadataClient): UseCensus {
-  const dataSource = new CensusRemoteDataSource(client.networkClient);
+export function useCensus(client?: StadataClient): UseCensus {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new CensusRemoteDataSource(_client.networkClient);
   const repository = new CensusRepositoryImpl(dataSource);
 
   return {

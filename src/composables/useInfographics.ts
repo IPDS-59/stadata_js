@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { InfographicRemoteDataSource } from '../features/infographic/data/datasources';
 import { InfographicRepositoryImpl } from '../features/infographic/data/repositories';
 import { Infographic } from '../features/infographic/domain/entities';
@@ -13,8 +14,9 @@ export interface UseInfographics {
   ) => Promise<Result<ListResult<Infographic>, ApiFailure>>;
 }
 
-export function useInfographics(client: StadataClient): UseInfographics {
-  const dataSource = new InfographicRemoteDataSource(client.networkClient);
+export function useInfographics(client?: StadataClient): UseInfographics {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new InfographicRemoteDataSource(_client.networkClient);
   const repository = new InfographicRepositoryImpl(dataSource);
 
   return {

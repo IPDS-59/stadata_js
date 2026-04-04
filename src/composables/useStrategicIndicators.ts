@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { StrategicIndicatorRemoteDataSource } from '../features/strategic-indicator/data/datasources';
 import { StrategicIndicatorRepositoryImpl } from '../features/strategic-indicator/data/repositories';
 import { StrategicIndicator } from '../features/strategic-indicator/domain/entities';
@@ -16,8 +17,9 @@ export interface UseStrategicIndicators {
   ) => Promise<Result<StrategicIndicator, ApiFailure>>;
 }
 
-export function useStrategicIndicators(client: StadataClient): UseStrategicIndicators {
-  const dataSource = new StrategicIndicatorRemoteDataSource(client.networkClient);
+export function useStrategicIndicators(client?: StadataClient): UseStrategicIndicators {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new StrategicIndicatorRemoteDataSource(_client.networkClient);
   const repository = new StrategicIndicatorRepositoryImpl(dataSource);
 
   return {

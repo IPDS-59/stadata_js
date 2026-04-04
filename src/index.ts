@@ -27,6 +27,8 @@
 export { createStadataClient } from './client';
 export type { StadataClient, StadataClientConfig, StadataClientInstance } from './client';
 
+export { initStadata, getGlobalClient, resetGlobalClient } from './global';
+
 export * from './composables';
 
 // ============================================================
@@ -44,7 +46,6 @@ export {
   NetworkInterceptor,
   NetworkClientConfig,
   RequestOptions,
-
   ApiFailure,
   CancelledFailure,
   NetworkFailure,
@@ -55,7 +56,6 @@ export {
   ServerFailure,
   ParseFailure,
   ValidationFailure,
-
   LogLevel,
   CancelToken,
   ApiConstant,
@@ -101,6 +101,13 @@ export { Period } from './features/period';
 export { DerivedPeriod } from './features/derived-period';
 export { DerivedVariable } from './features/derived-variable';
 export { StatisticClassification } from './features/statistic-classification';
-export { CensusEvent, CensusTopic, CensusArea, CensusDataset, CensusData, CensusCategory } from './features/census';
+export {
+  CensusEvent,
+  CensusTopic,
+  CensusArea,
+  CensusDataset,
+  CensusData,
+  CensusCategory,
+} from './features/census';
 export { DynamicTable } from './features/dynamic-table';
 export { Trade } from './features/trade';

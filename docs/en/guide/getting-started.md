@@ -9,33 +9,29 @@
 
 ```bash
 pnpm add stadata-js
-# or npm install stadata-js
-# or yarn add stadata-js
+# or npm install stadata-js / yarn add stadata-js
 ```
 
 ## Initialization
 
-Create the client **once** at your app entry point:
+Call `initStadata()` **once** at your app entry point:
 
 ```typescript
-import { createStadataClient } from 'stadata-js'
+// main.ts / app entry point
+import { initStadata } from 'stadata-js'
 
-const stadata = createStadataClient({
-  apiKey: 'your-api-key-here',
-})
+initStadata({ apiKey: 'your-api-key-here' })
 ```
 
 ## Usage
 
-Use composables via `stadata.use*()` — no need to pass client manually:
+After `initStadata()`, use composables **anywhere** — no client reference needed:
 
 ```typescript
-import { createStadataClient, DataLanguage } from 'stadata-js'
+import { usePublications, useDomains, DataLanguage } from 'stadata-js'
 
-const stadata = createStadataClient({ apiKey: 'your-api-key' })
-
-const { fetchPublicationList, fetchPublicationDetail } = stadata.usePublications()
-const { fetchDomainList } = stadata.useDomains()
+const { fetchPublicationList, fetchPublicationDetail } = usePublications()
+const { fetchDomainList } = useDomains()
 
 const result = await fetchPublicationList({
   domain: '7200',
@@ -62,9 +58,18 @@ const stadata = StadataJS.instance
 const result = await stadata.list.publications({ domain: '7200', lang: DataLanguage.EN })
 
 // v2
-const stadata = createStadataClient({ apiKey: 'key' })
-const { fetchPublicationList } = stadata.usePublications()
+initStadata({ apiKey: 'key' })
+const { fetchPublicationList } = usePublications()
 const result = await fetchPublicationList({ domain: '7200', lang: DataLanguage.EN })
+```
+
+## Advanced: Multiple Clients
+
+```typescript
+import { createStadataClient, usePublications } from 'stadata-js'
+
+const client = createStadataClient({ apiKey: 'other-key' })
+const { fetchPublicationList } = usePublications(client)
 ```
 
 ## Next Steps

@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { PressReleaseRemoteDataSource } from '../features/press-release/data/datasources';
 import { PressReleaseRepositoryImpl } from '../features/press-release/data/repositories';
 import { PressRelease } from '../features/press-release/domain/entities';
@@ -14,8 +15,9 @@ export interface UsePressReleases {
   fetchPressReleaseDetail: (params: ViewParams) => Promise<Result<PressRelease, ApiFailure>>;
 }
 
-export function usePressReleases(client: StadataClient): UsePressReleases {
-  const dataSource = new PressReleaseRemoteDataSource(client.networkClient);
+export function usePressReleases(client?: StadataClient): UsePressReleases {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new PressReleaseRemoteDataSource(_client.networkClient);
   const repository = new PressReleaseRepositoryImpl(dataSource);
 
   return {

@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { NewsRemoteDataSource } from '../features/news/data/datasources';
 import { NewsRepositoryImpl } from '../features/news/data/repositories';
 import { News } from '../features/news/domain/entities';
@@ -12,8 +13,9 @@ export interface UseNews {
   fetchNewDetail: (params: ViewParams) => Promise<Result<News, ApiFailure>>;
 }
 
-export function useNews(client: StadataClient): UseNews {
-  const dataSource = new NewsRemoteDataSource(client.networkClient);
+export function useNews(client?: StadataClient): UseNews {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new NewsRemoteDataSource(_client.networkClient);
   const repository = new NewsRepositoryImpl(dataSource);
 
   return {

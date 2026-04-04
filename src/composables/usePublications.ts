@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { PublicationRemoteDataSource } from '../features/publication/data/datasources';
 import { PublicationRepositoryImpl } from '../features/publication/data/repositories';
 import { Publication } from '../features/publication/domain/entities';
@@ -14,8 +15,9 @@ export interface UsePublications {
   fetchPublicationDetail: (params: ViewParams) => Promise<Result<Publication, ApiFailure>>;
 }
 
-export function usePublications(client: StadataClient): UsePublications {
-  const dataSource = new PublicationRemoteDataSource(client.networkClient);
+export function usePublications(client?: StadataClient): UsePublications {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new PublicationRemoteDataSource(_client.networkClient);
   const repository = new PublicationRepositoryImpl(dataSource);
 
   return {

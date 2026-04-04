@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { NewsCategoryRemoteDataSource } from '../features/news-category/data/datasources';
 import { NewsCategoryRepositoryImpl } from '../features/news-category/data/repositories';
 import { NewsCategory } from '../features/news-category/domain/entities';
@@ -13,8 +14,9 @@ export interface UseNewsCategories {
   ) => Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
 }
 
-export function useNewsCategories(client: StadataClient): UseNewsCategories {
-  const dataSource = new NewsCategoryRemoteDataSource(client.networkClient);
+export function useNewsCategories(client?: StadataClient): UseNewsCategories {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new NewsCategoryRemoteDataSource(_client.networkClient);
   const repository = new NewsCategoryRepositoryImpl(dataSource);
 
   return {

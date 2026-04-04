@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { UnitRemoteDataSource } from '../features/unit/data/datasources';
 import { UnitRepositoryImpl } from '../features/unit/data/repositories';
 import { Unit } from '../features/unit/domain/entities';
@@ -12,8 +13,9 @@ export interface UseUnits {
   fetchUnitDetail: (params: ViewParams) => Promise<Result<Unit, ApiFailure>>;
 }
 
-export function useUnits(client: StadataClient): UseUnits {
-  const dataSource = new UnitRemoteDataSource(client.networkClient);
+export function useUnits(client?: StadataClient): UseUnits {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new UnitRemoteDataSource(_client.networkClient);
   const repository = new UnitRepositoryImpl(dataSource);
 
   return {

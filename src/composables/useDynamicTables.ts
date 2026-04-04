@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { DynamicTableRemoteDataSource } from '../features/dynamic-table/data/datasources';
 import { DynamicTableRepositoryImpl } from '../features/dynamic-table/data/repositories';
 import { DynamicTable } from '../features/dynamic-table/domain/entities';
@@ -13,8 +14,9 @@ export interface UseDynamicTables {
 /**
  * Composable for BPS Dynamic Table API
  */
-export function useDynamicTables(client: StadataClient): UseDynamicTables {
-  const dataSource = new DynamicTableRemoteDataSource(client.networkClient);
+export function useDynamicTables(client?: StadataClient): UseDynamicTables {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new DynamicTableRemoteDataSource(_client.networkClient);
   const repository = new DynamicTableRepositoryImpl(dataSource);
 
   return {

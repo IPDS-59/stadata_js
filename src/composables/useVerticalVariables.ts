@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { VerticalVariableRemoteDataSource } from '../features/vertical-variable/data/datasources';
 import { VerticalVariableRepositoryImpl } from '../features/vertical-variable/data/repositories';
 import { VerticalVariable } from '../features/vertical-variable/domain/entities';
@@ -13,8 +14,9 @@ export interface UseVerticalVariables {
   ) => Promise<Result<ListResult<VerticalVariable>, ApiFailure>>;
 }
 
-export function useVerticalVariables(client: StadataClient): UseVerticalVariables {
-  const dataSource = new VerticalVariableRemoteDataSource(client.networkClient);
+export function useVerticalVariables(client?: StadataClient): UseVerticalVariables {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new VerticalVariableRemoteDataSource(_client.networkClient);
   const repository = new VerticalVariableRepositoryImpl(dataSource);
 
   return {

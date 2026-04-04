@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { DerivedVariableRemoteDataSource } from '../features/derived-variable/data/datasources';
 import { DerivedVariableRepositoryImpl } from '../features/derived-variable/data/repositories';
 import { DerivedVariable } from '../features/derived-variable/domain/entities';
@@ -13,8 +14,9 @@ export interface UseDerivedVariables {
   ) => Promise<Result<ListResult<DerivedVariable>, ApiFailure>>;
 }
 
-export function useDerivedVariables(client: StadataClient): UseDerivedVariables {
-  const dataSource = new DerivedVariableRemoteDataSource(client.networkClient);
+export function useDerivedVariables(client?: StadataClient): UseDerivedVariables {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new DerivedVariableRemoteDataSource(_client.networkClient);
   const repository = new DerivedVariableRepositoryImpl(dataSource);
 
   return {

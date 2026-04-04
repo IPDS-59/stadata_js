@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { TradeRemoteDataSource } from '../features/trade/data/datasources';
 import { TradeRepositoryImpl } from '../features/trade/data/repositories';
 import { TradeParams, ResponseData } from '../types';
@@ -22,8 +23,9 @@ export interface UseTrade {
  * const result = await fetchTradeData({ domain: '0000', lang: DataLanguage.ID, type: 'ekspor', year: 2023 })
  * ```
  */
-export function useTrade(client: StadataClient): UseTrade {
-  const dataSource = new TradeRemoteDataSource(client.networkClient);
+export function useTrade(client?: StadataClient): UseTrade {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new TradeRemoteDataSource(_client.networkClient);
   const repository = new TradeRepositoryImpl(dataSource);
 
   return {

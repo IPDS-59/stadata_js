@@ -1,4 +1,5 @@
 import { StadataClient } from '../client';
+import { getGlobalClient } from '../global';
 import { StatisticClassificationRemoteDataSource } from '../features/statistic-classification/data/datasources';
 import { StatisticClassificationRepositoryImpl } from '../features/statistic-classification/data/repositories';
 import { StatisticClassification } from '../features/statistic-classification/domain/entities';
@@ -19,8 +20,9 @@ export interface UseStatisticClassifications {
 /**
  * Composable for BPS Statistic Classification API
  */
-export function useStatisticClassifications(client: StadataClient): UseStatisticClassifications {
-  const dataSource = new StatisticClassificationRemoteDataSource(client.networkClient);
+export function useStatisticClassifications(client?: StadataClient): UseStatisticClassifications {
+  const _client = client ?? getGlobalClient();
+  const dataSource = new StatisticClassificationRemoteDataSource(_client.networkClient);
   const repository = new StatisticClassificationRepositoryImpl(dataSource);
 
   return {
