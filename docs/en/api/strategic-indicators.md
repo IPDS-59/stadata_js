@@ -1,13 +1,13 @@
 # Strategic Indicators
 
-BPS strategic indicators.
+BPS strategic indicators — key national development indicators.
 
-## Usage
+## List Strategic Indicators
 
 ```typescript
 import { useStrategicIndicators, DataLanguage } from 'stadata-js'
 
-const { fetchStrategicIndicatorList, fetchStrategicIndicatorDetail } = useStrategicIndicators()
+const { fetchStrategicIndicatorList } = useStrategicIndicators()
 
 const result = await fetchStrategicIndicatorList({
   domain: '7200',
@@ -15,23 +15,47 @@ const result = await fetchStrategicIndicatorList({
   page: 1,
   perPage: 10,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** keyword, year — optional
 
-## fetchStrategicIndicatorDetail
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | ❌ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+| `page` | `number` | ❌ | Page number |
+| `perPage` | `number` | ❌ | Items per page |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+## View Strategic Indicator
 
 ```typescript
+const { fetchStrategicIndicatorDetail } = useStrategicIndicators()
+
 const result = await fetchStrategicIndicatorDetail({
-  id: 'item-id',
+  id: 'indicator-id',
   domain: '7200',
   lang: DataLanguage.EN,
 })
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | `string \| number` | ✅ | Indicator ID |
+| `domain` | `string` | ✅ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+
+## Data Type
+
+```typescript
+class StrategicIndicator {
+  id: string;
+  name: string;
+  variableId: number;
+  periode: string;
+  value: number | null;
+  unit: string | null;
+}
 ```

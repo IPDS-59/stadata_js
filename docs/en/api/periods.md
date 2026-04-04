@@ -1,8 +1,8 @@
 # Periods
 
-BPS data collection periods.
+BPS data collection periods — annual, quarterly, monthly, etc.
 
-## Usage
+## List Periods
 
 ```typescript
 import { usePeriods, DataLanguage } from 'stadata-js'
@@ -12,16 +12,30 @@ const { fetchPeriodList } = usePeriods()
 const result = await fetchPeriodList({
   domain: '7200',
   lang: DataLanguage.EN,
-  page: 1,
-  perPage: 10,
+  variableId: 529,
 })
-
-result.match(
-  ({ data, pagination }) => {
-    console.log(`Total: ${pagination.total}`)
-    data.forEach(item => console.log(item))
-  },
-  (err) => console.error(err.message)
-)
 ```
-**Parameters:** variableId — optional
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `domain` | `string` | ❌ | BPS domain code |
+| `lang` | `DataLanguage` | ❌ | Response language |
+| `page` | `number` | ❌ | Page number |
+| `perPage` | `number` | ❌ | Items per page |
+| `variableId` | `number` | ❌ | Filter by variable ID |
+| `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
+
+::: tip
+Use `variableId` when querying periods to use with `useDynamicTables()`.
+:::
+
+## Data Type
+
+```typescript
+class Period {
+  id: string;
+  name: string;
+}
+```
