@@ -6,7 +6,9 @@ import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
 export interface UseTrade {
-  fetchTradeData: (params: TradeParams) => Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>>;
+  fetchTradeData: (
+    params: TradeParams
+  ) => Promise<Result<ResponseData<Record<string, unknown>>, ApiFailure>>;
 }
 
 /**

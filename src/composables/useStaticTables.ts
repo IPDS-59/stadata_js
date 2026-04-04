@@ -7,13 +7,21 @@ import { StaticTableListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useStaticTables(client: StadataClient) {
+export interface UseStaticTables {
+  fetchStaticTableList: (
+    params: StaticTableListParams
+  ) => Promise<Result<ListResult<StaticTable>, ApiFailure>>;
+  fetchStaticTableDetail: (params: ViewParams) => Promise<Result<StaticTable, ApiFailure>>;
+}
+
+export function useStaticTables(client: StadataClient): UseStaticTables {
   const dataSource = new StaticTableRemoteDataSource(client.networkClient);
   const repository = new StaticTableRepositoryImpl(dataSource);
 
   return {
-    fetchStaticTableList: (params: StaticTableListParams): Promise<Result<ListResult<StaticTable>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchStaticTableList: (
+      params: StaticTableListParams
+    ): Promise<Result<ListResult<StaticTable>, ApiFailure>> => repository.getAll(params),
     fetchStaticTableDetail: (params: ViewParams): Promise<Result<StaticTable, ApiFailure>> =>
       repository.getById(params),
   };

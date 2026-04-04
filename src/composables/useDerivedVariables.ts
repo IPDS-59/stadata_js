@@ -7,12 +7,19 @@ import { DerivedVariableListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useDerivedVariables(client: StadataClient) {
+export interface UseDerivedVariables {
+  fetchDerivedVariableList: (
+    params: DerivedVariableListParams
+  ) => Promise<Result<ListResult<DerivedVariable>, ApiFailure>>;
+}
+
+export function useDerivedVariables(client: StadataClient): UseDerivedVariables {
   const dataSource = new DerivedVariableRemoteDataSource(client.networkClient);
   const repository = new DerivedVariableRepositoryImpl(dataSource);
 
   return {
-    fetchDerivedVariableList: (params: DerivedVariableListParams): Promise<Result<ListResult<DerivedVariable>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchDerivedVariableList: (
+      params: DerivedVariableListParams
+    ): Promise<Result<ListResult<DerivedVariable>, ApiFailure>> => repository.getAll(params),
   };
 }

@@ -7,7 +7,12 @@ import { UnitListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useUnits(client: StadataClient) {
+export interface UseUnits {
+  fetchUnitList: (params: UnitListParams) => Promise<Result<ListResult<Unit>, ApiFailure>>;
+  fetchUnitDetail: (params: ViewParams) => Promise<Result<Unit, ApiFailure>>;
+}
+
+export function useUnits(client: StadataClient): UseUnits {
   const dataSource = new UnitRemoteDataSource(client.networkClient);
   const repository = new UnitRepositoryImpl(dataSource);
 

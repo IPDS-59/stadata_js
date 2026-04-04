@@ -7,13 +7,21 @@ import { VariableListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useVariables(client: StadataClient) {
+export interface UseVariables {
+  fetchVariableList: (
+    params: VariableListParams
+  ) => Promise<Result<ListResult<Variable>, ApiFailure>>;
+  fetchVariableDetail: (params: ViewParams) => Promise<Result<Variable, ApiFailure>>;
+}
+
+export function useVariables(client: StadataClient): UseVariables {
   const dataSource = new VariableRemoteDataSource(client.networkClient);
   const repository = new VariableRepositoryImpl(dataSource);
 
   return {
-    fetchVariableList: (params: VariableListParams): Promise<Result<ListResult<Variable>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchVariableList: (
+      params: VariableListParams
+    ): Promise<Result<ListResult<Variable>, ApiFailure>> => repository.getAll(params),
     fetchVariableDetail: (params: ViewParams): Promise<Result<Variable, ApiFailure>> =>
       repository.getById(params),
   };

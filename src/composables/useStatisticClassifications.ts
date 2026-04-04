@@ -8,8 +8,12 @@ import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
 export interface UseStatisticClassifications {
-  fetchStatisticClassificationList: (params: StatisticClassificationListParams) => Promise<Result<ListResult<StatisticClassification>, ApiFailure>>;
-  fetchStatisticClassificationDetail: (params: ViewParams) => Promise<Result<StatisticClassification, ApiFailure>>;
+  fetchStatisticClassificationList: (
+    params: StatisticClassificationListParams
+  ) => Promise<Result<ListResult<StatisticClassification>, ApiFailure>>;
+  fetchStatisticClassificationDetail: (
+    params: ViewParams
+  ) => Promise<Result<StatisticClassification, ApiFailure>>;
 }
 
 /**

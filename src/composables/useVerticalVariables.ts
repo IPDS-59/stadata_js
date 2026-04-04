@@ -7,12 +7,19 @@ import { VerticalVariableListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useVerticalVariables(client: StadataClient) {
+export interface UseVerticalVariables {
+  fetchVerticalVariableList: (
+    params: VerticalVariableListParams
+  ) => Promise<Result<ListResult<VerticalVariable>, ApiFailure>>;
+}
+
+export function useVerticalVariables(client: StadataClient): UseVerticalVariables {
   const dataSource = new VerticalVariableRemoteDataSource(client.networkClient);
   const repository = new VerticalVariableRepositoryImpl(dataSource);
 
   return {
-    fetchVerticalVariableList: (params: VerticalVariableListParams): Promise<Result<ListResult<VerticalVariable>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchVerticalVariableList: (
+      params: VerticalVariableListParams
+    ): Promise<Result<ListResult<VerticalVariable>, ApiFailure>> => repository.getAll(params),
   };
 }

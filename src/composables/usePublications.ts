@@ -7,13 +7,21 @@ import { PublicationListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function usePublications(client: StadataClient) {
+export interface UsePublications {
+  fetchPublicationList: (
+    params: PublicationListParams
+  ) => Promise<Result<ListResult<Publication>, ApiFailure>>;
+  fetchPublicationDetail: (params: ViewParams) => Promise<Result<Publication, ApiFailure>>;
+}
+
+export function usePublications(client: StadataClient): UsePublications {
   const dataSource = new PublicationRemoteDataSource(client.networkClient);
   const repository = new PublicationRepositoryImpl(dataSource);
 
   return {
-    fetchPublicationList: (params: PublicationListParams): Promise<Result<ListResult<Publication>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchPublicationList: (
+      params: PublicationListParams
+    ): Promise<Result<ListResult<Publication>, ApiFailure>> => repository.getAll(params),
     fetchPublicationDetail: (params: ViewParams): Promise<Result<Publication, ApiFailure>> =>
       repository.getById(params),
   };

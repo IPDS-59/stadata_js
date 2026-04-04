@@ -7,14 +7,25 @@ import { StrategicIndicatorListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useStrategicIndicators(client: StadataClient) {
+export interface UseStrategicIndicators {
+  fetchStrategicIndicatorList: (
+    params: StrategicIndicatorListParams
+  ) => Promise<Result<ListResult<StrategicIndicator>, ApiFailure>>;
+  fetchStrategicIndicatorDetail: (
+    params: ViewParams
+  ) => Promise<Result<StrategicIndicator, ApiFailure>>;
+}
+
+export function useStrategicIndicators(client: StadataClient): UseStrategicIndicators {
   const dataSource = new StrategicIndicatorRemoteDataSource(client.networkClient);
   const repository = new StrategicIndicatorRepositoryImpl(dataSource);
 
   return {
-    fetchStrategicIndicatorList: (params: StrategicIndicatorListParams): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>> =>
-      repository.getAll(params),
-    fetchStrategicIndicatorDetail: (params: ViewParams): Promise<Result<StrategicIndicator, ApiFailure>> =>
-      repository.getById(params),
+    fetchStrategicIndicatorList: (
+      params: StrategicIndicatorListParams
+    ): Promise<Result<ListResult<StrategicIndicator>, ApiFailure>> => repository.getAll(params),
+    fetchStrategicIndicatorDetail: (
+      params: ViewParams
+    ): Promise<Result<StrategicIndicator, ApiFailure>> => repository.getById(params),
   };
 }

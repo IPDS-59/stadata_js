@@ -7,12 +7,19 @@ import { InfographicListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useInfographics(client: StadataClient) {
+export interface UseInfographics {
+  fetchInfographicList: (
+    params: InfographicListParams
+  ) => Promise<Result<ListResult<Infographic>, ApiFailure>>;
+}
+
+export function useInfographics(client: StadataClient): UseInfographics {
   const dataSource = new InfographicRemoteDataSource(client.networkClient);
   const repository = new InfographicRepositoryImpl(dataSource);
 
   return {
-    fetchInfographicList: (params: InfographicListParams): Promise<Result<ListResult<Infographic>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchInfographicList: (
+      params: InfographicListParams
+    ): Promise<Result<ListResult<Infographic>, ApiFailure>> => repository.getAll(params),
   };
 }

@@ -7,13 +7,21 @@ import { PressReleaseListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function usePressReleases(client: StadataClient) {
+export interface UsePressReleases {
+  fetchPressReleaseList: (
+    params: PressReleaseListParams
+  ) => Promise<Result<ListResult<PressRelease>, ApiFailure>>;
+  fetchPressReleaseDetail: (params: ViewParams) => Promise<Result<PressRelease, ApiFailure>>;
+}
+
+export function usePressReleases(client: StadataClient): UsePressReleases {
   const dataSource = new PressReleaseRemoteDataSource(client.networkClient);
   const repository = new PressReleaseRepositoryImpl(dataSource);
 
   return {
-    fetchPressReleaseList: (params: PressReleaseListParams): Promise<Result<ListResult<PressRelease>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchPressReleaseList: (
+      params: PressReleaseListParams
+    ): Promise<Result<ListResult<PressRelease>, ApiFailure>> => repository.getAll(params),
     fetchPressReleaseDetail: (params: ViewParams): Promise<Result<PressRelease, ApiFailure>> =>
       repository.getById(params),
   };

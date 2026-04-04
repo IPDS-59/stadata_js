@@ -7,12 +7,19 @@ import { NewsCategoryListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useNewsCategories(client: StadataClient) {
+export interface UseNewsCategories {
+  fetchNewsCategoryList: (
+    params: NewsCategoryListParams
+  ) => Promise<Result<ListResult<NewsCategory>, ApiFailure>>;
+}
+
+export function useNewsCategories(client: StadataClient): UseNewsCategories {
   const dataSource = new NewsCategoryRemoteDataSource(client.networkClient);
   const repository = new NewsCategoryRepositoryImpl(dataSource);
 
   return {
-    fetchNewsCategorieList: (params: NewsCategoryListParams): Promise<Result<ListResult<NewsCategory>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchNewsCategoryList: (
+      params: NewsCategoryListParams
+    ): Promise<Result<ListResult<NewsCategory>, ApiFailure>> => repository.getAll(params),
   };
 }

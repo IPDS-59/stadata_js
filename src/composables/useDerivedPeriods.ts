@@ -7,12 +7,19 @@ import { DerivedPeriodListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useDerivedPeriods(client: StadataClient) {
+export interface UseDerivedPeriods {
+  fetchDerivedPeriodList: (
+    params: DerivedPeriodListParams
+  ) => Promise<Result<ListResult<DerivedPeriod>, ApiFailure>>;
+}
+
+export function useDerivedPeriods(client: StadataClient): UseDerivedPeriods {
   const dataSource = new DerivedPeriodRemoteDataSource(client.networkClient);
   const repository = new DerivedPeriodRepositoryImpl(dataSource);
 
   return {
-    fetchDerivedPeriodList: (params: DerivedPeriodListParams): Promise<Result<ListResult<DerivedPeriod>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchDerivedPeriodList: (
+      params: DerivedPeriodListParams
+    ): Promise<Result<ListResult<DerivedPeriod>, ApiFailure>> => repository.getAll(params),
   };
 }

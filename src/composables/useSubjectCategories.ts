@@ -7,12 +7,19 @@ import { SubjectCategoryListParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useSubjectCategories(client: StadataClient) {
+export interface UseSubjectCategories {
+  fetchSubjectCategoryList: (
+    params: SubjectCategoryListParams
+  ) => Promise<Result<ListResult<SubjectCategory>, ApiFailure>>;
+}
+
+export function useSubjectCategories(client: StadataClient): UseSubjectCategories {
   const dataSource = new SubjectCategoryRemoteDataSource(client.networkClient);
   const repository = new SubjectCategoryRepositoryImpl(dataSource);
 
   return {
-    fetchSubjectCategorieList: (params: SubjectCategoryListParams): Promise<Result<ListResult<SubjectCategory>, ApiFailure>> =>
-      repository.getAll(params),
+    fetchSubjectCategoryList: (
+      params: SubjectCategoryListParams
+    ): Promise<Result<ListResult<SubjectCategory>, ApiFailure>> => repository.getAll(params),
   };
 }

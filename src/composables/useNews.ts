@@ -7,7 +7,12 @@ import { NewsListParams, ViewParams } from '../types';
 import { Result } from 'neverthrow';
 import { ApiFailure } from '../core/failures';
 
-export function useNews(client: StadataClient) {
+export interface UseNews {
+  fetchNewList: (params: NewsListParams) => Promise<Result<ListResult<News>, ApiFailure>>;
+  fetchNewDetail: (params: ViewParams) => Promise<Result<News, ApiFailure>>;
+}
+
+export function useNews(client: StadataClient): UseNews {
   const dataSource = new NewsRemoteDataSource(client.networkClient);
   const repository = new NewsRepositoryImpl(dataSource);
 
