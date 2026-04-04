@@ -1,36 +1,37 @@
 # Subjects
 
-BPS statistical subjects — main data collection categories.
+BPS statistical subjects.
 
-## List Subjects
+## Usage
 
 ```typescript
-const result = await stadata.list.subjects({
+import { useSubjects, DataLanguage } from 'stadata-js'
+
+const { fetchSubjectList, fetchSubjectDetail } = useSubjects()
+
+const result = await fetchSubjectList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  subjectCategoryId: 1,
-});
-```
+})
 
-## View Subject
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
+```
+**Parameters:** subjectCategoryId — optional
+
+## fetchSubjectDetail
 
 ```typescript
-const result = await stadata.view.subject({
-  id: 1,
+const result = await fetchSubjectDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.EN,
-});
-```
-
-## Data Type
-
-```typescript
-class Subject {
-  id: number;
-  name: string;
-  nTable: number;
-  subjectCategoryId: number;
-}
+})
 ```

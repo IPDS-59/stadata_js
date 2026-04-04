@@ -1,41 +1,37 @@
 # News
 
-Latest news from BPS — announcements, data releases, and statistical information.
+Latest BPS news.
 
-## List News
+## Usage
 
 ```typescript
-const result = await stadata.list.news({
+import { useNews, DataLanguage } from 'stadata-js'
+
+const { fetchNewsList, fetchNewsDetail } = useNews()
+
+const result = await fetchNewsList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-  keyword: 'census',       // optional
-  newsCategoryId: '1',     // optional
-  month: 1,                // optional
-  year: 2024,              // optional
-});
-```
+})
 
-## View News
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
+```
+**Parameters:** keyword, newsCategoryId, month, year — optional
+
+## fetchNewsDetail
 
 ```typescript
-const result = await stadata.view.news({
-  id: 'news-id',
+const result = await fetchNewsDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.EN,
-});
-```
-
-## Data Type
-
-```typescript
-class News {
-  id: string;
-  title: string;
-  content: string;
-  category: string | null;
-  picture: string | null;
-  releaseDate: Date | null;
-}
+})
 ```

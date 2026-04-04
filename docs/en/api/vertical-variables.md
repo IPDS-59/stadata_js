@@ -1,26 +1,27 @@
 # Vertical Variables
 
-BPS vertical classification of statistical variables.
+BPS vertical variables.
 
-## List Vertical Variables
+## Usage
 
 ```typescript
-const result = await stadata.list.verticalVariables({
+import { useVerticalVariables, DataLanguage } from 'stadata-js'
+
+const { fetchVerticalVariableList } = useVerticalVariables()
+
+const result = await fetchVerticalVariableList({
   domain: '7200',
   lang: DataLanguage.EN,
   page: 1,
   perPage: 10,
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## Data Type
-
-```typescript
-class VerticalVariable {
-  id: number;
-  title: string;
-  unit: string | null;
-  subjectId: number;
-  subjectName: string;
-}
-```

@@ -1,28 +1,30 @@
 # Dynamic Tables
 
-Tabel dinamis BPS — data yang dapat dikustomisasi dan di-query secara dinamis.
-
-## List Dynamic Tables
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.dynamicTables({
+import { useDynamicTables, DataLanguage } from 'stadata-js'
+
+const { fetchDynamicTableList } = useDynamicTables()
+
+const result = await fetchDynamicTableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'PDRB',       // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View Dynamic Table
-
-```typescript
-const result = await stadata.view.dynamicTable({
-  id: 'table-id',
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
-```
+**Parameter tambahan:**
+- `keyword?: string`
 
 ## Tipe Data
 
@@ -34,19 +36,4 @@ class DynamicTable {
   size: string;
   updatedAt: Date | null;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.dynamicTables({
-  domain: '0000',
-  lang: DataLanguage.ID,
-  keyword: 'ekspor',
-});
-
-result.match(
-  ({ data }) => data.forEach(t => console.log(t.id, t.title)),
-  (err) => console.error(err.message)
-);
 ```

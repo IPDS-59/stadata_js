@@ -1,29 +1,46 @@
 # Press Releases
 
-Siaran pers resmi BPS — pengumuman data ekonomi, demografi, dan statistik terbaru.
-
-## List Press Releases
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.pressReleases({
+import { usePressReleases, DataLanguage } from 'stadata-js'
+
+const { fetchPressReleaseList, fetchPressReleaseDetail } = usePressReleases()
+
+const result = await fetchPressReleaseList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'inflasi',  // opsional
-  month: 3,            // opsional
-  year: 2024,          // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View Press Release
+**Parameter tambahan:**
+- `keyword?: string`
+- `month?: number`
+- `year?: number`
+
+## Detail — PressReleaseDetail
 
 ```typescript
-const result = await stadata.view.pressRelease({
-  id: 'release-id',
+const result = await fetchPressReleaseDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
+
+result.match(
+  (item) => console.log(item),
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -32,28 +49,10 @@ const result = await stadata.view.pressRelease({
 class PressRelease {
   id: string;
   title: string;
-  cover: string;          // URL cover image
-  pdf: string;            // URL PDF
+  cover: string;
+  pdf: string;
   size: string;
-  abstract: string | null;
   releaseDate: Date | null;
-  updateDate: Date | null;
-  category: string | null;
+  abstract: string | null;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.pressReleases({
-  domain: '0000',        // domain nasional
-  lang: DataLanguage.ID,
-  month: 1,
-  year: 2024,
-});
-
-result.match(
-  ({ data }) => data.forEach(r => console.log(r.title, r.releaseDate)),
-  (err) => console.error(err.message)
-);
 ```

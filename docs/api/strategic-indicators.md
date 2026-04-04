@@ -1,28 +1,45 @@
 # Strategic Indicators
 
-Indikator strategis BPS — indikator kunci pembangunan nasional.
-
-## List Strategic Indicators
+## Penggunaan
 
 ```typescript
-const result = await stadata.list.strategicIndicators({
+import { useStrategicIndicators, DataLanguage } from 'stadata-js'
+
+const { fetchStrategicIndicatorList, fetchStrategicIndicatorDetail } = useStrategicIndicators()
+
+const result = await fetchStrategicIndicatorList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'kemiskinan',   // opsional
-  year: 2023,              // opsional
-});
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## View Strategic Indicator
+**Parameter tambahan:**
+- `keyword?: string`
+- `year?: number`
+
+## Detail — StrategicIndicatorDetail
 
 ```typescript
-const result = await stadata.view.strategicIndicator({
-  id: 'indicator-id',
+const result = await fetchStrategicIndicatorDetail({
+  id: 'item-id',
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
+
+result.match(
+  (item) => console.log(item),
+  (err) => console.error(err.message)
+)
 ```
 
 ## Tipe Data
@@ -35,6 +52,5 @@ class StrategicIndicator {
   periode: string;
   value: number | null;
   unit: string | null;
-  category: string | null;
 }
 ```

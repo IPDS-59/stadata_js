@@ -1,30 +1,33 @@
 # Trade
 
-Data perdagangan ekspor/impor BPS.
-
-## Get Trade Data
+## Penggunaan
 
 ```typescript
-const result = await stadata.view.trade({
-  domain: '0000',
+import { useTrade, DataLanguage } from 'stadata-js'
+
+const { fetchTradeData } = useTrade()
+
+const result = await fetchTradeData({
+  domain: '7200',
   lang: DataLanguage.ID,
-  type: 'ekspor',      // 'ekspor' | 'impor'
-  year: 2023,
-  month: 1,
-  hs2: '01',           // Kode HS 2 digit (opsional)
-});
+  page: 1,
+  perPage: 10,
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(item => console.log(item))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
-## Parameter
-
-| Parameter | Tipe | Wajib | Keterangan |
-|-----------|------|-------|------------|
-| `domain` | `string` | ✅ | Kode domain BPS |
-| `lang` | `DataLanguage` | ✅ | Bahasa respons |
-| `type` | `string` | ✅ | Tipe: `'ekspor'` atau `'impor'` |
-| `year` | `number` | ✅ | Tahun data |
-| `month` | `number` | ❌ | Bulan data (1-12) |
-| `hs2` | `string` | ❌ | Kode HS 2 digit |
+**Parameter tambahan:**
+- `type: string — 'ekspor' | 'impor'`
+- `year: number`
+- `month?: number`
+- `hs2?: string`
 
 ## Tipe Data
 
@@ -32,26 +35,9 @@ const result = await stadata.view.trade({
 interface TradeParams {
   domain: string;
   lang: DataLanguage;
-  type: string;
+  type: string; // 'ekspor' | 'impor'
   year: number;
   month?: number;
   hs2?: string;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.view.trade({
-  domain: '0000',
-  lang: DataLanguage.ID,
-  type: 'ekspor',
-  year: 2023,
-  month: 6,
-});
-
-result.match(
-  (data) => console.log(data),
-  (err) => console.error(err.message)
-);
 ```
