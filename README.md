@@ -12,7 +12,7 @@ The STADATA JS SDK provides TypeScript/JavaScript developers with streamlined ac
 
 ## Features
 
-- **Functional Composable API** — `createStadataClient()` + `use*()` composables, idiomatic TypeScript
+- **Functional Composable API** — `initStadata()` + `use*()` composables by default, with optional explicit clients for advanced use cases
 - **Full TypeScript Support** — Complete type definitions with IntelliSense support
 - **Result Pattern** — Uses `neverthrow` for elegant, type-safe error handling
 - **Tree-shakeable** — Only bundle what you use
@@ -75,26 +75,26 @@ Full documentation: **[ipds-59.github.io/stadata_js](https://ipds-59.github.io/s
 
 | Composable | Functions |
 |-----------|-----------|
-| `stadata.useDomains()` | `fetchDomainList` |
-| `stadata.usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
-| `stadata.usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
-| `stadata.useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
-| `stadata.useDynamicTables()` | `fetchDynamicTableList` |
-| `stadata.useInfographics()` | `fetchInfographicList` |
-| `stadata.useNews()` | `fetchNewsList`, `fetchNewsDetail` |
-| `stadata.useNewsCategories()` | `fetchNewsCategoryList` |
-| `stadata.useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
-| `stadata.useVerticalVariables()` | `fetchVerticalVariableList` |
-| `stadata.useDerivedVariables()` | `fetchDerivedVariableList` |
-| `stadata.useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
-| `stadata.useSubjectCategories()` | `fetchSubjectCategoryList` |
-| `stadata.useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
-| `stadata.usePeriods()` | `fetchPeriodList` |
-| `stadata.useDerivedPeriods()` | `fetchDerivedPeriodList` |
-| `stadata.useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
-| `stadata.useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
-| `stadata.useCensus()` | `fetchCensusList` |
-| `stadata.useTrade()` | `fetchTradeData` |
+| `useDomains()` | `fetchDomainList` |
+| `usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
+| `usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
+| `useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
+| `useDynamicTables()` | `fetchDynamicTableList` |
+| `useInfographics()` | `fetchInfographicList` |
+| `useNews()` | `fetchNewsList`, `fetchNewsDetail` |
+| `useNewsCategories()` | `fetchNewsCategoryList` |
+| `useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
+| `useVerticalVariables()` | `fetchVerticalVariableList` |
+| `useDerivedVariables()` | `fetchDerivedVariableList` |
+| `useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
+| `useSubjectCategories()` | `fetchSubjectCategoryList` |
+| `useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
+| `usePeriods()` | `fetchPeriodList` |
+| `useDerivedPeriods()` | `fetchDerivedPeriodList` |
+| `useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
+| `useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
+| `useCensus()` | `fetchCensusList` |
+| `useTrade()` | `fetchTradeData` |
 
 ### Error Handling
 
@@ -132,24 +132,57 @@ const stadata = createStadataClient({
 
 ## Migration from v1
 
-**v1 (deprecated):**
+Version 2 introduces a **breaking change** from the class-based API to the composable API.
+
+### v1 (deprecated)
+
 ```typescript
 await StadataJS.init({ apiKey: 'key' })
 const stadata = StadataJS.instance
-const result = await stadata.list.publications({ domain: '7200', lang: DataLanguage.ID })
+
+const publications = await stadata.list.publications({
+  domain: '7200',
+  lang: DataLanguage.ID,
+})
 ```
 
-**v2:**
+### v2 (recommended)
+
 ```typescript
-// Entry point
+import { initStadata, usePublications, DataLanguage } from 'stadata-js'
+
+// initialize once at app entry point
 initStadata({ apiKey: 'key' })
 
-// Anywhere in app
-const { fetchPublicationList } = usePublications()
-const result = await fetchPublicationList({ domain: '7200', lang: DataLanguage.ID })
+// use composables anywhere in your app
+const { fetchPublicationList, fetchPublicationDetail } = usePublications()
+
+const publications = await fetchPublicationList({
+  domain: '7200',
+  lang: DataLanguage.ID,
+})
 ```
 
-> `StadataJS` class is kept as `@deprecated` in v2 and will be removed in v3.
+### What changed
+
+- `StadataJS.init()` → `initStadata()`
+- `StadataJS.instance.list.publications()` → `usePublications().fetchPublicationList()`
+- `StadataJS.instance.view.publication()` → `usePublications().fetchPublicationDetail()`
+- list/view methods are now grouped by composable (`useDomains`, `useNews`, `useDynamicTables`, etc.)
+- global initialization is the default pattern, so you no longer need to carry a singleton instance around your app
+
+### Advanced migration path
+
+If you need multiple clients (for example different API keys), you can still use an explicit client:
+
+```typescript
+import { createStadataClient, usePublications } from 'stadata-js'
+
+const client = createStadataClient({ apiKey: 'other-key' })
+const { fetchPublicationList } = usePublications(client)
+```
+
+> `StadataJS` class is kept as `@deprecated` in v2 for transition purposes and will be removed in v3.
 
 ## Advanced: Multiple Clients
 
