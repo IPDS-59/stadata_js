@@ -30,6 +30,10 @@ export class SubjectRemoteDataSource {
       queryParams['page'] = params.page.toString();
     }
 
+    if (params?.subjectCategoryId !== undefined) {
+      queryParams['subcat'] = params.subjectCategoryId.toString();
+    }
+
     const queryString = new URLSearchParams(queryParams).toString();
     const url = `${ApiEndpoint.SUBJECT_LIST}${queryString ? `?${queryString}` : ''}`;
 

@@ -30,6 +30,10 @@ export class StrategicIndicatorRemoteDataSource {
       queryParams['page'] = params.page.toString();
     }
 
+    if (params?.variableId !== undefined) {
+      queryParams['var'] = params.variableId.toString();
+    }
+
     const queryString = new URLSearchParams(queryParams).toString();
     const url = `${ApiEndpoint.STRATEGIC_INDICATOR_LIST}${queryString ? `?${queryString}` : ''}`;
 

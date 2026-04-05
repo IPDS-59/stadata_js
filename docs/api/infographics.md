@@ -27,7 +27,7 @@ result.match(
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |

@@ -21,10 +21,11 @@ const result = await fetchStrategicIndicatorList({
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |
+| `variableId` | `number` | ❌ | Filter berdasarkan ID variabel |
 | `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## View Strategic Indicator

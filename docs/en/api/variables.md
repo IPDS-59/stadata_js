@@ -22,12 +22,14 @@ const result = await fetchVariableList({
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `domain` | `string` | ❌ | BPS domain code |
+| `domain` | `string` | ✅ | BPS domain code |
 | `lang` | `DataLanguage` | ❌ | Response language |
 | `page` | `number` | ❌ | Page number (default: 1) |
 | `perPage` | `number` | ❌ | Items per page |
 | `subjectId` | `number` | ❌ | Filter by subject ID |
-| `showDeleted` | `boolean` | ❌ | Include deleted items |
+| `year` | `number` | ❌ | Filter by year |
+| `showExistingVariables` | `boolean` | ❌ | Only include variables that have data in the selected domain |
+| `showDeleted` | `boolean` | ❌ | Deprecated alias for `showExistingVariables` for backward compatibility |
 | `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
 
 ## View Variable
