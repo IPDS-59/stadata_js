@@ -1,6 +1,6 @@
 # Mapping Dynamic Table Data into a Table
 
-This page explains how a BPS dynamic table response is transformed into a renderable table in the UI.
+This page explains how a BPS dynamic table response is transformed into a renderable table in the UI, including the case where **`turtahun`** is present.
 
 ## Visual 1 — Table Structure Mapping
 
@@ -13,6 +13,7 @@ This diagram helps show how response dimensions are mapped into **rows**, **colu
 - **Rows** come from `vervar`
 - **Main columns** come from `tahun`
 - **Sub-columns** can come from `turvar`
+- **A deeper sub-column level** can come from `turtahun`
 - **Cell values** are read from `datacontent`
 - Every value is looked up using a **composite key**:
 
@@ -32,11 +33,16 @@ Then lookup:
 datacontent[7315310990] = 308669
 ```
 
-## Visual 2 — JSON Response to Table Mapping
+## Visual 2 — Full Mapping including `turtahun`
 
-The visual below shows the direct relationship between the JSON response and the rendered table result.
+The visual below shows four important header structure cases:
 
-<DynamicTableJsonMapping />
+- **Case A**: single turvar + single turtahun
+- **Case B**: multiple turvar + single turtahun
+- **Case C**: single turvar + multiple turtahun
+- **Case D**: multiple turvar + multiple turtahun
+
+<DynamicTableFullMappingEn />
 
 ## Mental Model Rules
 
@@ -51,17 +57,43 @@ each item in vervar = one main row
 - if `turvar` only has one meaningful value or is effectively absent → columns can just be `tahun`
 - if `turvar` has multiple meaningful values → columns become `turvar × tahun`
 
-### 3. Extra hierarchy
-If `turtahun` exists, the column hierarchy can gain another level.
+### 3. Extra `turtahun` hierarchy
+If there is more than one `turtahun`, the column header needs one more level.
+
+Practical rule:
+
+- `tahun` is always the top level
+- `turtahun` becomes the middle level when count > 1
+- `turvar` becomes the lower level when count > 1
+
+So the header structure can become:
 
 ```text
-vervar -> turvar -> tahun -> turtahun
+tahun
+```
+
+or:
+
+```text
+tahun -> turvar
+```
+
+or:
+
+```text
+tahun -> turtahun
+```
+
+or in the full case:
+
+```text
+tahun -> turtahun -> turvar
 ```
 
 ## In `stadata-js`
 
 ### Option 1 — `toStructuredData()`
-Use this when you want full control over table rendering.
+Use this when you want full control over rendering the table.
 
 ```typescript
 const structured = table.toStructuredData()
@@ -83,22 +115,6 @@ Manual parsing is usually only needed when:
 - you want pivot logic different from the built-in helpers
 
 Otherwise, prefer the built-in helpers.
-
-## Summary
-
-```text
-vervar   = row key
-var      = selected metric
-turvar   = optional extra column dimension
-tahun    = main period column
-turtahun = optional sub-period column
-```
-
-And the actual value is always read from:
-
-```text
-datacontent[{vervar}{var}{turvar}{tahun}{turtahun}]
-```
 
 ## See Also
 
