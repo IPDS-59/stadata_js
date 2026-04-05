@@ -12,7 +12,7 @@ The STADATA JS SDK provides TypeScript/JavaScript developers with streamlined ac
 
 ## Features
 
-- **Functional Composable API** — `createStadataClient()` + `use*()` composables, idiomatic TypeScript
+- **Functional Composable API** — `initStadata()` + `use*()` composables by default, with optional explicit clients for advanced use cases
 - **Full TypeScript Support** — Complete type definitions with IntelliSense support
 - **Result Pattern** — Uses `neverthrow` for elegant, type-safe error handling
 - **Tree-shakeable** — Only bundle what you use
@@ -75,26 +75,26 @@ Full documentation: **[ipds-59.github.io/stadata_js](https://ipds-59.github.io/s
 
 | Composable | Functions |
 |-----------|-----------|
-| `stadata.useDomains()` | `fetchDomainList` |
-| `stadata.usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
-| `stadata.usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
-| `stadata.useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
-| `stadata.useDynamicTables()` | `fetchDynamicTableList` |
-| `stadata.useInfographics()` | `fetchInfographicList` |
-| `stadata.useNews()` | `fetchNewsList`, `fetchNewsDetail` |
-| `stadata.useNewsCategories()` | `fetchNewsCategoryList` |
-| `stadata.useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
-| `stadata.useVerticalVariables()` | `fetchVerticalVariableList` |
-| `stadata.useDerivedVariables()` | `fetchDerivedVariableList` |
-| `stadata.useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
-| `stadata.useSubjectCategories()` | `fetchSubjectCategoryList` |
-| `stadata.useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
-| `stadata.usePeriods()` | `fetchPeriodList` |
-| `stadata.useDerivedPeriods()` | `fetchDerivedPeriodList` |
-| `stadata.useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
-| `stadata.useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
-| `stadata.useCensus()` | `fetchCensusList` |
-| `stadata.useTrade()` | `fetchTradeData` |
+| `useDomains()` | `fetchDomainList` |
+| `usePublications()` | `fetchPublicationList`, `fetchPublicationDetail` |
+| `usePressReleases()` | `fetchPressReleaseList`, `fetchPressReleaseDetail` |
+| `useStaticTables()` | `fetchStaticTableList`, `fetchStaticTableDetail` |
+| `useDynamicTables()` | `fetchDynamicTableList` |
+| `useInfographics()` | `fetchInfographicList` |
+| `useNews()` | `fetchNewsList`, `fetchNewsDetail` |
+| `useNewsCategories()` | `fetchNewsCategoryList` |
+| `useVariables()` | `fetchVariableList`, `fetchVariableDetail` |
+| `useVerticalVariables()` | `fetchVerticalVariableList` |
+| `useDerivedVariables()` | `fetchDerivedVariableList` |
+| `useSubjects()` | `fetchSubjectList`, `fetchSubjectDetail` |
+| `useSubjectCategories()` | `fetchSubjectCategoryList` |
+| `useUnits()` | `fetchUnitList`, `fetchUnitDetail` |
+| `usePeriods()` | `fetchPeriodList` |
+| `useDerivedPeriods()` | `fetchDerivedPeriodList` |
+| `useStrategicIndicators()` | `fetchStrategicIndicatorList`, `fetchStrategicIndicatorDetail` |
+| `useStatisticClassifications()` | `fetchStatisticClassificationList`, `fetchStatisticClassificationDetail` |
+| `useCensus()` | `fetchCensusList` |
+| `useTrade()` | `fetchTradeData` |
 
 ### Error Handling
 
