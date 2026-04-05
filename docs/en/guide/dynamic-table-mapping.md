@@ -1,21 +1,20 @@
 # Mapping Dynamic Table Data into a Table
 
-This page explains how `datacontent` in a BPS dynamic table can be read and transformed into a renderable table.
+This page explains how a BPS dynamic table response is transformed into a renderable table in the UI.
 
-## Basic Response Structure
+## Visual 1 — Table Structure Mapping
 
-A dynamic table response usually contains these important parts:
+This diagram helps show how response dimensions are mapped into **rows**, **columns**, and **cell values**.
 
-- `var` → main variable
-- `vervar` → row dimension (vertical variable)
-- `turvar` → additional derived dimension
-- `tahun` / `th` → main period
-- `turtahun` → additional derived period
-- `datacontent` → actual values stored as a **composite key**
+![Dynamic table mapping diagram](/dynamic-table-mapping-diagram.svg)
 
-## Composite Key
+### Core Mapping
 
-Each key inside `datacontent` is built in this order:
+- **Rows** come from `vervar`
+- **Main columns** come from `tahun`
+- **Sub-columns** can come from `turvar`
+- **Cell values** are read from `datacontent`
+- Every value is looked up using a **composite key**:
 
 ```text
 {vervar}{var}{turvar}{tahun}{turtahun}
@@ -24,90 +23,52 @@ Each key inside `datacontent` is built in this order:
 Example:
 
 ```text
-7315 31 0 99 0
+7315 + 31 + 0 + 99 + 0 = 7315310990
 ```
 
-can be read as:
-
-| Part | Value | Meaning |
-|---|---:|---|
-| `vervar` | `7315` | row key, for example `Pinrang` |
-| `var` | `31` | main variable, for example `Population` |
-| `turvar` | `0` | no derived variable |
-| `tahun` | `99` | main period, for example `1999` |
-| `turtahun` | `0` | no derived period |
-
-So:
+Then lookup:
 
 ```text
-7315310990 -> value for Pinrang × Population × 1999
+datacontent[7315310990] = 308669
 ```
 
-## How to Turn It into a Table
+## Visual 2 — JSON Response to Table Mapping
 
-### Simple case
-If:
-- `vervar` = region / row category
-- `tahun` = year columns
-- `turvar = 0`
-- `turtahun = 0`
+The visual below shows the direct relationship between the JSON response and the rendered table result.
 
-then the table becomes:
+<DynamicTableJsonMapping />
 
-| District | 1999 | 2000 | 2001 |
-|---|---:|---:|---:|
-| Pinrang | 308669 | 311595 | 312473 |
+## Mental Model Rules
 
-## Mapping Rules
-
-### 1. Main rows
+### 1. Rows
 Always start with `vervar`.
 
 ```text
 each item in vervar = one main row
 ```
 
-### 2. Main columns
-If `turvar` contains meaningful values, then columns usually become:
+### 2. Columns
+- if `turvar` only has one meaningful value or is effectively absent → columns can just be `tahun`
+- if `turvar` has multiple meaningful values → columns become `turvar × tahun`
 
-```text
-turvar × tahun
-```
-
-If there is no meaningful `turvar`, columns are simply:
-
-```text
-tahun
-```
-
-### 3. Extra sub-columns
-If `turtahun` contains meaningful values, then the column hierarchy gets one more level.
-
-Typical order:
+### 3. Extra hierarchy
+If `turtahun` exists, the column hierarchy can gain another level.
 
 ```text
 vervar -> turvar -> tahun -> turtahun
 ```
 
-or in the simplest case:
-
-```text
-vervar -> tahun
-```
-
 ## In `stadata-js`
 
-### Option 1 — use `toStructuredData()`
-This is the safest option if you want to render your own table.
+### Option 1 — `toStructuredData()`
+Use this when you want full control over table rendering.
 
 ```typescript
 const structured = table.toStructuredData()
 ```
 
-This already converts the response into a nested structure, so you do not need to manually parse the composite key.
-
-### Option 2 — use `DynamicTableHtmlGenerator`
-If you want a quick HTML table:
+### Option 2 — `DynamicTableHtmlGenerator`
+Use this when you want a quick HTML table.
 
 ```typescript
 import { DynamicTableHtmlGenerator } from 'stadata-js'
@@ -117,13 +78,13 @@ const html = DynamicTableHtmlGenerator.generate(table)
 
 ## When do you need manual parsing?
 Manual parsing is usually only needed when:
-- you want a very custom visualization
-- you want to export into your own format
-- you want pivot logic that differs from the built-in helpers
+- you want a highly custom visualization
+- you want to export to your own custom format
+- you want pivot logic different from the built-in helpers
 
 Otherwise, prefer the built-in helpers.
 
-## Mental Model Summary
+## Summary
 
 ```text
 vervar   = row key
