@@ -5,14 +5,34 @@ Infografis BPS — visualisasi data statistik dalam format gambar.
 ## List Infographics
 
 ```typescript
-const result = await stadata.list.infographics({
+import { useInfographics, DataLanguage } from 'stadata-js'
+
+const { fetchInfographicList } = useInfographics()
+
+const result = await fetchInfographicList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'inflasi',    // opsional
-});
+  keyword: 'inflasi',
+})
+
+result.match(
+  ({ data }) => data.forEach(i => console.log(i.title, i.image)),
+  (err) => console.error(err.message)
+)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `keyword` | `string` | ❌ | Kata kunci pencarian |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 
@@ -20,22 +40,6 @@ const result = await stadata.list.infographics({
 class Infographic {
   id: string;
   title: string;
-  image: string;         // URL gambar infografis
-  description: string | null;
-  category: string | null;
+  image: string;   // URL gambar
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.infographics({
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
-
-result.match(
-  ({ data }) => data.forEach(i => console.log(i.title, i.image)),
-  (err) => console.error(err.message)
-);
 ```

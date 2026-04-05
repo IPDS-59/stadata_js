@@ -1,42 +1,71 @@
 # Publications
 
-Publikasi BPS — laporan statistik, buletin, dan dokumen resmi.
+Publikasi resmi BPS — laporan statistik, buletin, dan dokumen resmi.
 
 ## List Publications
 
 ```typescript
-const result = await stadata.list.publications({
-  domain: '7200',          // Kode domain BPS
+import { usePublications, DataLanguage } from 'stadata-js'
+
+const { fetchPublicationList } = usePublications()
+
+const result = await fetchPublicationList({
+  domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  keyword: 'inflasi',      // Kata kunci pencarian (opsional)
-  month: 1,                // Filter bulan (opsional)
-  year: 2023,              // Filter tahun (opsional)
-});
+  keyword: 'inflasi',
+  year: 2023,
+  month: 6,
+})
+
+result.match(
+  ({ data, pagination }) => {
+    console.log(`Total: ${pagination.total}`)
+    data.forEach(pub => console.log(pub.title))
+  },
+  (err) => console.error(err.message)
+)
 ```
 
 ### Parameter
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ✅ | Kode domain BPS |
-| `lang` | `DataLanguage` | ✅ | Bahasa respons |
-| `page` | `number` | ❌ | Halaman |
+| `domain` | `string` | ✅ | Kode domain BPS (misal: `'7200'`) |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |
 | `keyword` | `string` | ❌ | Kata kunci pencarian |
 | `month` | `number` | ❌ | Filter bulan (1-12) |
 | `year` | `number` | ❌ | Filter tahun |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## View Publication
 
 ```typescript
-const result = await stadata.view.publication({
+const { fetchPublicationDetail } = usePublications()
+
+const result = await fetchPublicationDetail({
   id: 'publication-id',
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
+
+result.match(
+  (pub) => console.log(pub.title, pub.pdf),
+  (err) => console.error(err.message)
+)
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID publikasi |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## Tipe Data
 
@@ -45,9 +74,9 @@ class Publication {
   id: string;
   title: string;
   issn: string;
-  cover: string;                // URL cover image
-  pdf: string;                  // URL file PDF
-  size: string;                 // Ukuran file
+  cover: string;              // URL cover image
+  pdf: string;                // URL file PDF
+  size: string;
   scheduledDate: Date | null;
   releaseDate: Date | null;
   updateDate: Date | null;
@@ -56,28 +85,4 @@ class Publication {
   publicationNumber: string | null;
   relatedPublications: RelatedPublication[];
 }
-```
-
-## Contoh
-
-```typescript
-// List dengan filter
-const result = await stadata.list.publications({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  keyword: 'PDRB',
-  year: 2023,
-});
-
-// Detail publikasi
-const detail = await stadata.view.publication({
-  id: 'pub-123',
-  domain: '7200',
-  lang: DataLanguage.ID,
-});
-
-detail.match(
-  (pub) => console.log(pub.title, pub.pdf),
-  (err) => console.error(err.message)
-);
 ```

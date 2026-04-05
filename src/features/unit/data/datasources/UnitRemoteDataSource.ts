@@ -30,6 +30,10 @@ export class UnitRemoteDataSource {
       queryParams['page'] = params.page.toString();
     }
 
+    if (params?.variableId !== undefined) {
+      queryParams['var'] = params.variableId.toString();
+    }
+
     const queryString = new URLSearchParams(queryParams).toString();
     const url = `${ApiEndpoint.UNIT_LIST}${queryString ? `?${queryString}` : ''}`;
 

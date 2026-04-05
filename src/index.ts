@@ -109,5 +109,5 @@ export {
   CensusData,
   CensusCategory,
 } from './features/census';
-export { DynamicTable } from './features/dynamic-table';
+export { DynamicTable, DynamicTableHtmlGenerator } from './features/dynamic-table';
 export { Trade } from './features/trade';

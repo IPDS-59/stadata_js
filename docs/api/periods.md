@@ -1,18 +1,35 @@
 # Periods
 
-Periode data statistik BPS — waktu pengumpulan data (tahunan, triwulan, bulanan, dll).
+Periode data statistik BPS — tahunan, triwulan, bulanan, dll.
 
 ## List Periods
 
 ```typescript
-const result = await stadata.list.periods({
+import { usePeriods, DataLanguage } from 'stadata-js'
+
+const { fetchPeriodList } = usePeriods()
+
+const result = await fetchPeriodList({
   domain: '7200',
   lang: DataLanguage.ID,
-  page: 1,
-  perPage: 10,
-  variableId: 100,   // opsional
-});
+  variableId: 529,
+})
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `variableId` | `number` | ❌ | Filter berdasarkan ID variabel |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
+
+::: tip
+`variableId` diperlukan saat menggunakan hasil period untuk query `useDynamicTables()`.
+:::
 
 ## Tipe Data
 

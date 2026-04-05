@@ -1,28 +1,56 @@
 # Variables
 
-Variabel statistik BPS — indikator dan variabel yang digunakan dalam pengumpulan data.
+Variabel statistik BPS — indikator yang digunakan dalam pengumpulan data.
 
 ## List Variables
 
 ```typescript
-const result = await stadata.list.variables({
+import { useVariables, DataLanguage } from 'stadata-js'
+
+const { fetchVariableList } = useVariables()
+
+const result = await fetchVariableList({
   domain: '7200',
   lang: DataLanguage.ID,
   page: 1,
   perPage: 10,
-  subjectId: 1,          // opsional — filter berdasarkan subjek
-});
+  subjectId: 3,
+})
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `subjectId` | `number` | ❌ | Filter berdasarkan ID subjek |
+| `year` | `number` | ❌ | Filter berdasarkan tahun |
+| `showExistingVariables` | `boolean` | ❌ | Hanya tampilkan variabel yang punya data pada domain terpilih |
+| `showDeleted` | `boolean` | ❌ | Deprecated alias untuk `showExistingVariables` demi kompatibilitas mundur |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## View Variable
 
 ```typescript
-const result = await stadata.view.variable({
+const { fetchVariableDetail } = useVariables()
+
+const result = await fetchVariableDetail({
   id: 1234,
   domain: '7200',
   lang: DataLanguage.ID,
-});
+})
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID variabel |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
@@ -33,24 +61,9 @@ class Variable {
   subjectId: number;
   subjectName: string;
   verticalVariableId: number;
-  csa: string | null;
-  graphName: string | null;
-  notes: string | null;
   unit: string | null;
+  notes: string | null;
+  graphName: string | null;
+  csa: string | null;
 }
-```
-
-## Contoh
-
-```typescript
-const result = await stadata.list.variables({
-  domain: '7200',
-  lang: DataLanguage.ID,
-  subjectId: 3,          // subjek: kependudukan
-});
-
-result.match(
-  ({ data }) => data.forEach(v => console.log(v.name, v.unit)),
-  (err) => console.error(err.message)
-);
 ```

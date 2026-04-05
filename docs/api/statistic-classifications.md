@@ -1,28 +1,34 @@
 # Statistic Classifications
 
-Klasifikasi statistik BPS — sistem klasifikasi yang digunakan dalam sensus dan survei.
+Klasifikasi statistik BPS — KBLI (Klasifikasi Baku Lapangan Usaha Indonesia) dan KBKI.
 
 ## List Statistic Classifications
 
 ```typescript
-const result = await stadata.list.statisticClassifications({
-  lang: DataLanguage.ID,
-  page: 1,
-  perPage: 10,
-  type: ClassificationType.KBLI2020,  // opsional
-  keyword: 'pertanian',               // opsional
-});
-```
+import { useStatisticClassifications, DataLanguage, ClassificationType } from 'stadata-js'
 
-## View Statistic Classification
+const { fetchStatisticClassificationList } = useStatisticClassifications()
 
-```typescript
-const result = await stadata.view.statisticClassification({
-  id: 'class-id',
+const result = await fetchStatisticClassificationList({
   lang: DataLanguage.ID,
   type: ClassificationType.KBLI2020,
-});
+  keyword: 'pertanian',
+  page: 1,
+  perPage: 10,
+})
 ```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
+| `type` | `ClassificationType` | ❌ | Tipe klasifikasi (default: KBLI2020) |
+| `level` | `ClassificationLevel` | ❌ | Level klasifikasi |
+| `keyword` | `string` | ❌ | Kata kunci pencarian |
+| `page` | `number` | ❌ | Halaman (default: 1) |
+| `perPage` | `number` | ❌ | Item per halaman |
+| `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ### ClassificationType
 
@@ -35,6 +41,25 @@ enum ClassificationType {
   KBKI2015 = 'kbki2015',
 }
 ```
+
+## View Statistic Classification
+
+```typescript
+const { fetchStatisticClassificationDetail } = useStatisticClassifications()
+
+const result = await fetchStatisticClassificationDetail({
+  id: 'A',
+  lang: DataLanguage.ID,
+})
+```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Keterangan |
+|-----------|------|-------|------------|
+| `id` | `string \| number` | ✅ | ID klasifikasi |
+| `domain` | `string` | ✅ | Kode domain BPS |
+| `lang` | `DataLanguage` | ❌ | Bahasa respons |
 
 ## Tipe Data
 
