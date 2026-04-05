@@ -36,6 +36,22 @@ const result = await fetchDynamicTableList({
 Gunakan composable `usePeriods()` dan `useVariables()` untuk mendapatkan ID yang valid.
 :::
 
+## Helpers
+
+Setelah data tabel dinamis didapatkan, kamu bisa pakai helper berikut:
+
+```typescript
+import { DynamicTableHtmlGenerator } from 'stadata-js'
+
+const structured = table.toStructuredData()
+const html = DynamicTableHtmlGenerator.generate(table)
+```
+
+- `table.toStructuredData()` → ubah data ke struktur bertingkat yang lebih mudah dipakai untuk UI / export
+- `DynamicTableHtmlGenerator.generate(table)` → hasilkan string HTML `<table>` siap render
+
+Lihat juga: [Dynamic Table Helpers](/guide/dynamic-table-helper)
+
 ## Tipe Data
 
 ```typescript

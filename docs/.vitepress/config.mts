@@ -27,6 +27,7 @@ export default defineConfig({
               items: [
                 { text: 'Mulai Cepat', link: '/guide/memulai' },
                 { text: 'Konfigurasi', link: '/guide/konfigurasi' },
+                { text: 'Dynamic Table Helpers', link: '/guide/dynamic-table-helper' },
                 { text: 'Penanganan Error', link: '/guide/error-handling' },
               ],
             },
@@ -78,6 +79,7 @@ export default defineConfig({
               items: [
                 { text: 'Getting Started', link: '/en/guide/getting-started' },
                 { text: 'Configuration', link: '/en/guide/configuration' },
+                { text: 'Dynamic Table Helpers', link: '/en/guide/dynamic-table-helper' },
                 { text: 'Error Handling', link: '/en/guide/error-handling' },
               ],
             },
