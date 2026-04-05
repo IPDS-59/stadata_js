@@ -23,13 +23,18 @@ export default defineConfig({
         sidebar: {
           '/guide/': [
             {
-              text: 'Panduan',
+              text: 'Panduan Dasar',
               items: [
                 { text: 'Mulai Cepat', link: '/guide/memulai' },
                 { text: 'Konfigurasi', link: '/guide/konfigurasi' },
+                { text: 'Penanganan Error', link: '/guide/error-handling' },
+              ],
+            },
+            {
+              text: 'Dynamic Table',
+              items: [
                 { text: 'Dynamic Table Helpers', link: '/guide/dynamic-table-helper' },
                 { text: 'Dynamic Table Mapping', link: '/guide/dynamic-table-mapping' },
-                { text: 'Penanganan Error', link: '/guide/error-handling' },
               ],
             },
           ],
@@ -76,13 +81,18 @@ export default defineConfig({
         sidebar: {
           '/en/guide/': [
             {
-              text: 'Guide',
+              text: 'Core Guide',
               items: [
                 { text: 'Getting Started', link: '/en/guide/getting-started' },
                 { text: 'Configuration', link: '/en/guide/configuration' },
+                { text: 'Error Handling', link: '/en/guide/error-handling' },
+              ],
+            },
+            {
+              text: 'Dynamic Table',
+              items: [
                 { text: 'Dynamic Table Helpers', link: '/en/guide/dynamic-table-helper' },
                 { text: 'Dynamic Table Mapping', link: '/en/guide/dynamic-table-mapping' },
-                { text: 'Error Handling', link: '/en/guide/error-handling' },
               ],
             },
           ],

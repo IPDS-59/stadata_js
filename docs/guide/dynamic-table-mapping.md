@@ -4,9 +4,9 @@ Halaman ini menjelaskan bagaimana response dynamic table BPS dipetakan menjadi t
 
 ## Visual 1 — Mapping dari Struktur Tabel
 
-Diagram ini membantu melihat bagaimana dimensi response dipetakan menjadi **baris**, **kolom**, dan **nilai sel**.
+Visual ini membantu melihat bagaimana dimensi response dipetakan menjadi **baris**, **kolom**, dan **nilai sel** — tanpa bergantung ke asset SVG terpisah.
 
-![Diagram mapping dynamic table](/dynamic-table-mapping-diagram.svg)
+<DynamicTableStructureMappingId />
 
 ### Inti Mapping
 
