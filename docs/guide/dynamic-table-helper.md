@@ -80,3 +80,4 @@ Helper ini menghasilkan string HTML `<table>` berdasarkan struktur:
 - helper ini mengikuti pendekatan yang sama dengan Flutter SDK
 - HTML generator cocok untuk quick rendering / export, bukan untuk styling kompleks
 - untuk kontrol penuh, lebih aman gunakan `toStructuredData()` lalu render sendiri di UI framework kamu
+- kalau kamu ingin memahami bagaimana composite key `datacontent` dipetakan ke row/column tabel, lihat [Dynamic Table Mapping](/guide/dynamic-table-mapping)
