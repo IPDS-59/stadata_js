@@ -21,7 +21,7 @@ const result = await fetchDynamicTableList({
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `variableId` | `number` | ✅ | ID variabel |
 | `periodId` | `string` | ✅ | ID periode. Bisa single (`"117"`), range (`"117:123"`), atau multiple (`"117;123"`) |
@@ -35,6 +35,22 @@ const result = await fetchDynamicTableList({
 ::: tip
 Gunakan composable `usePeriods()` dan `useVariables()` untuk mendapatkan ID yang valid.
 :::
+
+## Helpers
+
+Setelah data tabel dinamis didapatkan, kamu bisa pakai helper berikut:
+
+```typescript
+import { DynamicTableHtmlGenerator } from 'stadata-js'
+
+const structured = table.toStructuredData()
+const html = DynamicTableHtmlGenerator.generate(table)
+```
+
+- `table.toStructuredData()` → ubah data ke struktur bertingkat yang lebih mudah dipakai untuk UI / export
+- `DynamicTableHtmlGenerator.generate(table)` → hasilkan string HTML `<table>` siap render
+
+Lihat juga: [Dynamic Table Helpers](/guide/dynamic-table-helper)
 
 ## Tipe Data
 

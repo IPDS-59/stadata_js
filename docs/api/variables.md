@@ -22,12 +22,14 @@ const result = await fetchVariableList({
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |
 | `subjectId` | `number` | ❌ | Filter berdasarkan ID subjek |
-| `showDeleted` | `boolean` | ❌ | Tampilkan item yang dihapus |
+| `year` | `number` | ❌ | Filter berdasarkan tahun |
+| `showExistingVariables` | `boolean` | ❌ | Hanya tampilkan variabel yang punya data pada domain terpilih |
+| `showDeleted` | `boolean` | ❌ | Deprecated alias untuk `showExistingVariables` demi kompatibilitas mundur |
 | `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## View Variable

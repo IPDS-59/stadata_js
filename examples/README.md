@@ -1,79 +1,68 @@
 # Examples
 
-This directory contains example code demonstrating how to use the Stadata JS SDK.
+This directory contains example code for the v2 Stadata JS API.
 
-## Running Examples
+## Prerequisites
 
-### Prerequisites
-
-1. Install dependencies:
 ```bash
 npm install
-```
-
-2. Set your API key:
-```bash
 export BPS_API_KEY="your-api-key-here"
 ```
 
-### Available Examples
+## Available Examples
 
-#### basic-usage.ts
+### `basic-usage.ts`
 
-Comprehensive example demonstrating all SDK features:
+Shows the recommended v2 pattern:
+- `initStadata()` once
+- use composables anywhere
+- handle `Result` responses cleanly
 
 ```bash
-npx ts-node examples/basic-usage.ts
+npx tsx examples/basic-usage.ts
 ```
 
-Topics covered:
-- SDK initialization
-- Basic list queries
-- Parameterized queries
-- View single items
-- Error handling
-- Request cancellation
-- Result chaining
-- Pagination
-- Debug logging
-- Parallel requests
+### `test-api.ts`
 
-## Creating Your Own Examples
+Runs a quick smoke test against several real endpoints.
 
-You can create new example files in this directory following the same pattern:
+```bash
+npx tsx examples/test-api.ts
+```
+
+## Recommended Pattern
 
 ```typescript
-import { StadataJS, DataLanguage } from '../src';
+import {
+  initStadata,
+  useDomains,
+  usePublications,
+  DataLanguage,
+  DomainType,
+} from '../src'
 
 async function main() {
-  await StadataJS.init({
-    apiKey: process.env.BPS_API_KEY!,
-  });
+  initStadata({ apiKey: process.env.BPS_API_KEY! })
 
-  const stadata = StadataJS.instance;
+  const { fetchDomainList } = useDomains()
+  const { fetchPublicationList } = usePublications()
 
-  // Your code here
-  const result = await stadata.list.domains();
+  const domains = await fetchDomainList({
+    type: DomainType.ALL,
+    lang: DataLanguage.ID,
+  })
 
-  result.match(
-    (data) => console.log('Success:', data),
-    (error) => console.error('Error:', error)
-  );
+  const publications = await fetchPublicationList({
+    domain: '0000',
+    lang: DataLanguage.ID,
+  })
 
-  StadataJS.destroy();
+  console.log(domains, publications)
 }
 
-main();
+main()
 ```
 
-Run with:
-```bash
-npx ts-node examples/your-example.ts
-```
+## Legacy API
 
-## Notes
-
-- All examples use TypeScript and can be run with ts-node
-- Make sure to set the `BPS_API_KEY` environment variable
-- Examples demonstrate best practices for error handling and resource cleanup
-- Each example is self-contained and can be run independently
+`StadataJS` class is still available for backward compatibility, but the examples in this folder prefer the v2 composable API.

@@ -32,7 +32,7 @@ result.match(
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS (misal: `'7200'`) |
+| `domain` | `string` | ✅ | Kode domain BPS (misal: `'7200'`) |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |
