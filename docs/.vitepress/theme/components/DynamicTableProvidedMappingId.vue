@@ -1,4 +1,5 @@
 <template>
+<div class="provided-mapping">
 <div class="page-title">BPS API — Mapping respons JSON → tabel</div>
 <div class="page-sub">Cara membaca key <code style="font-family:'JetBrains Mono',monospace;color:var(--teal-tx);font-size:12px;">datacontent</code> dan merender tabel dengan header bertingkat</div>
 
@@ -319,13 +320,23 @@
   <div class="legend-item"><div class="legend-dot" style="background:var(--teal-bg);border-color:var(--teal-bd)"></div>tahun</div>
   <div class="legend-item"><div class="legend-dot" style="background:var(--purple-bg);border-color:var(--purple-bd)"></div>turtahun</div>
 </div>
+</div>
 </template>
 
 <style scoped>
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
+  .provided-mapping {
+background: var(--bg);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+
     --bg:       #0f0f0e;
     --bg2:      #161614;
     --bg3:      #1d1d1a;
@@ -341,17 +352,6 @@
     --teal-bg:  #053a2e; --teal-bd:  #1e9070; --teal-tx:  #72dbb8;
     --purple-bg:#2a1f6e; --purple-bd:#7a6fd4; --purple-tx:#c4bef5;
     --gray-bg:  #222220; --gray-bd:  #555550; --gray-tx:  #aaa89e;
-  }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Sora', sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    padding: 48px 32px;
-    max-width: 1200px;
-    margin: 0 auto;
   }
 
   /* HEADER */
