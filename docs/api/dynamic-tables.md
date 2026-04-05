@@ -21,7 +21,7 @@ const result = await fetchDynamicTableList({
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `variableId` | `number` | ✅ | ID variabel |
 | `periodId` | `string` | ✅ | ID periode. Bisa single (`"117"`), range (`"117:123"`), atau multiple (`"117;123"`) |

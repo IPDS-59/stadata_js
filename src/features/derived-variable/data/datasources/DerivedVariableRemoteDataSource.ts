@@ -22,6 +22,10 @@ export class DerivedVariableRemoteDataSource {
       queryParams['var'] = params.variableId.toString();
     }
 
+    if (params.verticalGroup !== undefined) {
+      queryParams['group'] = params.verticalGroup.toString();
+    }
+
     if (params.domain) {
       queryParams['domain'] = params.domain;
     }

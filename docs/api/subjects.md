@@ -21,10 +21,11 @@ const result = await fetchSubjectList({
 
 | Parameter | Tipe | Wajib | Keterangan |
 |-----------|------|-------|------------|
-| `domain` | `string` | ❌ | Kode domain BPS |
+| `domain` | `string` | ✅ | Kode domain BPS |
 | `lang` | `DataLanguage` | ❌ | Bahasa respons |
 | `page` | `number` | ❌ | Halaman (default: 1) |
 | `perPage` | `number` | ❌ | Item per halaman |
+| `subjectCategoryId` | `number` | ❌ | Filter berdasarkan ID kategori subjek (`subcat`) |
 | `cancelToken` | `CancelToken` | ❌ | Token untuk membatalkan request |
 
 ## View Subject

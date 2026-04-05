@@ -34,8 +34,14 @@ export class VariableRemoteDataSource {
       queryParams['subject'] = params.subjectId.toString();
     }
 
-    if (params?.showDeleted !== undefined) {
-      queryParams['show_deleted'] = params.showDeleted ? '1' : '0';
+    if (params?.year !== undefined) {
+      queryParams['year'] = params.year.toString();
+    }
+
+    if (params?.showExistingVariables !== undefined) {
+      queryParams['area'] = params.showExistingVariables ? '1' : '0';
+    } else if (params?.showDeleted !== undefined) {
+      queryParams['area'] = params.showDeleted ? '1' : '0';
     }
 
     const queryString = new URLSearchParams(queryParams).toString();

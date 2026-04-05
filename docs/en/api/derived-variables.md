@@ -22,11 +22,12 @@ const result = await fetchDerivedVariableList({
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `domain` | `string` | ❌ | BPS domain code |
+| `domain` | `string` | ✅ | BPS domain code |
 | `lang` | `DataLanguage` | ❌ | Response language |
 | `page` | `number` | ❌ | Page number |
 | `perPage` | `number` | ❌ | Items per page |
 | `variableId` | `number` | ❌ | Filter by parent variable ID |
+| `verticalGroup` | `number` | ❌ | Filter by vertical variable group ID |
 | `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
 
 ## Data Type
