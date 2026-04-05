@@ -1,6 +1,6 @@
 # Mapping Dynamic Table ke Bentuk Tabel
 
-Halaman ini menjelaskan bagaimana response dynamic table BPS dipetakan menjadi tabel yang bisa dirender di UI.
+Halaman ini menjelaskan bagaimana response dynamic table BPS dipetakan menjadi tabel yang bisa dirender di UI, termasuk kondisi ketika ada **`turtahun`**.
 
 ## Visual 1 — Mapping dari Struktur Tabel
 
@@ -13,6 +13,7 @@ Diagram ini membantu melihat bagaimana dimensi response dipetakan menjadi **bari
 - **Baris** berasal dari `vervar`
 - **Kolom utama** berasal dari `tahun`
 - **Sub-kolom** bisa berasal dari `turvar`
+- **Sub-kolom level berikutnya** bisa berasal dari `turtahun`
 - **Nilai sel** diambil dari `datacontent`
 - Setiap nilai dicari lewat **kunci komposit**:
 
@@ -32,11 +33,16 @@ Lalu lookup:
 datacontent[7315310990] = 308669
 ```
 
-## Visual 2 — Mapping dari JSON Response ke Tabel
+## Visual 2 — Mapping Lengkap termasuk `turtahun`
 
-Visual berikut menunjukkan hubungan langsung antara JSON response dan hasil tabel render.
+Visual berikut menunjukkan empat kondisi penting struktur header tabel:
 
-<DynamicTableJsonMapping />
+- **Kasus A**: 1 turvar + 1 turtahun
+- **Kasus B**: banyak turvar + 1 turtahun
+- **Kasus C**: 1 turvar + banyak turtahun
+- **Kasus D**: banyak turvar + banyak turtahun
+
+<DynamicTableFullMappingId />
 
 ## Aturan Mental Model
 
@@ -51,11 +57,37 @@ setiap item di vervar = satu baris utama
 - kalau `turvar` hanya satu / tidak ada dimensi turunan yang bermakna → kolom cukup `tahun`
 - kalau `turvar` lebih dari satu → kolom menjadi `turvar × tahun`
 
-### 3. Level tambahan
-Kalau ada `turtahun`, maka level kolom bisa bertambah lagi.
+### 3. Level tambahan `turtahun`
+Kalau ada lebih dari satu `turtahun`, maka header kolom perlu satu level lagi.
+
+Rule praktisnya:
+
+- `tahun` selalu jadi level atas
+- `turtahun` jadi level tengah kalau jumlahnya > 1
+- `turvar` jadi level bawah kalau jumlahnya > 1
+
+Sehingga susunan header bisa menjadi:
 
 ```text
-vervar -> turvar -> tahun -> turtahun
+tahun
+```
+
+atau:
+
+```text
+tahun -> turvar
+```
+
+atau:
+
+```text
+tahun -> turtahun
+```
+
+atau kondisi penuh:
+
+```text
+tahun -> turtahun -> turvar
 ```
 
 ## Dalam `stadata-js`
