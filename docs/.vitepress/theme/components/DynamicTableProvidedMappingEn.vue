@@ -328,15 +328,30 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   .provided-mapping {
-background: var(--bg);
-    color: var(--text);
+    --bg:       #faf8f2;
+    --bg2:      #ffffff;
+    --bg3:      #f3efe6;
+    --border:   #ddd8ca;
+    --muted:    #7b766b;
+    --sub:      #5e594f;
+    --text:     #292723;
+    --bright:   #111111;
+
+    --blue-bg:  #e6f1fb; --blue-bd:  #7bb3e8; --blue-tx:  #0c3d6e;
+    --pink-bg:  #f7e3ea; --pink-bd:  #d58aa6; --pink-tx:  #7d2847;
+    --amber-bg: #faedd9; --amber-bd: #d89a39; --amber-tx: #6c4306;
+    --teal-bg:  #e3f5ee; --teal-bd:  #6bbf9f; --teal-tx:  #0d5c49;
+    --purple-bg:#ece9ff; --purple-bd:#9f96e8; --purple-tx:#4539a6;
+    --gray-bg:  #efede7; --gray-bd:  #c7c1b5; --gray-tx:  #5f5b53;
+
     font-family: 'Sora', sans-serif;
     font-size: 14px;
     line-height: 1.6;
-    padding: 48px 32px;
-    max-width: 1200px;
-    margin: 0 auto;
+    color: var(--text);
+    background: transparent;
+  }
 
+  :global(html.dark) .provided-mapping {
     --bg:       #0f0f0e;
     --bg2:      #161614;
     --bg3:      #1d1d1a;
