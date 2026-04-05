@@ -24,7 +24,7 @@ const result = await fetchPressReleaseList({
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `domain` | `string` | ❌ | BPS domain code |
+| `domain` | `string` | ✅ | BPS domain code |
 | `lang` | `DataLanguage` | ❌ | Response language |
 | `page` | `number` | ❌ | Page number (default: 1) |
 | `perPage` | `number` | ❌ | Items per page |

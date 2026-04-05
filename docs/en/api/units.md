@@ -19,10 +19,11 @@ const result = await fetchUnitList({
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `domain` | `string` | ❌ | BPS domain code |
+| `domain` | `string` | ✅ | BPS domain code |
 | `lang` | `DataLanguage` | ❌ | Response language |
 | `page` | `number` | ❌ | Page number |
 | `perPage` | `number` | ❌ | Items per page |
+| `variableId` | `number` | ❌ | Filter by variable ID |
 | `cancelToken` | `CancelToken` | ❌ | Request cancellation token |
 
 ## View Unit

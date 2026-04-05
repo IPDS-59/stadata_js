@@ -5,9 +5,6 @@ hero:
   name: "Stadata JS"
   text: "SDK untuk BPS WebAPI"
   tagline: Akses data statistik resmi Indonesia dengan TypeScript/JavaScript — type-safe, modern, dan mudah digunakan.
-  image:
-    src: /logo.svg
-    alt: Stadata JS
   actions:
     - theme: brand
       text: Mulai Sekarang

@@ -11,11 +11,6 @@ export type JSON = Record<string, unknown>;
  */
 export interface BaseListParams {
   /**
-   * Domain code
-   */
-  domain?: string;
-
-  /**
    * Language
    */
   lang?: DataLanguage;
@@ -37,9 +32,19 @@ export interface BaseListParams {
 }
 
 /**
+ * Base parameters for list requests that require a BPS domain code
+ */
+export interface BaseDomainListParams extends BaseListParams {
+  /**
+   * Domain code
+   */
+  domain: string;
+}
+
+/**
  * Parameters for domain list
  */
-export interface DomainListParams extends Omit<BaseListParams, 'domain'> {
+export interface DomainListParams extends BaseListParams {
   /**
    * Domain type (required)
    */
@@ -59,7 +64,7 @@ export interface DomainListParams extends Omit<BaseListParams, 'domain'> {
 /**
  * Parameters for publication list
  */
-export interface PublicationListParams extends BaseListParams {
+export interface PublicationListParams extends BaseDomainListParams {
   /**
    * Keyword search
    */
@@ -79,7 +84,7 @@ export interface PublicationListParams extends BaseListParams {
 /**
  * Parameters for infographic list
  */
-export interface InfographicListParams extends BaseListParams {
+export interface InfographicListParams extends BaseDomainListParams {
   /**
    * Keyword search
    */
@@ -89,7 +94,7 @@ export interface InfographicListParams extends BaseListParams {
 /**
  * Parameters for static table list
  */
-export interface StaticTableListParams extends BaseListParams {
+export interface StaticTableListParams extends BaseDomainListParams {
   /**
    * Keyword search
    */
@@ -109,7 +114,7 @@ export interface StaticTableListParams extends BaseListParams {
 /**
  * Parameters for news list
  */
-export interface NewsListParams extends BaseListParams {
+export interface NewsListParams extends BaseDomainListParams {
   /**
    * Keyword search
    */
@@ -134,12 +139,12 @@ export interface NewsListParams extends BaseListParams {
 /**
  * Parameters for news category list
  */
-export interface NewsCategoryListParams extends BaseListParams {}
+export interface NewsCategoryListParams extends BaseDomainListParams {}
 
 /**
  * Parameters for press release list
  */
-export interface PressReleaseListParams extends BaseListParams {
+export interface PressReleaseListParams extends BaseDomainListParams {
   /**
    * Keyword search
    */
@@ -159,29 +164,49 @@ export interface PressReleaseListParams extends BaseListParams {
 /**
  * Parameters for subject list
  */
-export interface SubjectListParams extends BaseListParams {}
+export interface SubjectListParams extends BaseDomainListParams {
+  /**
+   * Subject category ID
+   */
+  subjectCategoryId?: number;
+}
 
 /**
  * Parameters for subject category list
  */
-export interface SubjectCategoryListParams extends BaseListParams {}
+export interface SubjectCategoryListParams extends BaseDomainListParams {}
 
 /**
  * Parameters for strategic indicator list
  */
-export interface StrategicIndicatorListParams extends BaseListParams {}
+export interface StrategicIndicatorListParams extends BaseDomainListParams {
+  /**
+   * Variable ID
+   */
+  variableId?: number;
+}
 
 /**
  * Parameters for variable list
  */
-export interface VariableListParams extends BaseListParams {
+export interface VariableListParams extends BaseDomainListParams {
   /**
    * Subject ID
    */
   subjectId?: number;
 
   /**
-   * Show deleted items
+   * Filter by year
+   */
+  year?: number;
+
+  /**
+   * Show only variables that have values in the selected domain
+   */
+  showExistingVariables?: boolean;
+
+  /**
+   * @deprecated Use showExistingVariables instead
    */
   showDeleted?: boolean;
 }
@@ -189,7 +214,7 @@ export interface VariableListParams extends BaseListParams {
 /**
  * Parameters for vertical variable list
  */
-export interface VerticalVariableListParams extends BaseListParams {
+export interface VerticalVariableListParams extends BaseDomainListParams {
   /**
    * Variable ID (optional)
    */
@@ -199,12 +224,17 @@ export interface VerticalVariableListParams extends BaseListParams {
 /**
  * Parameters for unit list
  */
-export interface UnitListParams extends BaseListParams {}
+export interface UnitListParams extends BaseDomainListParams {
+  /**
+   * Variable ID
+   */
+  variableId?: number;
+}
 
 /**
  * Parameters for period list
  */
-export interface PeriodListParams extends BaseListParams {
+export interface PeriodListParams extends BaseDomainListParams {
   /**
    * Variable ID (optional)
    */
@@ -214,7 +244,7 @@ export interface PeriodListParams extends BaseListParams {
 /**
  * Parameters for derived period list
  */
-export interface DerivedPeriodListParams extends BaseListParams {
+export interface DerivedPeriodListParams extends BaseDomainListParams {
   /**
    * Variable ID (optional)
    */
@@ -224,17 +254,22 @@ export interface DerivedPeriodListParams extends BaseListParams {
 /**
  * Parameters for derived variable list
  */
-export interface DerivedVariableListParams extends BaseListParams {
+export interface DerivedVariableListParams extends BaseDomainListParams {
   /**
    * Variable ID (optional)
    */
   variableId?: number;
+
+  /**
+   * Vertical variable group ID (optional)
+   */
+  verticalGroup?: number;
 }
 
 /**
  * Parameters for dynamic table
  */
-export interface DynamicTableParams extends BaseListParams {
+export interface DynamicTableParams extends BaseDomainListParams {
   /**
    * Variable ID - required
    */
@@ -269,6 +304,11 @@ export interface DynamicTableParams extends BaseListParams {
  * Parameters for statistic classification list
  */
 export interface StatisticClassificationListParams extends BaseListParams {
+  /**
+   * Optional domain code for API compatibility
+   */
+  domain?: string;
+
   /**
    * Classification type (defaults to KBLI_2020)
    */

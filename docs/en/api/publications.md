@@ -24,7 +24,7 @@ const result = await fetchPublicationList({
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `domain` | `string` | ❌ | BPS domain code (e.g. `'7200'`) |
+| `domain` | `string` | ✅ | BPS domain code (e.g. `'7200'`) |
 | `lang` | `DataLanguage` | ❌ | Response language |
 | `page` | `number` | ❌ | Page number (default: 1) |
 | `perPage` | `number` | ❌ | Items per page |
