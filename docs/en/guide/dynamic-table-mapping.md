@@ -42,7 +42,7 @@ The visual below shows four important header structure cases:
 - **Case C**: single turvar + multiple turtahun
 - **Case D**: multiple turvar + multiple turtahun
 
-<DynamicTableFullMappingEn />
+<DynamicTableProvidedMappingEn />
 
 ## Mental Model Rules
 

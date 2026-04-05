@@ -42,7 +42,7 @@ Visual berikut menunjukkan empat kondisi penting struktur header tabel:
 - **Kasus C**: 1 turvar + banyak turtahun
 - **Kasus D**: banyak turvar + banyak turtahun
 
-<DynamicTableFullMappingId />
+<DynamicTableProvidedMappingId />
 
 ## Aturan Mental Model
 
