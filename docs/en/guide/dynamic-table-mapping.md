@@ -4,9 +4,9 @@ This page explains how a BPS dynamic table response is transformed into a render
 
 ## Visual 1 — Table Structure Mapping
 
-This diagram helps show how response dimensions are mapped into **rows**, **columns**, and **cell values**.
+This visual shows how response dimensions are mapped into **rows**, **columns**, and **cell values** — without relying on a separate SVG asset.
 
-![Dynamic table mapping diagram](/dynamic-table-mapping-diagram.svg)
+<DynamicTableStructureMappingEn />
 
 ### Core Mapping
 
