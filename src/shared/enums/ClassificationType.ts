@@ -8,8 +8,10 @@ export enum ClassificationType {
   KBLI_2015 = 'kbli2015',
   /** KBLI 2017 - Klasifikasi Baku Lapangan Usaha Indonesia 2017 */
   KBLI_2017 = 'kbli2017',
-  /** KBLI 2020 - Klasifikasi Baku Lapangan Usaha Indonesia 2020 (default) */
+  /** KBLI 2020 - Klasifikasi Baku Lapangan Usaha Indonesia 2020 */
   KBLI_2020 = 'kbli2020',
+  /** KBLI 2025 - Klasifikasi Baku Lapangan Usaha Indonesia 2025 (BPS Reg. No. 7/2025, effective Dec 18 2025) */
+  KBLI_2025 = 'kbli2025',
   /** KBKI 2015 - Klasifikasi Baku Komoditas Indonesia 2015 */
   KBKI_2015 = 'kbki2015',
 }
