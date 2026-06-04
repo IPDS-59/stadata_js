@@ -1,4 +1,24 @@
 import { StatisticClassification } from '../domain/entities/StatisticClassification';
+import { ClassificationType } from '../../../shared/enums/ClassificationType';
+
+describe('ClassificationType enum', () => {
+  it('includes KBLI_2025', () => {
+    expect(ClassificationType.KBLI_2025).toBe('kbli2025');
+  });
+
+  it('has all expected classification types', () => {
+    expect(Object.values(ClassificationType)).toEqual(
+      expect.arrayContaining([
+        'kbli2009',
+        'kbli2015',
+        'kbli2017',
+        'kbli2020',
+        'kbli2025',
+        'kbki2015',
+      ])
+    );
+  });
+});
 
 describe('StatisticClassification Entity', () => {
   it('should create a statistic classification with all fields', () => {
