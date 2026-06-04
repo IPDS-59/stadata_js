@@ -53,3 +53,9 @@ CHECKLIST.md
 SETUP.md
 WORKFLOWS-SUMMARY.md
 PROJECT_STATUS.md
+
+# Beads / Dolt files (added by bd init)
+.dolt/
+*.db
+.beads-credential-key
+.beads/proxieddb/
