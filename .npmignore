@@ -38,3 +38,10 @@ docs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Tooling directories (AI agents, code intelligence)
+.claude/
+.codex/
+.beads/
+.codegraph/
+AGENTS.md

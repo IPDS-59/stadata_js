@@ -18,9 +18,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node10",
-    "ignoreDeprecations": "6.0",
-    "allowSyntheticDefaultImports": true
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "ignoreDeprecations": "6.0"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tsup.config.ts", "src/**/__tests__/**/*", "src/**/*.test.ts", "src/**/*.spec.ts"]

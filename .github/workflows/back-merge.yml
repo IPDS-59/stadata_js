@@ -57,6 +57,25 @@ jobs:
             git merge --abort
           fi
 
+      - name: Resolve package.json version after automatic merge
+        if: steps.check_develop.outputs.exists == 'true' && steps.auto_merge.outputs.success == 'true'
+        run: |
+          # Always keep the higher semver between develop and main
+          BASE_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "0.0.0")
+          MAIN_VERSION=$(git show origin/main:package.json | node -p "const d=require('fs').readFileSync('/dev/stdin','utf8'); JSON.parse(d).version" 2>/dev/null || echo "0.0.0")
+
+          node -e "
+          const semver = (v) => v.replace(/[^0-9.]/g,'').split('.').map(Number);
+          const cmp = (a, b) => { const [pa, pb] = [semver(a), semver(b)]; for(let i=0;i<3;i++){if(pa[i]>pb[i])return 1;if(pa[i]<pb[i])return -1;} return 0; };
+          const base='$BASE_VERSION', main='$MAIN_VERSION';
+          const winner = cmp(base, main) >= 0 ? base : main;
+          const fs=require('fs');
+          const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
+          if(pkg.version !== winner){ pkg.version=winner; fs.writeFileSync('package.json', JSON.stringify(pkg,null,2)+'\n'); console.log('Resolved version: '+winner); } else { console.log('Version OK: '+winner); }
+          "
+          git add package.json
+          git diff --cached --quiet || git commit -m "chore: resolve package.json version to keep higher semver"
+
       - name: Push merged changes
         if: steps.check_develop.outputs.exists == 'true' && steps.auto_merge.outputs.success == 'true'
         run: |
@@ -72,7 +91,22 @@ jobs:
           # Create a merge commit (will have conflicts)
           git merge origin/main --no-commit || true
 
-          # Stage all files (including conflicts)
+          # Resolve package.json version conflict — always keep the higher semver
+          BASE_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "0.0.0")
+          MAIN_VERSION=$(git show origin/main:package.json | node -p "const d=require('fs').readFileSync('/dev/stdin','utf8'); JSON.parse(d).version" 2>/dev/null || echo "0.0.0")
+
+          node -e "
+          const semver = (v) => v.replace(/[^0-9.]/g,'').split('.').map(Number);
+          const cmp = (a, b) => { const [pa, pb] = [semver(a), semver(b)]; for(let i=0;i<3;i++){if(pa[i]>pb[i])return 1;if(pa[i]<pb[i])return -1;} return 0; };
+          const base='$BASE_VERSION', main='$MAIN_VERSION';
+          const winner = cmp(base, main) >= 0 ? base : main;
+          const fs=require('fs');
+          const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
+          if(pkg.version !== winner){ pkg.version=winner; fs.writeFileSync('package.json', JSON.stringify(pkg,null,2)+'\n'); console.log('Resolved version: '+winner); } else { console.log('Version OK: '+winner); }
+          "
+          git add package.json
+
+          # Stage all remaining files (including any other conflicts)
           git add -A
 
           # Commit with conflict markers
@@ -94,6 +128,8 @@ jobs:
           This merge has conflicts that need to be resolved manually.
 
           **Please review and resolve the conflicts before merging.**
+
+          Note: \`package.json\` version has been pre-resolved to keep the higher semver.
 
           ### Steps to resolve:
           1. Check out this branch locally

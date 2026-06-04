@@ -24,7 +24,7 @@ export class LoggingInterceptor extends BaseNetworkInterceptor {
     this.logger.debug(`HTTP Response: ${response.status} ${response.url}`, {
       status: response.status,
       statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries()),
+      headers: Object.fromEntries((response.headers as unknown as Map<string, string>).entries()),
     });
     return response;
   }
