@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-06-04
+
+### ✨ Features
+
+- **classification**: add KBLI 2025 support (#222) ([9fbdfa9])
+
+### 🐛 Bug Fixes
+
+- **ci**: keep higher semver when back-merging hotfix to develop (#210) ([9044b67])
+
+### 👷 Continuous Integration
+
+- **deps**: bump actions/upload-pages-artifact from 4 to 5 (#213) ([938de44])
+- **deps**: bump pnpm/action-setup from 4 to 6 (#211) ([2e7e5f4])
+- **deps**: bump actions/checkout from 4 to 6 (#180) (#208) ([6e91118])
+- **dependabot**: set target-branch to develop for gitflow compliance ([bc562aa])
+
+### 🔧 Chores
+
+- update pnpm-lock.yaml to match bumped devDependencies ([a26cb71])
+- back-merge all dependency updates from main to develop (#221) ([ef44f9b])
+- exclude tooling dirs from git and npm publish (#209) ([57e7408])
+- bump version to 2.1.0 for next development cycle (#207) ([f1c1135])
+- back-merge hotfix 2.0.1 to develop ([1fd0454])
+- back-merge latest docs updates to develop ([6a6f2af])
+- back-merge docs completeness updates to develop ([48dde30])
+
+
 ## [2.0.1] - 2026-04-05
 
 ### 📚 Documentation
