@@ -38,6 +38,7 @@ enum ClassificationType {
   KBLI2015 = 'kbli2015',
   KBLI2017 = 'kbli2017',
   KBLI2020 = 'kbli2020',
+  KBLI2025 = 'kbli2025', // BPS Peraturan No. 7/2025, berlaku 18 Des 2025
   KBKI2015 = 'kbki2015',
 }
 ```

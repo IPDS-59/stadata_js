@@ -8,7 +8,14 @@ describe('ClassificationType enum', () => {
 
   it('has all expected classification types', () => {
     expect(Object.values(ClassificationType)).toEqual(
-      expect.arrayContaining(['kbli2009', 'kbli2015', 'kbli2017', 'kbli2020', 'kbli2025', 'kbki2015'])
+      expect.arrayContaining([
+        'kbli2009',
+        'kbli2015',
+        'kbli2017',
+        'kbli2020',
+        'kbli2025',
+        'kbki2015',
+      ])
     );
   });
 });
