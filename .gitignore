@@ -53,3 +53,9 @@ CHECKLIST.md
 SETUP.md
 WORKFLOWS-SUMMARY.md
 PROJECT_STATUS.md
+
+# Tooling directories (AI agents, code intelligence)
+.claude/
+.codex/
+.beads/
+.codegraph/
