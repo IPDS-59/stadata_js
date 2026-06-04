@@ -105,16 +105,31 @@ jobs:
 
           # Try to merge main into back-merge branch
           if git merge main --no-edit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH}"; then
-            echo "✅ Merge successful, no conflicts"
+            echo "Merge successful, no conflicts"
             HAS_CONFLICTS=false
           else
-            echo "⚠️ Merge conflicts detected"
+            echo "Merge conflicts detected"
             HAS_CONFLICTS=true
             # Stage all files including conflicts
             git add -A
             # Commit with conflict markers
             git commit -m "chore: back-merge ${TYPE} ${VERSION} to ${BASE_BRANCH} (with conflicts)" || true
           fi
+
+          # Resolve package.json version conflict — always keep the higher semver
+          BASE_VERSION=$(node -p "require('./package.json').version" 2>/dev/null || echo "0.0.0")
+          MAIN_VERSION=$(git show origin/main:package.json | node -p "const d=require('fs').readFileSync('/dev/stdin','utf8'); JSON.parse(d).version" 2>/dev/null || echo "0.0.0")
+
+          node -e "
+          const semver = (v) => v.replace(/[^0-9.]/g,'').split('.').map(Number);
+          const cmp = (a, b) => { const [pa, pb] = [semver(a), semver(b)]; for(let i=0;i<3;i++){if(pa[i]>pb[i])return 1;if(pa[i]<pb[i])return -1;} return 0; };
+          const base='$BASE_VERSION', main='$MAIN_VERSION';
+          const winner = cmp(base, main) >= 0 ? base : main;
+          const fs=require('fs');
+          const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));
+          if(pkg.version !== winner){ pkg.version=winner; fs.writeFileSync('package.json', JSON.stringify(pkg,null,2)+'\n'); console.log('Resolved version: '+winner); } else { console.log('Version OK: '+winner); }
+          "
+          git add package.json
 
           # Push back-merge branch
           git push origin "$BACKMERGE_BRANCH"
