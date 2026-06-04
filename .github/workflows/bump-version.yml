@@ -115,7 +115,7 @@ jobs:
     name: Prepare Next Development Version
     runs-on: ubuntu-latest
     needs: bump-version
-    if: startsWith(github.event.ref, 'release/')
+    if: startsWith(github.event.ref, 'release/') || startsWith(github.event.ref, 'hotfix/')
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -134,7 +134,12 @@ jobs:
         id: next_version
         run: |
           BRANCH_NAME="${{ github.event.ref }}"
-          RELEASE_VERSION="${BRANCH_NAME#release/}"
+
+          if [[ $BRANCH_NAME == release/* ]]; then
+            RELEASE_VERSION="${BRANCH_NAME#release/}"
+          elif [[ $BRANCH_NAME == hotfix/* ]]; then
+            RELEASE_VERSION="${BRANCH_NAME#hotfix/}"
+          fi
 
           # Remove 'v' prefix if present
           RELEASE_VERSION="${RELEASE_VERSION#v}"
@@ -150,18 +155,46 @@ jobs:
           echo "next_version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
           echo "Next development version: ${NEXT_VERSION}"
 
+      - name: Check develop version against next version
+        id: check_develop_version
+        run: |
+          NEXT_VERSION="${{ steps.next_version.outputs.next_version }}"
+          DEVELOP_VERSION=$(node -p "require('./package.json').version")
+
+          echo "develop_version=${DEVELOP_VERSION}" >> $GITHUB_OUTPUT
+          echo "Develop version: ${DEVELOP_VERSION}"
+          echo "Next version: ${NEXT_VERSION}"
+
+          # Compare: skip bump if develop is already at a higher or equal version
+          SKIP=$(node -e "
+          const semver = (v) => v.replace(/[^0-9.]/g,'').split('.').map(Number);
+          const cmp = (a, b) => { const [pa, pb] = [semver(a), semver(b)]; for(let i=0;i<3;i++){if(pa[i]>pb[i])return 1;if(pa[i]<pb[i])return -1;} return 0; };
+          console.log(cmp('${DEVELOP_VERSION}', '${NEXT_VERSION}') >= 0 ? 'true' : 'false');
+          ")
+
+          echo "skip_bump=${SKIP}" >> $GITHUB_OUTPUT
+
+          if [ "$SKIP" = "true" ]; then
+            echo "Develop (${DEVELOP_VERSION}) is already >= next version (${NEXT_VERSION}). Skipping bump PR."
+          else
+            echo "Develop (${DEVELOP_VERSION}) is behind next version (${NEXT_VERSION}). Will create bump PR."
+          fi
+
       - name: Update package.json to next dev version
+        if: steps.check_develop_version.outputs.skip_bump == 'false'
         run: |
           NEXT_VERSION="${{ steps.next_version.outputs.next_version }}"
           npm version "$NEXT_VERSION" --no-git-tag-version --allow-same-version
 
       - name: Update package-lock.json
+        if: steps.check_develop_version.outputs.skip_bump == 'false'
         run: |
           if [ -f "package-lock.json" ]; then
             npm install --package-lock-only
           fi
 
       - name: Create Pull Request
+        if: steps.check_develop_version.outputs.skip_bump == 'false'
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.PAT_TOKEN }}
@@ -199,4 +232,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Release Version**: ${{ steps.next_version.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Next Dev Version**: ${{ steps.next_version.outputs.next_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Develop Version**: ${{ steps.check_develop_version.outputs.develop_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Skipped (develop already ahead)**: ${{ steps.check_develop_version.outputs.skip_bump }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Target Branch**: develop" >> $GITHUB_STEP_SUMMARY
