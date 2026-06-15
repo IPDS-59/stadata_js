@@ -167,7 +167,7 @@ describe('GetTrade Use Case', () => {
   beforeEach(() => {
     mockRepository = {
       get: jest.fn(),
-    } as jest.Mocked<TradeRepository>;
+    };
     useCase = new GetTrade(mockRepository);
   });
 
