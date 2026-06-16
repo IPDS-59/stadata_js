@@ -180,7 +180,7 @@ jobs:
 
       - name: Run spell check
         run: |
-          cspell "**/*.md" "**/*.txt" --no-progress --show-suggestions || true
+          cspell "**/*.md" "**/*.txt" --no-progress --show-suggestions
 
   build:
     name: Build
@@ -216,6 +216,8 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.src == 'true' || needs.changes.outputs.workflows == 'true' || github.event_name == 'push'
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
