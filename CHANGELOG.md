@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2026-09-02
+
+### ✨ Features
+
+- **classification**: add KBLI 2025 support (#222) ([9fbdfa9])
+
+### 🐛 Bug Fixes
+
+- **ci**: keep higher semver when back-merging hotfix to develop (#210) ([9044b67])
+
+### 👷 Continuous Integration
+
+- **deps**: bump actions/setup-node from 6 to 7 (#257) ([1acd66f])
+- **deps**: bump actions/checkout from 6 to 7 (#242) ([13f9b07])
+- **deps**: bump actions/dependency-review-action from 4 to 5 (#231) ([8f610c1])
+- **deps**: bump softprops/action-gh-release from 2 to 3 (#230) ([b8da028])
+- **deps**: bump actions/upload-pages-artifact from 4 to 5 (#213) ([938de44])
+- **deps**: bump pnpm/action-setup from 4 to 6 (#211) ([2e7e5f4])
+- **deps**: bump actions/checkout from 4 to 6 (#180) (#208) ([6e91118])
+- **dependabot**: set target-branch to develop for gitflow compliance ([bc562aa])
+
+### 🔧 Chores
+
+- **deps-dev**: bump jest from 30.4.2 to 30.5.0 (#272) ([a316c07])
+- **deps-dev**: bump @typescript-eslint/parser from 8.61.0 to 8.68.0 (#270) ([e5295a8])
+- **deps-dev**: bump @types/node from 25.9.3 to 26.4.0 (#271) ([8a9204f])
+- **deps-dev**: bump eslint from 10.5.0 to 10.9.1 (#269) ([cde5420])
+- **deps-dev**: bump rollup-plugin-visualizer from 7.0.1 to 7.1.1 (#267) ([4466ba5])
+- **deps-dev**: bump ts-jest from 29.4.11 to 29.4.12 (#263) ([31d32ed])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin (#244) ([279e25e])
+- **deps-dev**: bump prettier from 3.8.4 to 3.9.6 (#259) ([a113df0])
+- back-merge release 2.2.0 to develop (#241) ([62b9aa8])
+- bump version to 2.3.0 for next development cycle (#240) ([ff2bc5d])
+- **deps-dev**: bump @typescript-eslint/parser from 8.60.1 to 8.61.0 (#237) ([199428a])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin (#233) ([5bdf8fa])
+- **deps-dev**: bump eslint from 10.4.1 to 10.5.0 (#236) ([f57baed])
+- **deps-dev**: bump @types/node from 25.9.1 to 25.9.3 (#235) ([df9911a])
+- **deps-dev**: bump prettier from 3.8.3 to 3.8.4 (#234) ([b6a428b])
+- back-merge release 2.1.0 to develop (#229) ([3d781b8])
+- bump version to 2.2.0 for next development cycle (#225) ([03823eb])
+- back-merge all dependency updates from main to develop (#221) ([ef44f9b])
+- exclude tooling dirs from git and npm publish (#209) ([57e7408])
+- bump version to 2.1.0 for next development cycle (#207) ([f1c1135])
+- back-merge hotfix 2.0.1 to develop ([1fd0454])
+- back-merge latest docs updates to develop ([6a6f2af])
+- back-merge docs completeness updates to develop ([48dde30])
+
+
 ## [2.2.0] - 2026-06-15
 
 ### ✨ Features
