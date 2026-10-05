@@ -70,7 +70,7 @@
     "jest": "^30.5.0",
     "prettier": "^3.9.6",
     "rollup-plugin-visualizer": "^7.1.1",
-    "ts-jest": "^29.4.12",
+    "ts-jest": "^29.4.14",
     "tsup": "^8.5.1",
     "typescript": "^6.0.3",
     "vitepress": "^1.6.4"
