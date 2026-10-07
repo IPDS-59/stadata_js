@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2026-10-07
+
+### 🐛 Bug Fixes
+
+- **ci**: correctly detect release/hotfix branch on create events (#278) ([c987b41])
+
+### 🔧 Chores
+
+- **deps-dev**: bump @types/node from 26.4.0 to 26.6.4 (#296) ([10e1cb0])
+- **deps-dev**: bump @typescript-eslint/parser from 8.68.0 to 8.71.0 (#294) ([b1bd989])
+- **deps-dev**: bump eslint from 10.9.1 to 10.12.0 (#293) ([dca318a])
+- **deps-dev**: bump jest from 30.5.0 to 30.5.2 (#289) ([acb26a8])
+- **deps-dev**: bump ts-jest from 29.4.12 to 29.4.14 (#295) ([2d2c0c5])
+- **deps-dev**: bump prettier from 3.9.6 to 3.9.9 (#288) ([b94aaa4])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin (#279) ([9c4961c])
+- bump version to 2.4.0 for next development cycle (#275) ([23816cb])
+
+
 ## [2.2.0] - 2026-06-15
 
 ### ✨ Features
