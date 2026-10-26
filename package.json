@@ -59,7 +59,7 @@
   },
   "homepage": "https://github.com/IPDS-59/stadata_js#readme",
   "devDependencies": {
-    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-terser": "^1.0.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.4",
     "@typescript-eslint/eslint-plugin": "^8.68.0",
