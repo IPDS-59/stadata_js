@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2026-11-20
+
+### 🔧 Chores
+
+- **deps-dev**: bump eslint-plugin-prettier from 5.5.6 to 5.5.7 (#305) ([04f100c])
+- **deps-dev**: bump @typescript-eslint/eslint-plugin (#303) ([59aeb50])
+- **deps-dev**: bump ts-jest from 29.4.14 to 29.4.15 (#304) ([c2784fd])
+- **deps-dev**: bump @typescript-eslint/parser from 8.71.0 to 8.73.0 (#313) ([791c64d])
+- **deps-dev**: bump prettier from 3.9.9 to 3.10.1 (#308) ([534a09f])
+- **deps-dev**: bump @types/node from 26.6.4 to 26.6.6 (#312) ([2e16ac8])
+- **deps-dev**: bump @rollup/plugin-terser from 1.0.0 to 1.0.2 (#311) ([1cec2ab])
+- **deps-dev**: bump eslint from 10.12.0 to 10.14.0 (#314) ([fe04515])
+- **deps-dev**: bump rollup-plugin-visualizer from 7.1.1 to 7.1.2 (#315) ([00d7990])
+- bump version to 2.5.0 for next development cycle (#299) ([9c70771])
+
+
 ## [2.2.0] - 2026-06-15
 
 ### ✨ Features
